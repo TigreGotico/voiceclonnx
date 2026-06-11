@@ -23,16 +23,39 @@ dependencies = [
 
 [project.optional-dependencies]
 chatterbox = ["chatterbox_onnx"]
+knnvc = [
+    "onnxruntime",
+    "numpy",
+    "soundfile",
+]
+openvoice = [
+    "onnxruntime",
+    "numpy",
+    "soundfile",
+]
+convert = [
+    "torch",
+    "onnx",
+    "onnxruntime",
+    "onnxruntime-tools",
+    "huggingface_hub",
+]
 test = [
     "pytest",
     "edge-tts",
+]
+test-convert = [
+    "pytest",
+    "torch",
+    "onnx",
+    "onnxruntime",
+    "onnxruntime-tools",
+    "huggingface_hub",
 ]
 
 [project.scripts]
 vconnx = "vconnx.__main__:main"
 
-[project.entry-points."opm.vc"]
-"ovos-vc-plugin-chatterbox-onnx" = "vconnx.opm:ChatterboxVCPlugin"
 
 [project.urls]
 Homepage = "https://github.com/TigreGotico/vconnx"

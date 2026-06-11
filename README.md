@@ -43,21 +43,68 @@ vconnx list   # show registered engines
 | Alias | Package | Sample rate | Status |
 |---|---|---|---|
 | `chatterbox` | `vconnx[chatterbox]` → `chatterbox_onnx` | 24 kHz | Supported |
+| `knnvc` | `vconnx[knnvc]` | 16 kHz | Supported |
+| `openvoice` | `vconnx[openvoice]` | 22 kHz | Supported |
 | `seed-vc` | — | — | Planned (see issue) |
-| `openvoice` | — | — | Planned (see issue) |
-| `knn-vc` | — | — | Planned (see issue) |
 | `rvc` | — | — | Planned (see issue) |
 
-## OPM plugin
+### knnvc
 
-When `ovos-plugin-manager` ships the `VoiceClonePlugin` base class, the
-bundled plugin activates automatically via the `opm.vc` entry-point group:
+Zero-shot any-to-any voice conversion based on
+[kNN-VC](https://github.com/bshall/knn-vc) (Baas et al., Interspeech 2023).
+Architecture: WavLM-Large encoder (layer 6) → k-nearest-neighbour matching
+(pure numpy) → HiFi-GAN vocoder.  No autoregressive decoding; fully
+non-autoregressive and CPU-friendly.
 
-| Entry-point name | Class |
-|---|---|
-| `ovos-vc-plugin-chatterbox-onnx` | `vconnx.opm.ChatterboxVCPlugin` |
+```bash
+pip install "vconnx[knnvc]"
+```
 
-Until OPM ships that family, import `VoiceCloner` directly.
+```python
+from vconnx import VoiceCloner
+
+cloner = VoiceCloner(engine="knnvc")
+out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
+print(cloner.sample_rate)   # 16000
+```
+
+```bash
+vconnx clone --engine knnvc \
+             --audio source.wav \
+             --voice reference.wav \
+             --out converted.wav
+```
+
+ONNX artifacts: [`TigreGotico/vconnx-knn-vc`](https://huggingface.co/TigreGotico/vconnx-knn-vc) (public).
+
+### openvoice
+
+Zero-shot tone-color conversion based on
+[OpenVoice v2](https://github.com/myshell-ai/OpenVoice) (myshell-ai, MIT license).
+Architecture: reference encoder (mel → 256-dim tone-color embedding) + flow-based
+AdaIN-conditioned converter + Griffin-Lim vocoder.  MIT-licensed weights — artifacts
+distributed via the public per-engine `TigreGotico/vconnx-<engine>` repos (see the vconnx HF collection).
+
+```bash
+pip install "vconnx[openvoice]"
+```
+
+```python
+from vconnx import VoiceCloner
+
+cloner = VoiceCloner(engine="openvoice")
+out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
+print(cloner.sample_rate)   # 22050
+```
+
+```bash
+vconnx clone --engine openvoice \
+             --audio source.wav \
+             --voice reference.wav \
+             --out converted.wav
+```
+
+ONNX artifacts: `TigreGotico/vconnx-openvoice-v2` (public).
 
 ## Adding an engine
 
@@ -65,9 +112,3 @@ Until OPM ships that family, import `VoiceCloner` directly.
 2. Implement `clone_voice(audio, reference_voice, out_path) -> str`.
 3. Call `register_engine(EngineEntry(alias=..., adapter_class=...))`.
 4. Add an extras group in `pyproject.toml`.
-
-## Attribution
-
-Developed by [TigreGotico](https://github.com/TigreGotico) for
-[OpenVoiceOS](https://github.com/OpenVoiceOS), funded by the
-[NGI0 Commons Fund](https://nlnet.nl/commonsfund/) / NLnet grant 101135429.
