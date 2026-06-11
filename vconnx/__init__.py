@@ -38,6 +38,7 @@ from vconnx.engines.base import (
 # Auto-import built-in engine adapters so they self-register
 import vconnx.engines.chatterbox  # noqa: F401
 import vconnx.engines.knnvc  # noqa: F401
+import vconnx.engines.openvoice  # noqa: F401
 
 __all__ = [
     "VoiceCloner",

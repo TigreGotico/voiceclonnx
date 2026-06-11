@@ -20,6 +20,7 @@ the source utterance spoken in the reference voice, as that engine hears it.
 |---|---|---|
 | chatterbox | [`outputs/chatterbox__aria.wav`](outputs/chatterbox__aria.wav) | [`outputs/chatterbox__sonia.wav`](outputs/chatterbox__sonia.wav) |
 | knnvc | [`outputs/knnvc__aria.wav`](outputs/knnvc__aria.wav) | [`outputs/knnvc__sonia.wav`](outputs/knnvc__sonia.wav) |
+| openvoice | [`outputs/openvoice__aria.wav`](outputs/openvoice__aria.wav) | [`outputs/openvoice__sonia.wav`](outputs/openvoice__sonia.wav) |
 
 Rows are added as engines land. Engines with `local-only-weights` upstreams
 appear here too — the demo outputs are generated locally by maintainers and
