@@ -35,6 +35,13 @@ Rows are added as engines land. Engines with `local-only-weights` upstreams
 appear here too — the demo outputs are generated locally by maintainers and
 committing a converted wav redistributes no model weights.
 
+## Verification
+
+[`VERIFICATION.md`](VERIFICATION.md) — every clip is transcribed with
+faster-whisper and scored against the known source text (WER gate ≤ 40%);
+the table doubles as a transcript index. Regenerate with
+`python demo/verify_demos.py` after changing demos.
+
 ## Regenerating
 
 ```bash
