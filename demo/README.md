@@ -22,6 +22,13 @@ the source utterance spoken in the reference voice, as that engine hears it.
 | knnvc | [`outputs/knnvc__aria.wav`](outputs/knnvc__aria.wav) | [`outputs/knnvc__sonia.wav`](outputs/knnvc__sonia.wav) |
 | openvoice | [`outputs/openvoice__aria.wav`](outputs/openvoice__aria.wav) | [`outputs/openvoice__sonia.wav`](outputs/openvoice__sonia.wav) |
 
+Any-to-ONE engines convert to a fixed voice model instead of a reference wav
+(one column per demo model):
+
+| engine | output | target model |
+|---|---|---|
+| rvc | [`outputs/rvc__woman1.wav`](outputs/rvc__woman1.wav) | `ozada/onnx_rvc::woman_1.onnx` (community, MIT) |
+
 Rows are added as engines land. Engines with `local-only-weights` upstreams
 appear here too — the demo outputs are generated locally by maintainers and
 committing a converted wav redistributes no model weights.
