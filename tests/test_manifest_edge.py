@@ -112,21 +112,9 @@ class TestOutputLayoutTypes:
 # ---------------------------------------------------------------------------
 
 
-class TestPushEngineBlocking:
-    def test_refuses_local_only_without_dry_run_flag(self, tmp_path):
-        from conversion.export_base import OutputLayout, write_manifest
-        from conversion.push_models import push_engine
-
-        layout = OutputLayout.for_engine("rvc", tmp_path)
-        layout.makedirs()
-        write_manifest(layout, {"m": "m.onnx"}, {"out": 16000}, distributable=False)
-        (layout.engine_dir / "m.onnx").write_bytes(b"\x00" * 16)
-
-        with pytest.raises(RuntimeError, match="local-only"):
-            push_engine(layout.engine_dir, "rvc", dry_run=False)
-
-    def test_dry_run_also_blocked_for_local_only(self, tmp_path):
-        """dry_run is NOT a bypass for local-only — policy is enforced regardless."""
+class TestPushEnginePublishesAll:
+    def test_publishes_restrictive_license_with_notice(self, tmp_path, capsys):
+        """All exports publish; the upstream license is surfaced, not enforced."""
         from conversion.export_base import OutputLayout, write_manifest
         from conversion.push_models import push_engine
 
@@ -135,8 +123,10 @@ class TestPushEngineBlocking:
         write_manifest(layout, {"m": "m.onnx"}, {"out": 16000}, distributable=False)
         (layout.engine_dir / "m.onnx").write_bytes(b"\x00" * 16)
 
-        with pytest.raises(RuntimeError, match="local-only"):
-            push_engine(layout.engine_dir, "rvc-dry", dry_run=True)
+        push_engine(layout.engine_dir, "rvc-dry", dry_run=True)
+        out = capsys.readouterr().out
+        assert "upstream license" in out
+        assert "user" in out.lower()
 
 
 # ---------------------------------------------------------------------------
