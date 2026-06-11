@@ -201,3 +201,42 @@ Each supported engine has a dedicated GitHub issue with engine-specific notes:
 
 Follow the contract in this guide; the per-engine issue records any deviations
 (e.g. custom opset, extra quantization exclusions, multi-component manifests).
+
+---
+
+## Worked example: knnvc
+
+`conversion/export_knnvc.py` follows this recipe exactly with two deviations:
+
+1. **Architecture reverse-engineering required.**  The bshall `prematch_g_02500000.pt`
+   checkpoint uses a non-standard HiFi-GAN variant with an extra `lin_pre` linear
+   projection layer (1024 → 512) before `conv_pre`, and upsample kernel sizes
+   (20, 16, 4, 4) rather than the published (16, 16, 4, 4).  The correct architecture
+   was determined by inspecting the checkpoint state dict rather than trusting the
+   published config JSON.  **Lesson:** always inspect the checkpoint before instantiating
+   the model; never assume the published config matches the released weights.
+
+2. **WavLM via `transformers`, not `huggingface_hub.snapshot_download`.**  WavLM-Large
+   is loaded via `transformers.WavLMModel.from_pretrained("microsoft/wavlm-large")`
+   because `transformers` handles the HF cache correctly and gives a ready-to-use
+   `nn.Module`.  Only the HiFi-GAN checkpoint is downloaded via a direct URL.
+
+3. **Two-component manifest.**  The manifest has four entries: `wavlm_encoder`,
+   `wavlm_encoder_q8`, `hifigan_vocoder`, `hifigan_vocoder_q8`.  The adapter selects
+   fp32 or q8 at load time based on the `quantized` constructor flag.
+
+**Parity results (fp32):**
+
+| Component | max_abs | mean_abs | Pass |
+|---|---|---|---|
+| WavLM layer-6 hidden states | 5.11e-04 | 1.31e-05 | ✓ |
+| HiFi-GAN waveform | 2.44e-06 | 2.08e-07 | ✓ |
+
+**Model sizes:**
+
+| File | Size |
+|---|---|
+| `wavlm_layer6.onnx` (fp32) | 386.8 MB |
+| `wavlm_layer6_q8.onnx` (INT8) | 97.5 MB (75% reduction) |
+| `hifigan_knnvc.onnx` (fp32) | 63.1 MB |
+| `hifigan_knnvc_q8.onnx` (INT8) | 25.1 MB (60% reduction) |

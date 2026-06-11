@@ -43,10 +43,39 @@ vconnx list   # show registered engines
 | Alias | Package | Sample rate | Status |
 |---|---|---|---|
 | `chatterbox` | `vconnx[chatterbox]` → `chatterbox_onnx` | 24 kHz | Supported |
+| `knnvc` | `vconnx[knnvc]` | 16 kHz | Supported |
 | `seed-vc` | — | — | Planned (see issue) |
 | `openvoice` | — | — | Planned (see issue) |
-| `knn-vc` | — | — | Planned (see issue) |
 | `rvc` | — | — | Planned (see issue) |
+
+### knnvc
+
+Zero-shot any-to-any voice conversion based on
+[kNN-VC](https://github.com/bshall/knn-vc) (Baas et al., Interspeech 2023).
+Architecture: WavLM-Large encoder (layer 6) → k-nearest-neighbour matching
+(pure numpy) → HiFi-GAN vocoder.  No autoregressive decoding; fully
+non-autoregressive and CPU-friendly.
+
+```bash
+pip install "vconnx[knnvc]"
+```
+
+```python
+from vconnx import VoiceCloner
+
+cloner = VoiceCloner(engine="knnvc")
+out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
+print(cloner.sample_rate)   # 16000
+```
+
+```bash
+vconnx clone --engine knnvc \
+             --audio source.wav \
+             --voice reference.wav \
+             --out converted.wav
+```
+
+ONNX artifacts: `TigreGotico/vconnx-models` (private), path `knn-vc/`.
 
 ## Adding an engine
 
