@@ -23,6 +23,12 @@ dependencies = [
 
 [project.optional-dependencies]
 chatterbox = ["chatterbox_onnx"]
+freevc = [
+    "onnxruntime",
+    "numpy",
+    "soundfile",
+    "librosa",
+]
 knnvc = [
     "onnxruntime",
     "numpy",
