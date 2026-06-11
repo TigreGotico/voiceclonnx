@@ -6,14 +6,7 @@ against the known source text (gate: WER ≤ 40%).
 | clip | WER | intelligible | transcript |
 |---|---|---|---|
 | [`source.wav`](source.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
-| [`outputs/chatterbox__aria.wav`](outputs/chatterbox__aria.wav) | 8% | ✅ | The quit-brown fox jumps over the lazy dog. Voice conversion changes who was speaking, but |
-| [`outputs/chatterbox__sonia.wav`](outputs/chatterbox__sonia.wav) | 4% | ✅ | The quit-brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but  |
-| [`outputs/freevc__aria.wav`](outputs/freevc__aria.wav) | 81% | ❌ | The quick brown fox jumps in. |
-| [`outputs/freevc__sonia.wav`](outputs/freevc__sonia.wav) | 81% | ❌ | The quick brown fox jumps in. |
-| [`outputs/knnvc__aria.wav`](outputs/knnvc__aria.wav) | 12% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes was sticky, but not  |
-| [`outputs/knnvc__sonia.wav`](outputs/knnvc__sonia.wav) | 15% | ✅ | The quick brown fights jumps over the lazy dart. Voice conversion changes so is speedy, bu |
-| [`outputs/openvoice__aria.wav`](outputs/openvoice__aria.wav) | 4% | ✅ | but quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
-| [`outputs/openvoice__sonia.wav`](outputs/openvoice__sonia.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
-| [`outputs/rvc__woman1.wav`](outputs/rvc__woman1.wav) | 38% | ✅ | The quick-bound fights jumps on the lazy dog. Moiscan Christian changes with speaking, but |
+| [`outputs/freevc__aria.wav`](outputs/freevc__aria.wav) | 12% | ✅ | The quick brown fox jumps and the lazy dog. Voice conversion changes who is f***ing, but n |
+| [`outputs/freevc__sonia.wav`](outputs/freevc__sonia.wav) | 12% | ✅ | the quick brown fox jumps in the lazy dog. Voice conversion changes who was making, but no |
 | [`outputs/triaan__aria.wav`](outputs/triaan__aria.wav) | 100% | ❌ |  |
 | [`outputs/triaan__sonia.wav`](outputs/triaan__sonia.wav) | 100% | ❌ |  |
