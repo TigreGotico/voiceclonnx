@@ -21,6 +21,7 @@ pip install "vconnx[chatterbox]"      # Chatterbox AR codec-LM (default)
 pip install "vconnx[knnvc]"           # kNN-VC — WavLM + HiFi-GAN
 pip install "vconnx[openvoice]"       # OpenVoice v2 tone-color converter
 pip install "vconnx[rvc]"             # RVC any-to-one (community voice models)
+pip install "vconnx[triaan]"          # TriAAN-VC — CPC + TriAAN decoder + PWG
 ```
 
 ---
@@ -68,6 +69,7 @@ vconnx list
 | `knnvc` | `vconnx[knnvc]` | 16 kHz | [TigreGotico/vconnx-knn-vc](https://huggingface.co/TigreGotico/vconnx-knn-vc) | MIT |
 | `openvoice` | `vconnx[openvoice]` | 22 kHz | [TigreGotico/vconnx-openvoice-v2](https://huggingface.co/TigreGotico/vconnx-openvoice-v2) | MIT |
 | `rvc` | `vconnx[rvc]` | 40/48 kHz (per voice model) | [TigreGotico/vconnx-rvc](https://huggingface.co/TigreGotico/vconnx-rvc) | MIT |
+| `triaan` | `vconnx[triaan]` | 16 kHz | [TigreGotico/vconnx-triaan-vc](https://huggingface.co/TigreGotico/vconnx-triaan-vc) | MIT |
 
 ### rvc
 

@@ -39,6 +39,12 @@ rvc = [
     "soundfile",
     "librosa",
 ]
+triaan = [
+    "onnxruntime",
+    "numpy",
+    "soundfile",
+    "librosa",
+]
 convert = [
     "torch",
     "onnx",

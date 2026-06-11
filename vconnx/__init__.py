@@ -15,6 +15,11 @@ engines ship alongside this package and are auto-imported here.
     Chatterbox AR codec-LM ONNX export (onnx-community/chatterbox-onnx).
     Requires: ``pip install vconnx[chatterbox]``
 
+``"triaan"``:
+    TriAAN-VC: CPC encoder + Triple Adaptive Attention Normalization decoder
+    + ParallelWaveGAN vocoder. Zero-shot any-to-any VC at 16 kHz.
+    Requires: ``pip install vconnx[triaan]``
+
 Usage
 -----
 ::
@@ -40,6 +45,7 @@ import vconnx.engines.chatterbox  # noqa: F401
 import vconnx.engines.knnvc  # noqa: F401
 import vconnx.engines.openvoice  # noqa: F401
 import vconnx.engines.rvc  # noqa: F401
+import vconnx.engines.triaan  # noqa: F401
 
 __all__ = [
     "VoiceCloner",
