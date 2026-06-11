@@ -75,7 +75,7 @@ vconnx clone --engine knnvc \
              --out converted.wav
 ```
 
-ONNX artifacts: `TigreGotico/vconnx-models` (private), path `knn-vc/`.
+ONNX artifacts: [`TigreGotico/vconnx-knn-vc`](https://huggingface.co/TigreGotico/vconnx-knn-vc) (public).
 
 ### openvoice
 
@@ -83,7 +83,7 @@ Zero-shot tone-color conversion based on
 [OpenVoice v2](https://github.com/myshell-ai/OpenVoice) (myshell-ai, MIT license).
 Architecture: reference encoder (mel → 256-dim tone-color embedding) + flow-based
 AdaIN-conditioned converter + Griffin-Lim vocoder.  MIT-licensed weights — artifacts
-distributed via `TigreGotico/vconnx-models`.
+distributed via the public per-engine `TigreGotico/vconnx-<engine>` repos (see the vconnx HF collection).
 
 ```bash
 pip install "vconnx[openvoice]"
@@ -104,7 +104,7 @@ vconnx clone --engine openvoice \
              --out converted.wav
 ```
 
-ONNX artifacts: `TigreGotico/vconnx-models` (private), path `openvoice-v2/`.
+ONNX artifacts: `TigreGotico/vconnx-openvoice-v2` (public).
 
 ## Adding an engine
 

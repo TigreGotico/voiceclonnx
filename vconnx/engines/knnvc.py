@@ -35,13 +35,13 @@ from vconnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
 _KNNVC_SR = 16000
 
 # HF repo housing the exported ONNX artifacts
-_HF_REPO_ID = "TigreGotico/vconnx-models"
+_HF_REPO_ID = "TigreGotico/vconnx-knn-vc"
 
 # Paths within the HF repo
-_WAVLM_FP32 = "knn-vc/wavlm_layer6.onnx"
-_WAVLM_INT8 = "knn-vc/wavlm_layer6_q8.onnx"
-_HIFIGAN_FP32 = "knn-vc/hifigan_knnvc.onnx"
-_HIFIGAN_INT8 = "knn-vc/hifigan_knnvc_q8.onnx"
+_WAVLM_FP32 = "wavlm_layer6.onnx"
+_WAVLM_INT8 = "wavlm_layer6_q8.onnx"
+_HIFIGAN_FP32 = "hifigan_knnvc.onnx"
+_HIFIGAN_INT8 = "hifigan_knnvc_q8.onnx"
 _CONFIG = "knn-vc/config.json"
 
 
@@ -286,7 +286,7 @@ register_engine(
         description=(
             "kNN-VC: WavLM-Large layer-6 encoder + k-nearest-neighbour matching "
             "(pure numpy) + HiFi-GAN vocoder. Zero-shot any-to-any VC at 16 kHz. "
-            "ONNX artifacts from TigreGotico/vconnx-models. "
+            "ONNX artifacts from TigreGotico/vconnx-knn-vc. "
             "(Baas et al., Interspeech 2023, MIT license)"
         ),
         extras="knnvc",

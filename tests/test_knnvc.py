@@ -260,11 +260,10 @@ def test_knn_match_quantized_flag_stored():
 # 4. E2E test — real model, real audio (skip if no HF token or heavy deps)
 # ---------------------------------------------------------------------------
 
-_HF_TOKEN = os.environ.get("HF_TOKEN", "")
-_SKIP_E2E = not _HF_TOKEN
+_SKIP_E2E = not os.environ.get("VCONNX_E2E", "")  # models are public; gate on opt-in (large downloads)
 
 _E2E_REASON = (
-    "E2E knnvc test requires HF_TOKEN (access to TigreGotico/vconnx-models) "
+    "E2E knnvc test downloads ~500MB of public models; set VCONNX_E2E=1 to run "
     "and network access to download models."
 )
 

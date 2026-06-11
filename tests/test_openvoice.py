@@ -340,11 +340,10 @@ def test_adapter_different_tones_for_different_references(tmp_path):
 # ---------------------------------------------------------------------------
 
 
-_HF_TOKEN = os.environ.get("HF_TOKEN", "")
-_SKIP_E2E = not _HF_TOKEN
+_SKIP_E2E = not os.environ.get("VCONNX_E2E", "")  # models are public; gate on opt-in (large downloads)
 
 _E2E_REASON = (
-    "E2E openvoice test requires HF_TOKEN (access to TigreGotico/vconnx-models) "
+    "E2E openvoice test downloads public models; set VCONNX_E2E=1 to run "
     "and network access to download models."
 )
 

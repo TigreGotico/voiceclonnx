@@ -40,13 +40,13 @@ from vconnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
 _OV2_SR = 22050
 
 # HF repo housing the exported ONNX artifacts
-_HF_REPO_ID = "TigreGotico/vconnx-models"
+_HF_REPO_ID = "TigreGotico/vconnx-openvoice-v2"
 
 # Paths within the HF repo
-_REF_ENC_FP32 = "openvoice-v2/tone_ref_encoder.onnx"
-_REF_ENC_INT8 = "openvoice-v2/tone_ref_encoder_q8.onnx"
-_CONVERTER_FP32 = "openvoice-v2/tone_converter.onnx"
-_CONVERTER_INT8 = "openvoice-v2/tone_converter_q8.onnx"
+_REF_ENC_FP32 = "tone_ref_encoder.onnx"
+_REF_ENC_INT8 = "tone_ref_encoder_q8.onnx"
+_CONVERTER_FP32 = "tone_converter.onnx"
+_CONVERTER_INT8 = "tone_converter_q8.onnx"
 _CONFIG = "openvoice-v2/config.json"
 
 # Mel-spectrogram parameters matching OpenVoice v2 training config
@@ -463,7 +463,7 @@ register_engine(
             "OpenVoice v2 tone-color converter: reference encoder (mel → 256-dim "
             "tone-color embedding) + flow-based converter (AdaIN conditioned) + "
             "Griffin-Lim vocoder.  Zero-shot any-to-any VC at 22050 Hz. "
-            "ONNX artifacts from TigreGotico/vconnx-models. "
+            "ONNX artifacts from TigreGotico/vconnx-openvoice-v2. "
             "(myshell-ai/OpenVoice, MIT license)"
         ),
         extras="openvoice",

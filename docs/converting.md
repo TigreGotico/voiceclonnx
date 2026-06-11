@@ -138,7 +138,7 @@ optional latency figures if you pass `benchmark_inputs`.
 
 ## 4. Push to HF
 
-Upload the finished engine directory to `TigreGotico/vconnx-models`:
+Upload the finished engine directory to its public per-engine repo `TigreGotico/vconnx-<engine>` (auto-created and added to the vconnx HF collection):
 
 ```bash
 # Dry-run first — prints files without uploading
@@ -164,7 +164,7 @@ Once the ONNX files are on HF, create `vconnx/engines/<engine>.py`:
 
 1. Subclass `VoiceClonerBase` from `vconnx.engines.base`.
 2. In `__init__`, download the models via `huggingface_hub.hf_hub_download`
-   (or `snapshot_download`) using `TigreGotico/vconnx-models` and the engine
+   (or `snapshot_download`) using the per-engine repo `TigreGotico/vconnx-<engine>` and the
    subdirectory.
 3. Load ONNX sessions with `onnxruntime.InferenceSession`.
 4. Implement `clone_voice(audio, reference_voice, out_path)`.
@@ -186,7 +186,7 @@ The adapter must have **zero torch dependency** — onnxruntime and numpy only.
     parity_report.json   ← parity check results
 ```
 
-This mirrors the layout on HF Hub under `TigreGotico/vconnx-models/<engine>/`.
+This mirrors the layout of the public per-engine repo `TigreGotico/vconnx-<engine>` on HF Hub.
 
 ---
 
@@ -277,7 +277,7 @@ vconnx never redistributes model weights it has no right to. Two classes of
 engine, decided per-engine in its tracking issue:
 
 - **distributable** — upstream license permits redistribution (MIT/Apache/
-  BSD/CC-BY): converted models are pushed to the `vconnx-models` HF repo with
+  BSD/CC-BY): converted models are pushed to the public `TigreGotico/vconnx-<engine>` HF repo with
   the upstream LICENSE file and PROVENANCE.md alongside; adapters download
   them automatically.
 - **local-only-weights** — upstream license does not permit redistribution

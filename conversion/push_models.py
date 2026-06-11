@@ -1,7 +1,7 @@
-"""Upload exported ONNX artifacts to ``TigreGotico/vconnx-models`` on Hugging Face.
+"""Upload exported ONNX artifacts to Hugging Face — one PUBLIC repo per engine.
 
 Each engine lives in its own subdirectory on the Hub:
-``TigreGotico/vconnx-models/<engine>/``.
+``TigreGotico/vconnx-<engine>`` (public), grouped in the vconnx collection.
 
 Requirements
 ------------
@@ -33,7 +33,12 @@ import sys
 from pathlib import Path
 from typing import Optional, Union
 
-HF_REPO_ID = "TigreGotico/vconnx-models"
+HF_NAMESPACE = "TigreGotico"
+COLLECTION_SLUG = "TigreGotico/vconnx-pure-onnx-voice-conversion-6a2ac089852d9b90a66c4509"
+
+
+def engine_repo_id(engine_name: str) -> str:
+    return f"{HF_NAMESPACE}/vconnx-{engine_name}"
 
 
 # ---------------------------------------------------------------------------
@@ -41,25 +46,32 @@ HF_REPO_ID = "TigreGotico/vconnx-models"
 # ---------------------------------------------------------------------------
 
 
-def _ensure_repo(token: str, dry_run: bool) -> None:
-    """Create the HF repo if it doesn't exist (private by default)."""
+def _ensure_repo(repo_id: str, token: str, dry_run: bool) -> None:
+    """Create the public per-engine HF repo if it doesn't exist."""
     from huggingface_hub import HfApi, RepositoryNotFoundError
 
     api = HfApi(token=token)
     try:
-        api.repo_info(repo_id=HF_REPO_ID, repo_type="model")
-        print(f"[push] HF repo {HF_REPO_ID!r} exists.")
+        api.repo_info(repo_id=repo_id, repo_type="model")
+        print(f"[push] HF repo {repo_id!r} exists.")
     except RepositoryNotFoundError:
         if dry_run:
-            print(f"[dry-run] Would create PRIVATE HF repo {HF_REPO_ID!r}.")
+            print(f"[dry-run] Would create PUBLIC HF repo {repo_id!r}.")
             return
         api.create_repo(
-            repo_id=HF_REPO_ID,
+            repo_id=repo_id,
             repo_type="model",
-            private=True,
+            private=False,
             exist_ok=True,
         )
-        print(f"[push] Created PRIVATE HF repo {HF_REPO_ID!r}.")
+        print(f"[push] Created PUBLIC HF repo {repo_id!r}.")
+        try:
+            from huggingface_hub import add_collection_item
+            add_collection_item(COLLECTION_SLUG, item_id=repo_id,
+                                item_type="model", exists_ok=True)
+            print(f"[push] Added {repo_id!r} to the vconnx collection.")
+        except Exception as exc:  # collection add is best-effort
+            print(f"[push] Could not add to collection: {exc}")
 
 
 def push_engine(
@@ -69,14 +81,14 @@ def push_engine(
     dry_run: bool = False,
     commit_message: Optional[str] = None,
 ) -> None:
-    """Upload *engine_dir* to ``TigreGotico/vconnx-models/<engine_name>/``.
+    """Upload *engine_dir* to the public ``TigreGotico/vconnx-<engine_name>`` repo.
 
     Parameters
     ----------
     engine_dir:
         Local directory containing ONNX files + PROVENANCE.md + config.json.
     engine_name:
-        Target subdirectory name on the Hub (e.g. ``"knn-vc"``).
+        Engine name; the target repo becomes ``TigreGotico/vconnx-<name>``.
     token:
         HF write token.  Falls back to the ``HF_TOKEN`` environment variable.
     dry_run:
@@ -96,7 +108,6 @@ def push_engine(
                 "redistribution). Refusing to upload; this engine's models "
                 "stay on the machine that converted them."
             )
-    engine_dir = Path(engine_dir)
 
     if not engine_dir.is_dir():
         raise FileNotFoundError(f"Engine directory not found: {engine_dir}")
@@ -128,10 +139,11 @@ def push_engine(
     # ------------------------------------------------------------------
     # Ensure repo exists
     # ------------------------------------------------------------------
+    repo_id = engine_repo_id(engine_name)
     if dry_run:
-        print(f"[dry-run] Would ensure HF repo {HF_REPO_ID!r} exists (private).")
+        print(f"[dry-run] Would ensure PUBLIC HF repo {repo_id!r} exists.")
     else:
-        _ensure_repo(tok, dry_run=False)
+        _ensure_repo(repo_id, tok, dry_run=False)
 
     # ------------------------------------------------------------------
     # Enumerate files and (dry-run) report or upload
@@ -139,13 +151,11 @@ def push_engine(
     files = sorted(engine_dir.rglob("*"))
     files = [f for f in files if f.is_file()]
 
-    path_in_repo_prefix = engine_name
-
     if dry_run:
-        print(f"[dry-run] Would upload {len(files)} file(s) to {HF_REPO_ID}/{path_in_repo_prefix}:")
+        print(f"[dry-run] Would upload {len(files)} file(s) to {repo_id}:")
         for f in files:
             rel = f.relative_to(engine_dir)
-            print(f"  {f}  →  {path_in_repo_prefix}/{rel}")
+            print(f"  {f}  →  {rel}")
         return
 
     from huggingface_hub import HfApi
@@ -154,12 +164,11 @@ def push_engine(
     msg = commit_message or f"export: upload {engine_name} ONNX artifacts"
     api.upload_folder(
         folder_path=str(engine_dir),
-        repo_id=HF_REPO_ID,
+        repo_id=repo_id,
         repo_type="model",
-        path_in_repo=path_in_repo_prefix,
         commit_message=msg,
     )
-    print(f"[push] Uploaded {len(files)} file(s) to {HF_REPO_ID}/{path_in_repo_prefix}.")
+    print(f"[push] Uploaded {len(files)} file(s) to {repo_id}.")
 
 
 # ---------------------------------------------------------------------------
