@@ -48,30 +48,38 @@ def engine_repo_id(engine_name: str) -> str:
 
 def _ensure_repo(repo_id: str, token: str, dry_run: bool) -> None:
     """Create the public per-engine HF repo if it doesn't exist."""
-    from huggingface_hub import HfApi, RepositoryNotFoundError
+    from huggingface_hub import HfApi
 
     api = HfApi(token=token)
+    repo_exists = False
     try:
         api.repo_info(repo_id=repo_id, repo_type="model")
+        repo_exists = True
         print(f"[push] HF repo {repo_id!r} exists.")
-    except RepositoryNotFoundError:
-        if dry_run:
-            print(f"[dry-run] Would create PUBLIC HF repo {repo_id!r}.")
-            return
-        api.create_repo(
-            repo_id=repo_id,
-            repo_type="model",
-            private=False,
-            exist_ok=True,
-        )
-        print(f"[push] Created PUBLIC HF repo {repo_id!r}.")
-        try:
-            from huggingface_hub import add_collection_item
-            add_collection_item(COLLECTION_SLUG, item_id=repo_id,
-                                item_type="model", exists_ok=True)
-            print(f"[push] Added {repo_id!r} to the vconnx collection.")
-        except Exception as exc:  # collection add is best-effort
-            print(f"[push] Could not add to collection: {exc}")
+    except Exception:
+        pass  # repo not found or other transient error
+
+    if repo_exists:
+        return
+
+    if dry_run:
+        print(f"[dry-run] Would create PUBLIC HF repo {repo_id!r}.")
+        return
+
+    api.create_repo(
+        repo_id=repo_id,
+        repo_type="model",
+        private=False,
+        exist_ok=True,
+    )
+    print(f"[push] Created PUBLIC HF repo {repo_id!r}.")
+    try:
+        from huggingface_hub import add_collection_item
+        add_collection_item(COLLECTION_SLUG, item_id=repo_id,
+                            item_type="model", exists_ok=True)
+        print(f"[push] Added {repo_id!r} to the vconnx collection.")
+    except Exception as exc:  # collection add is best-effort
+        print(f"[push] Could not add to collection: {exc}")
 
 
 def push_engine(
