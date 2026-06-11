@@ -351,25 +351,18 @@ can detect 40k vs 48k models automatically.
 
 ---
 
-## Weight-license policy: distributable vs local-only
+## Weight-license policy: publish with the license stated
 
-vconnx never redistributes model weights it has no right to. Two classes of
-engine, decided per-engine in its tracking issue:
+vconnx publishes every ONNX export to its public `TigreGotico/vconnx-<engine>`
+HF repo. The upstream weight license travels with the artifacts — `license`
+tag and restrictions stated plainly on the model card, upstream LICENSE file
+and PROVENANCE.md alongside. Whether a given license (NC, research-only,
+Llama-style, …) fits a use case is the downstream user's decision, not a
+publishing gate.
 
-- **distributable** — upstream license permits redistribution (MIT/Apache/
-  BSD/CC-BY): converted models are pushed to the public `TigreGotico/vconnx-<engine>` HF repo with
-  the upstream LICENSE file and PROVENANCE.md alongside; adapters download
-  them automatically.
-- **local-only-weights** — upstream license does not permit redistribution
-  (NC/ND variants, unlicensed repos) but inference and private conversion are
-  fine: the conversion script runs on YOUR machine, `write_manifest(...,
-  distributable=False)` marks the output, `push_models` refuses to upload it,
-  and the adapter loads from the local path (`model_dir` config key) instead
-  of HF. GPL upstreams additionally require the conversion script to invoke
-  the upstream repo as an external checkout (never vendor GPL code here).
-
-The engine's tracking issue carries the `local-only-weights` label when the
-second class applies.
+The one constraint that DOES bind vconnx itself is code licensing: GPL or
+Llama-style upstream **code** is never vendored into this MIT repo — those
+engines' conversion scripts drive the upstream repo as an external checkout.
 
 ## Worked example: triaan-vc
 

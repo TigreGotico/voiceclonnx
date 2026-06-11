@@ -128,9 +128,9 @@ def write_manifest(
     metadata:
         Optional free-form key/value pairs embedded in the manifest.
     distributable:
-        ``False`` for engines whose upstream weight license does not allow
-        redistribution (``local-only-weights``): the converted models stay on
-        the user's machine and ``push_models`` refuses to upload them.
+        Informational flag recording the upstream weight-license situation.
+        All exports are published either way — the model card states the
+        upstream license and downstream users judge fit for their use case.
 
     Returns
     -------
