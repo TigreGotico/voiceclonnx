@@ -204,6 +204,36 @@ Follow the contract in this guide; the per-engine issue records any deviations
 
 ---
 
+## Worked example: openvoice-v2
+
+`conversion/export_openvoice_v2.py` follows the recipe with the following notes:
+
+1. **Upstream API first, reconstructed architecture as fallback.**  The export
+   script attempts to load the full `ToneColorConverter` via the upstream
+   `openvoice.api` Python package (shipped alongside the HF weights).  If the
+   upstream package is not importable (e.g. clean environment), the script falls
+   back to a reconstructed reference encoder (6-conv-layer GE2E encoder + GRU +
+   linear) and a simplified AdaIN flow converter.  The upstream API path is
+   preferred because it matches the exact trained checkpoint.
+
+2. **Two-component manifest.**  The manifest has four entries:
+   `tone_ref_encoder`, `tone_ref_encoder_q8`, `tone_converter`,
+   `tone_converter_q8`.  The adapter selects fp32 or q8 at load time based on
+   the `quantized` flag.
+
+3. **Griffin-Lim vocoder.**  The mel → waveform step uses a pure-numpy
+   Griffin-Lim implementation (no ONNX, no torch).  This avoids a third ONNX
+   component (HiFi-GAN) while keeping the runtime dependency-free.  A neural
+   vocoder can be added as a future enhancement.
+
+4. **Sample rate 22050 Hz.**  OpenVoice v2 trains and ships at 22050 Hz; all
+   input/output audio is resampled to this rate.
+
+Run `python -m conversion.export_openvoice_v2 --output-dir /tmp/ov2-out --no-push`
+to generate parity numbers locally.
+
+---
+
 ## Worked example: knnvc
 
 `conversion/export_knnvc.py` follows this recipe exactly with two deviations:

@@ -44,8 +44,8 @@ vconnx list   # show registered engines
 |---|---|---|---|
 | `chatterbox` | `vconnx[chatterbox]` → `chatterbox_onnx` | 24 kHz | Supported |
 | `knnvc` | `vconnx[knnvc]` | 16 kHz | Supported |
+| `openvoice` | `vconnx[openvoice]` | 22 kHz | Supported |
 | `seed-vc` | — | — | Planned (see issue) |
-| `openvoice` | — | — | Planned (see issue) |
 | `rvc` | — | — | Planned (see issue) |
 
 ### knnvc
@@ -76,6 +76,35 @@ vconnx clone --engine knnvc \
 ```
 
 ONNX artifacts: `TigreGotico/vconnx-models` (private), path `knn-vc/`.
+
+### openvoice
+
+Zero-shot tone-color conversion based on
+[OpenVoice v2](https://github.com/myshell-ai/OpenVoice) (myshell-ai, MIT license).
+Architecture: reference encoder (mel → 256-dim tone-color embedding) + flow-based
+AdaIN-conditioned converter + Griffin-Lim vocoder.  MIT-licensed weights — artifacts
+distributed via `TigreGotico/vconnx-models`.
+
+```bash
+pip install "vconnx[openvoice]"
+```
+
+```python
+from vconnx import VoiceCloner
+
+cloner = VoiceCloner(engine="openvoice")
+out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
+print(cloner.sample_rate)   # 22050
+```
+
+```bash
+vconnx clone --engine openvoice \
+             --audio source.wav \
+             --voice reference.wav \
+             --out converted.wav
+```
+
+ONNX artifacts: `TigreGotico/vconnx-models` (private), path `openvoice-v2/`.
 
 ## Adding an engine
 

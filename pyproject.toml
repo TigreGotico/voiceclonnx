@@ -28,6 +28,11 @@ knnvc = [
     "numpy",
     "soundfile",
 ]
+openvoice = [
+    "onnxruntime",
+    "numpy",
+    "soundfile",
+]
 convert = [
     "torch",
     "onnx",
