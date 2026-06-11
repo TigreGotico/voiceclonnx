@@ -6,19 +6,28 @@ audio-to-audio VC path: it transplants the speaker timbre from a reference
 utterance onto a source utterance without requiring TTS text-encoders.
 
 Architecture (ONNX inference path):
-  1. **Reference encoder** (``tone_ref_encoder.onnx``) — mel-spectrogram → 256-dim
-     tone-color embedding.  Run on both source and reference audio.
-  2. **Converter** (``tone_converter.onnx``) — (source_mel, src_tone, tgt_tone) →
-     converted_mel.  A flow-based AdaIN conditioned network.
-  3. **Griffin-Lim vocoder** (pure numpy/scipy, no ONNX) — mel → waveform.
-     A lightweight alternative to a neural vocoder; optional HiFi-GAN can be
-     plugged in later as a separate component.
+  1. **Reference encoder** (``tone_ref_encoder.onnx``) -- linear spectrogram
+     ``(B, T, 513)`` -> 256-dim tone-color embedding.  Run on both source and
+     reference audio.
+  2. **Converter** (``tone_converter.onnx``) -- ``(spec[B,513,T], spec_lengths,
+     src_g[B,256,1], tgt_g[B,256,1])`` -> raw waveform ``(B, 1, samples)``.
+     A full VITS-style flow decoder with HiFi-GAN vocoder inside.  No separate
+     vocoder step needed.
 
-All neural components run via onnxruntime.  The mel extraction and Griffin-Lim
-vocoder are pure numpy — no torch at inference.
+Both components are exported from the upstream ``SynthesizerTrn`` (myshell-ai/
+OpenVoice) with strict state-dict loading -- no reconstruction.
+
+Preprocessing (pure numpy, matches upstream ``spectrogram_torch``):
+  - Hann window STFT, n_fft=1024, hop=256, win=1024
+  - Padding: (n_fft - hop) // 2 = 384 samples on each side (reflect)
+  - Magnitude: ``sqrt(Re^2 + Im^2 + 1e-6)`` (NOT log-compressed)
+  - Shape passed to ref_enc: ``(1, T, 513)``
+  - Shape passed to converter: ``(1, 513, T)``
+
+All neural components run via onnxruntime.  The STFT is pure numpy.
 
 Requires: ``pip install vconnx[openvoice]``
-  → onnxruntime, numpy, soundfile
+  -> onnxruntime, numpy, soundfile
 
 References
 ----------
@@ -47,100 +56,59 @@ _REF_ENC_FP32 = "tone_ref_encoder.onnx"
 _REF_ENC_INT8 = "tone_ref_encoder_q8.onnx"
 _CONVERTER_FP32 = "tone_converter.onnx"
 _CONVERTER_INT8 = "tone_converter_q8.onnx"
-_CONFIG = "openvoice-v2/config.json"
 
-# Mel-spectrogram parameters matching OpenVoice v2 training config
-_N_MELS = 80
-_SAMPLE_RATE = _OV2_SR
+# STFT parameters matching upstream mel_processing.spectrogram_torch
+_N_FFT = 1024
 _HOP_LENGTH = 256
 _WIN_LENGTH = 1024
-_N_FFT = 1024
-_F_MIN = 0.0
-_F_MAX = 8000.0
+_SPEC_CHANNELS = 513  # n_fft // 2 + 1
+
+# Tone-color embedding dimension
+_TONE_DIM = 256
 
 
 # ---------------------------------------------------------------------------
-# Mel-spectrogram extraction (pure numpy / scipy)
+# Linear spectrogram extraction (pure numpy, matches upstream spectrogram_torch)
 # ---------------------------------------------------------------------------
 
 
-def _stft(audio: np.ndarray, n_fft: int, hop_length: int, win_length: int) -> np.ndarray:
-    """Compute magnitude STFT spectrogram using numpy.
-
-    Returns
-    -------
-    np.ndarray
-        Magnitude spectrogram of shape (n_fft//2+1, frames), float32.
-    """
-    window = np.hanning(win_length).astype(np.float32)
-    # Pad to centre first frame
-    pad = n_fft // 2
-    audio = np.pad(audio, pad, mode="reflect")
-
-    n_frames = 1 + (len(audio) - n_fft) // hop_length
-    frames = np.stack(
-        [audio[i * hop_length: i * hop_length + n_fft] for i in range(n_frames)],
-        axis=0,
-    )  # (n_frames, n_fft)
-
-    # Zero-pad window to n_fft if win_length < n_fft
-    if win_length < n_fft:
-        pad_len = (n_fft - win_length) // 2
-        window = np.pad(window, (pad_len, n_fft - win_length - pad_len))
-
-    windowed = frames * window[np.newaxis, :]
-    spec = np.fft.rfft(windowed, n=n_fft, axis=1)  # (n_frames, n_fft//2+1)
-    return np.abs(spec).T.astype(np.float32)  # (bins, frames)
-
-
-def _mel_filterbank(sr: int, n_fft: int, n_mels: int, f_min: float, f_max: float) -> np.ndarray:
-    """Build a mel filterbank matrix (n_mels, n_fft//2+1), float32."""
-    def _hz_to_mel(hz):
-        return 2595.0 * np.log10(1.0 + hz / 700.0)
-
-    def _mel_to_hz(mel):
-        return 700.0 * (10.0 ** (mel / 2595.0) - 1.0)
-
-    n_bins = n_fft // 2 + 1
-    mel_min = _hz_to_mel(f_min)
-    mel_max = _hz_to_mel(f_max)
-    mel_points = np.linspace(mel_min, mel_max, n_mels + 2)
-    hz_points = _mel_to_hz(mel_points)
-    bin_points = np.floor((n_fft + 1) * hz_points / sr).astype(int)
-
-    fb = np.zeros((n_mels, n_bins), dtype=np.float32)
-    for m in range(1, n_mels + 1):
-        lo, ctr, hi = bin_points[m - 1], bin_points[m], bin_points[m + 1]
-        for k in range(lo, ctr):
-            if ctr > lo:
-                fb[m - 1, k] = (k - lo) / (ctr - lo)
-        for k in range(ctr, hi):
-            if hi > ctr:
-                fb[m - 1, k] = (hi - k) / (hi - ctr)
-    return fb
-
-
-def _compute_mel(
+def _compute_linear_spec(
     audio: np.ndarray,
-    sr: int = _SAMPLE_RATE,
-    n_mels: int = _N_MELS,
     n_fft: int = _N_FFT,
     hop_length: int = _HOP_LENGTH,
     win_length: int = _WIN_LENGTH,
-    f_min: float = _F_MIN,
-    f_max: float = _F_MAX,
 ) -> np.ndarray:
-    """Compute log-mel spectrogram from a float32 mono waveform.
+    """Compute linear magnitude spectrogram matching upstream ``spectrogram_torch``.
+
+    Upstream applies padding ``(n_fft - hop_size) / 2`` on each side (reflect),
+    then ``sqrt(Re^2 + Im^2 + 1e-6)``.
+
+    Parameters
+    ----------
+    audio:
+        Float32 mono waveform.
 
     Returns
     -------
     np.ndarray
-        Shape (n_mels, frames), float32 log-mel.
+        Shape ``(spec_channels, T)`` float32, where
+        ``spec_channels = n_fft // 2 + 1 = 513``.
     """
-    mag = _stft(audio, n_fft=n_fft, hop_length=hop_length, win_length=win_length)
-    fb = _mel_filterbank(sr, n_fft, n_mels, f_min, f_max)
-    mel = np.maximum(fb @ mag, 1e-10)
-    return np.log(mel).astype(np.float32)
+    pad = (n_fft - hop_length) // 2  # 384
+    audio_padded = np.pad(audio, pad, mode="reflect")
+
+    window = np.hanning(win_length).astype(np.float32)
+
+    n_frames = 1 + (len(audio_padded) - n_fft) // hop_length
+    frames = np.stack(
+        [audio_padded[i * hop_length: i * hop_length + n_fft] for i in range(n_frames)],
+        axis=0,
+    )  # (n_frames, n_fft)
+
+    windowed = frames * window[np.newaxis, :]
+    spec_cplx = np.fft.rfft(windowed, n=n_fft, axis=1)  # (n_frames, n_fft//2+1)
+    mag = np.sqrt(spec_cplx.real ** 2 + spec_cplx.imag ** 2 + 1e-6)
+    return mag.T.astype(np.float32)  # (513, n_frames)
 
 
 # ---------------------------------------------------------------------------
@@ -176,104 +144,6 @@ def _save_wav(path: str, audio: np.ndarray, sr: int) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Griffin-Lim vocoder (mel → waveform, pure numpy)
-# ---------------------------------------------------------------------------
-
-
-def _griffin_lim(
-    mel: np.ndarray,
-    sr: int = _SAMPLE_RATE,
-    n_fft: int = _N_FFT,
-    hop_length: int = _HOP_LENGTH,
-    win_length: int = _WIN_LENGTH,
-    n_iter: int = 32,
-    f_min: float = _F_MIN,
-    f_max: float = _F_MAX,
-) -> np.ndarray:
-    """Reconstruct waveform from a log-mel spectrogram via Griffin-Lim.
-
-    Parameters
-    ----------
-    mel:
-        (n_mels, T) log-mel spectrogram.
-
-    Returns
-    -------
-    np.ndarray
-        (samples,) float32 waveform.
-    """
-    # Invert log-mel to linear mel
-    mel_lin = np.exp(mel).astype(np.float32)
-
-    # Invert mel filterbank: pseudo-inverse projection back to STFT bins
-    fb = _mel_filterbank(sr, n_fft, mel.shape[0], f_min, f_max)
-    # fb shape: (n_mels, n_bins); pseudo-inverse: (n_bins, n_mels)
-    fb_pinv = np.linalg.pinv(fb).astype(np.float32)
-    spec_mag = np.maximum(fb_pinv @ mel_lin, 0.0)  # (n_bins, T)
-
-    n_frames = spec_mag.shape[1]
-    n_bins = n_fft // 2 + 1
-    window = np.hanning(win_length).astype(np.float32)
-    if win_length < n_fft:
-        pad_len = (n_fft - win_length) // 2
-        window = np.pad(window, (pad_len, n_fft - win_length - pad_len))
-
-    # Initialise with random phases
-    angles = np.exp(2j * np.pi * np.random.uniform(size=(n_bins, n_frames))).astype(np.complex64)
-
-    for _ in range(n_iter):
-        # Build complex spectrum from magnitude + current angles
-        spec_complex = spec_mag * angles  # (n_bins, T)
-        # iSTFT: synthesise waveform from each frame
-        n_out = n_fft + hop_length * (n_frames - 1)
-        audio = np.zeros(n_out, dtype=np.float32)
-        win_sq = np.zeros(n_out, dtype=np.float32)
-
-        for i in range(n_frames):
-            frame_complex = spec_complex[:, i]
-            # Real part of irfft
-            frame = np.fft.irfft(frame_complex, n=n_fft).real.astype(np.float32)
-            start = i * hop_length
-            audio[start: start + n_fft] += frame * window
-            win_sq[start: start + n_fft] += window ** 2
-
-        # Normalise by synthesis window
-        win_sq = np.maximum(win_sq, 1e-8)
-        audio /= win_sq
-
-        # Re-analyse to update phases
-        # Trim to avoid padding artifact
-        audio_trim = audio[n_fft // 2: n_fft // 2 + n_frames * hop_length]
-        audio_padded = np.pad(audio_trim, n_fft // 2, mode="reflect")
-        frames = np.stack(
-            [audio_padded[i * hop_length: i * hop_length + n_fft] for i in range(n_frames)],
-            axis=0,
-        )
-        windowed = frames * window[np.newaxis, :]
-        spec_new = np.fft.rfft(windowed, n=n_fft, axis=1).T.astype(np.complex64)
-        mag_new = np.abs(spec_new)
-        angles = np.where(mag_new > 1e-10, spec_new / mag_new, angles)
-
-    # Final synthesis from last iteration's angles
-    spec_final = spec_mag * angles
-    n_out = n_fft + hop_length * (n_frames - 1)
-    audio_out = np.zeros(n_out, dtype=np.float32)
-    win_sq_out = np.zeros(n_out, dtype=np.float32)
-    for i in range(n_frames):
-        frame = np.fft.irfft(spec_final[:, i], n=n_fft).real.astype(np.float32)
-        start = i * hop_length
-        audio_out[start: start + n_fft] += frame * window
-        win_sq_out[start: start + n_fft] += window ** 2
-    win_sq_out = np.maximum(win_sq_out, 1e-8)
-    audio_out /= win_sq_out
-
-    # Trim to approximate original length
-    trim = n_fft // 2
-    audio_out = audio_out[trim: trim + n_frames * hop_length]
-    return audio_out.astype(np.float32)
-
-
-# ---------------------------------------------------------------------------
 # Adapter
 # ---------------------------------------------------------------------------
 
@@ -281,13 +151,14 @@ def _griffin_lim(
 class OpenVoiceV2Adapter(VoiceClonerBase):
     """Voice-cloning adapter backed by OpenVoice v2 ONNX models.
 
+    The reference encoder and voice-conversion models are exported from the
+    upstream ``SynthesizerTrn`` (myshell-ai/OpenVoice) with strict state-dict
+    loading.  The converter outputs raw waveform directly -- no separate vocoder.
+
     Parameters
     ----------
     quantized:
         Use INT8 quantized ONNX models (default ``False``).
-    gl_iters:
-        Griffin-Lim iterations for vocoding (default 32).  More iterations
-        improve quality at the cost of latency.
     **cfg:
         Additional keyword arguments stored but not used.
     """
@@ -297,12 +168,10 @@ class OpenVoiceV2Adapter(VoiceClonerBase):
     def __init__(
         self,
         quantized: bool = False,
-        gl_iters: int = 32,
         **cfg,
     ):
         super().__init__(**cfg)
         self._quantized = quantized
-        self._gl_iters = gl_iters
         self._ref_enc_sess = None
         self._converter_sess = None
 
@@ -362,43 +231,13 @@ class OpenVoiceV2Adapter(VoiceClonerBase):
         Returns
         -------
         np.ndarray
-            Shape (1, 256) tone-color embedding.
+            Shape ``(1, 256)`` tone-color embedding.
         """
         self._ensure_models()
-        mel = _compute_mel(audio)              # (n_mels, T)
-        mel_batch = mel[np.newaxis, :, :]      # (1, n_mels, T)
-        out = self._ref_enc_sess.run(None, {"mel": mel_batch})
+        spec = _compute_linear_spec(audio)           # (513, T)
+        spec_t = spec.T[np.newaxis, :, :]            # (1, T, 513) for ref_enc
+        out = self._ref_enc_sess.run(None, {"spec": spec_t})
         return out[0]  # (1, 256)
-
-    def _convert(
-        self,
-        src_mel: np.ndarray,
-        src_tone: np.ndarray,
-        tgt_tone: np.ndarray,
-    ) -> np.ndarray:
-        """Run the converter ONNX model.
-
-        Parameters
-        ----------
-        src_mel : (1, n_mels, T) float32
-        src_tone : (1, 256) float32
-        tgt_tone : (1, 256) float32
-
-        Returns
-        -------
-        np.ndarray
-            Converted mel (1, n_mels, T) float32.
-        """
-        self._ensure_models()
-        out = self._converter_sess.run(
-            None,
-            {
-                "mel": src_mel,
-                "src_tone": src_tone,
-                "tgt_tone": tgt_tone,
-            },
-        )
-        return out[0]  # (1, n_mels, T)
 
     # ------------------------------------------------------------------
     # Public API
@@ -429,22 +268,31 @@ class OpenVoiceV2Adapter(VoiceClonerBase):
         src_wav = _load_wav(str(audio), target_sr=_OV2_SR)
         ref_wav = _load_wav(str(reference_voice), target_sr=_OV2_SR)
 
-        # Extract tone-color embeddings from both utterances
+        # Extract tone-color embeddings
         src_tone = self._extract_tone_embedding(src_wav)   # (1, 256)
         tgt_tone = self._extract_tone_embedding(ref_wav)   # (1, 256)
 
-        # Compute source mel
-        src_mel = _compute_mel(src_wav)[np.newaxis, :, :]  # (1, n_mels, T)
+        # Compute source linear spectrogram for the converter
+        src_spec = _compute_linear_spec(src_wav)           # (513, T)
+        src_spec_batch = src_spec[np.newaxis, :, :]        # (1, 513, T)
+        T = src_spec.shape[1]
 
-        # Run converter
-        converted_mel = self._convert(src_mel, src_tone, tgt_tone)  # (1, n_mels, T)
+        # Add trailing dim for tone embeddings: (1, 256, 1)
+        src_g = src_tone[:, :, np.newaxis]                 # (1, 256, 1)
+        tgt_g = tgt_tone[:, :, np.newaxis]                 # (1, 256, 1)
 
-        # Vocode mel → waveform via Griffin-Lim
-        waveform = _griffin_lim(
-            converted_mel[0],  # (n_mels, T)
-            sr=_OV2_SR,
-            n_iter=self._gl_iters,
+        # Run converter -> raw waveform (1, 1, samples)
+        self._ensure_models()
+        ort_out = self._converter_sess.run(
+            None,
+            {
+                "spec": src_spec_batch,
+                "spec_lengths": np.array([T], dtype=np.int64),
+                "src_g": src_g,
+                "tgt_g": tgt_g,
+            },
         )
+        waveform = ort_out[0][0, 0]  # (samples,) float32
 
         out_path = str(Path(out_path).resolve())
         _save_wav(out_path, waveform, sr=_OV2_SR)
@@ -460,9 +308,9 @@ register_engine(
         alias="openvoice",
         adapter_class=OpenVoiceV2Adapter,
         description=(
-            "OpenVoice v2 tone-color converter: reference encoder (mel → 256-dim "
-            "tone-color embedding) + flow-based converter (AdaIN conditioned) + "
-            "Griffin-Lim vocoder.  Zero-shot any-to-any VC at 22050 Hz. "
+            "OpenVoice v2 tone-color converter: reference encoder (linear spec -> "
+            "256-dim tone-color embedding) + VITS-style flow with HiFi-GAN vocoder. "
+            "Zero-shot any-to-any VC at 22050 Hz. "
             "ONNX artifacts from TigreGotico/vconnx-openvoice-v2. "
             "(myshell-ai/OpenVoice, MIT license)"
         ),
