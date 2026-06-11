@@ -3,9 +3,10 @@
 OpenVoice v2 tone-color converter (myshell-ai/OpenVoice, MIT license).
 
 Architecture:
-1. **Reference encoder** (`tone_ref_encoder.onnx`) — mel-spectrogram → 256-dim tone-color embedding. Run on both source and reference audio.
-2. **Converter** (`tone_converter.onnx`) — (source_mel, src_tone, tgt_tone) → converted_mel. A flow-based AdaIN-conditioned network.
-3. **Griffin-Lim vocoder** (pure numpy) — mel → waveform. Lightweight alternative to a neural vocoder; no extra ONNX model needed.
+1. **Reference encoder** (`tone_ref_encoder.onnx`) — linear magnitude spectrogram `(B, T, 513)` → 256-dim tone-color embedding. Run on both source and reference audio.
+2. **Converter** (`tone_converter.onnx`) — `(spec, spec_lengths, src_tone, tgt_tone)` → waveform. The full upstream VITS-style flow decoder with the HiFi-GAN vocoder inside the graph — audio comes straight out of the session; no separate vocoder step.
+
+Preprocessing is pure numpy and matches upstream `spectrogram_torch` (513-bin linear magnitude, `sqrt(Re²+Im²+1e-6)`).
 
 All neural components run via onnxruntime. Mel extraction and Griffin-Lim vocoder are
 pure numpy — no torch at inference.
