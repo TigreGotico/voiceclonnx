@@ -20,6 +20,7 @@ pip install vconnx                    # core (no engine)
 pip install "vconnx[chatterbox]"      # Chatterbox AR codec-LM (default)
 pip install "vconnx[knnvc]"           # kNN-VC — WavLM + HiFi-GAN
 pip install "vconnx[openvoice]"       # OpenVoice v2 tone-color converter
+pip install "vconnx[rvc]"             # RVC any-to-one (community voice models)
 ```
 
 ---
