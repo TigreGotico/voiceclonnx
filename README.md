@@ -18,6 +18,7 @@ libraries for that.
 ```bash
 pip install vconnx                    # core (no engine)
 pip install "vconnx[chatterbox]"      # Chatterbox AR codec-LM (default)
+pip install "vconnx[freevc]"          # FreeVC — WavLM + VITS decoder
 pip install "vconnx[knnvc]"           # kNN-VC — WavLM + HiFi-GAN
 pip install "vconnx[openvoice]"       # OpenVoice v2 tone-color converter
 pip install "vconnx[rvc]"             # RVC any-to-one (community voice models)
@@ -65,6 +66,7 @@ vconnx list
 | Alias | Install extra | Sample rate | Model repo | License |
 |---|---|---|---|---|
 | `chatterbox` | `vconnx[chatterbox]` | 24 kHz | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | See upstream |
+| `freevc` | `vconnx[freevc]` | 16 kHz | [TigreGotico/vconnx-freevc](https://huggingface.co/TigreGotico/vconnx-freevc) | MIT |
 | `knnvc` | `vconnx[knnvc]` | 16 kHz | [TigreGotico/vconnx-knn-vc](https://huggingface.co/TigreGotico/vconnx-knn-vc) | MIT |
 | `openvoice` | `vconnx[openvoice]` | 22 kHz | [TigreGotico/vconnx-openvoice-v2](https://huggingface.co/TigreGotico/vconnx-openvoice-v2) | MIT |
 | `rvc` | `vconnx[rvc]` | 40/48 kHz (per voice model) | [TigreGotico/vconnx-rvc](https://huggingface.co/TigreGotico/vconnx-rvc) | MIT |
@@ -129,6 +131,7 @@ See [docs/api.md](docs/api.md) for the full API reference.
 - [docs/index.md](docs/index.md) — overview, install matrix, engine table
 - [docs/api.md](docs/api.md) — VoiceCloner facade, VoiceClonerBase, registry
 - [docs/engines/chatterbox.md](docs/engines/chatterbox.md) — config keys, troubleshooting
+- [docs/engines/freevc.md](docs/engines/freevc.md) — config keys, model sizes, WavLM note, troubleshooting
 - [docs/engines/knnvc.md](docs/engines/knnvc.md) — config keys, model sizes, troubleshooting
 - [docs/engines/openvoice.md](docs/engines/openvoice.md) — config keys, mel params, troubleshooting
 - [docs/converting.md](docs/converting.md) — ONNX export / parity / quantize / push toolchain

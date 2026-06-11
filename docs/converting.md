@@ -363,3 +363,56 @@ publishing gate.
 The one constraint that DOES bind vconnx itself is code licensing: GPL or
 Llama-style upstream **code** is never vendored into this MIT repo — those
 engines' conversion scripts drive the upstream repo as an external checkout.
+
+---
+
+## Worked example: freevc
+
+`conversion/export_freevc.py` follows the recipe with the following notes:
+
+1. **Architecture fully reconstructed — no upstream repo checkout required.**
+   All FreeVC modules (`WN`, `ResBlock1`, `ResidualCouplingLayer`, `Flip`,
+   `Generator`, `SynthesizerTrn`) are reconstructed inline in the export script.
+   The `freevc.pth` checkpoint is loaded from the OpenVINO notebooks model mirror
+   (MIT); the speaker encoder from the FreeVC HF Space.
+
+2. **Three-component manifest.**  The manifest has six entries (fp32 + INT8 for
+   each): `wavlm_encoder`, `speaker_encoder`, `decoder`.
+
+3. **WavLM extraction differs from kNN-VC.**  FreeVC calls
+   `extract_features()[0]` which returns `last_hidden_state` — the transformer's
+   full final output — not any specific intermediate layer.  `wavlm_freevc.onnx`
+   is a separate export from kNN-VC's `wavlm_layer6.onnx` and the two cannot be
+   substituted.
+
+4. **Deterministic infer path.**  The prior encoder `enc_p` normally samples
+   `z_p = m_p + ε·exp(logs_p)` (stochastic VITS training path).  At inference the
+   mean `m_p` is used directly, matching standard VITS inference practice and
+   making the forward pass deterministic for ONNX parity testing.
+
+5. **Speaker encoder extra keys.**  The `pretrained_bak_5805000.pt` checkpoint
+   contains `similarity_weight` / `similarity_bias` keys (GE2E training head);
+   these are not used at inference and loaded with `strict=False`.
+
+6. **Sample rate 16 kHz.**  The available checkpoint (`freevc.pth`) is the
+   standard FreeVC variant trained at 16 kHz.  FreeVC-24 (24 kHz) checkpoint
+   was not publicly available at export time.
+
+**Parity results (fp32):**
+
+| Component | max_abs | mean_abs | Pass |
+|---|---|---|---|
+| WavLM-Large last_hidden_state | 4.05e-05 | 3.96e-06 | ✓ |
+| Speaker encoder embedding | 2.53e-07 | 3.80e-08 | ✓ |
+| VITS decoder waveform | 6.80e-06 | 4.48e-07 | ✓ |
+
+**Model sizes:**
+
+| File | Size |
+|---|---|
+| `wavlm_freevc.onnx` (fp32) | 1204.4 MB |
+| `wavlm_freevc_q8.onnx` (INT8) | 303.5 MB (74.8% reduction) |
+| `speaker_encoder.onnx` (fp32) | 5.4 MB |
+| `speaker_encoder_q8.onnx` (INT8) | 1.4 MB (74.5% reduction) |
+| `freevc_decoder.onnx` (fp32) | 116.4 MB |
+| `freevc_decoder_q8.onnx` (INT8) | 37.3 MB (68.0% reduction) |
