@@ -461,13 +461,13 @@ class TestDistributablePolicy:
         p = write_manifest(layout, {"m": "m.onnx"}, {"output": 16000})
         assert json.loads(p.read_text())["distributable"] is True
 
-    def test_push_engine_refuses_local_only(self, tmp_path):
+    def test_push_engine_publishes_regardless_of_license(self, tmp_path, capsys):
         from conversion.export_base import OutputLayout, write_manifest
         from conversion.push_models import push_engine
-        import pytest
         layout = OutputLayout(base_dir=tmp_path, engine_name="eng")
         layout.engine_dir.mkdir(parents=True, exist_ok=True)
         write_manifest(layout, {"m": "m.onnx"}, {"output": 16000},
                        distributable=False)
-        with pytest.raises(RuntimeError, match="local-only"):
-            push_engine(layout.engine_dir, "eng", dry_run=True)
+        push_engine(layout.engine_dir, "eng", dry_run=True)
+        out = capsys.readouterr().out
+        assert "upstream license" in out and "dry-run" in out

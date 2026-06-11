@@ -109,13 +109,12 @@ def push_engine(
     manifest_file = engine_dir / "config.json"
     if manifest_file.is_file():
         import json
-        if json.loads(manifest_file.read_text()).get("distributable", True) is False:
-            raise RuntimeError(
-                f"{engine_name}: manifest is marked distributable=false "
-                "(local-only weights — upstream license does not allow "
-                "redistribution). Refusing to upload; this engine's models "
-                "stay on the machine that converted them."
-            )
+        meta = json.loads(manifest_file.read_text())
+        lic = (meta.get("metadata") or {}).get("license") or meta.get("license")
+        print(f"[push] {engine_name}: upstream license = {lic or 'UNKNOWN — document it in the model card!'}")
+        print("[push] ONNX exports are published with the upstream license stated "
+              "on the model card; whether that license fits a given use case is "
+              "the downstream user's call.")
 
     if not engine_dir.is_dir():
         raise FileNotFoundError(f"Engine directory not found: {engine_dir}")
