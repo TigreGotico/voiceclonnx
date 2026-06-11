@@ -20,6 +20,7 @@ pip install vconnx                    # core (no engine)
 pip install "vconnx[chatterbox]"      # Chatterbox AR codec-LM (default)
 pip install "vconnx[knnvc]"           # kNN-VC — WavLM + HiFi-GAN
 pip install "vconnx[openvoice]"       # OpenVoice v2 tone-color converter
+pip install "vconnx[rvc]"             # RVC any-to-one (community voice models)
 ```
 
 ---
@@ -66,6 +67,49 @@ vconnx list
 | `chatterbox` | `vconnx[chatterbox]` | 24 kHz | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | See upstream |
 | `knnvc` | `vconnx[knnvc]` | 16 kHz | [TigreGotico/vconnx-knn-vc](https://huggingface.co/TigreGotico/vconnx-knn-vc) | MIT |
 | `openvoice` | `vconnx[openvoice]` | 22 kHz | [TigreGotico/vconnx-openvoice-v2](https://huggingface.co/TigreGotico/vconnx-openvoice-v2) | MIT |
+| `rvc` | `vconnx[rvc]` | 40/48 kHz (per voice model) | [TigreGotico/vconnx-rvc](https://huggingface.co/TigreGotico/vconnx-rvc) | MIT |
+
+### rvc
+
+Any-to-ONE voice conversion based on
+[RVC](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI)
+(RVC-Project, MIT license).  Architecture: ContentVec-768 encoder → RMVPE
+pitch estimator → VITS-based synthesizer (``net_g``).  **Any-to-ONE**: the
+target speaker is baked into the voice model; thousands of community-trained
+voices are available on Hugging Face.
+
+**Semantics note:** ``reference_voice`` is the **path to an RVC voice model**
+(local ``.onnx`` or HF repo ID ``owner/repo``), not a reference audio file.
+The target speaker identity is encoded in the model weights.  Use
+``default_model`` in the constructor to set a fallback.
+
+```bash
+pip install "vconnx[rvc]"
+```
+
+```python
+from vconnx import VoiceCloner
+
+# reference_voice = path to RVC .onnx voice model, NOT audio
+cloner = VoiceCloner(engine="rvc")
+out = cloner.clone_voice("source.wav", "/path/to/myvoice.onnx", "out.wav")
+print(cloner.sample_rate)   # 40000 (v2 40k) or 48000 (v2 48k)
+```
+
+```bash
+vconnx clone --engine rvc \
+             --audio source.wav \
+             --voice /path/to/myvoice.onnx \
+             --out converted.wav
+```
+
+Base ONNX artifacts (ContentVec + RMVPE): [`TigreGotico/vconnx-rvc`](https://huggingface.co/TigreGotico/vconnx-rvc) (public, MIT).
+
+Convert a community ``.pth`` voice model to ONNX:
+
+```bash
+python -m conversion.convert_rvc_model myvoice.pth myvoice.onnx
+```
 
 ---
 

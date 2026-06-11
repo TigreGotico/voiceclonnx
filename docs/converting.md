@@ -271,6 +271,86 @@ to generate parity numbers locally.
 | `hifigan_knnvc.onnx` (fp32) | 63.1 MB |
 | `hifigan_knnvc_q8.onnx` (INT8) | 25.1 MB (60% reduction) |
 
+---
+
+## Worked example: rvc
+
+`conversion/export_rvc.py` exports the two shared base models (ContentVec encoder
+and RMVPE F0 predictor).  Per-voice ``net_g`` synthesizers are exported separately
+via `conversion/convert_rvc_model.py`.
+
+### Any-to-ONE semantics
+
+RVC is **any-to-ONE**: the target speaker is baked into the voice model at training
+time.  The vconnx adapter's ``reference_voice`` parameter accepts the **path to an
+RVC ``.onnx`` model** or a Hugging Face repo ID — never a reference audio file.
+This is documented in the adapter docstring and README.  Config key: ``default_model``.
+
+### Two-step export
+
+1. **Base models** (shared, one-time):
+
+```bash
+python -m conversion.export_rvc --output-dir /tmp/rvc-out --no-push
+```
+
+Produces ``contentvec_768l12.onnx`` + ``rmvpe.onnx`` (+ INT8 variants).
+
+2. **Per-voice models** (once per community .pth file):
+
+```bash
+python -m conversion.convert_rvc_model myvoice.pth myvoice.onnx \
+    --parity-report myvoice_parity.json
+```
+
+The helper embeds ``sample_rate`` in the ONNX model metadata so the adapter
+can detect 40k vs 48k models automatically.
+
+### Architecture notes
+
+1. **ContentVec via HuBERT architecture.**  ContentVec is a HuBERT-base model
+   fine-tuned for content disentanglement.  The export loads it via the
+   ``transformers.HubertModel`` class; the community checkpoint
+   (``Politrees/RVC_resources / pretrained/hubert_base.pt``) is MIT-licensed.
+
+2. **RMVPE reconstruction.**  RMVPE (yxlllc/RMVPE, MIT) uses a DeepUnet
+   architecture.  The export script reconstructs the architecture from scratch
+   (same pattern as the kNN-VC HiFi-GAN) and loads the checkpoint from
+   ``lj1995/VoiceConversionWebUI / rmvpe.pt``.  If the upstream ``infer_pack``
+   package is importable (RVC WebUI checked out), the exact architecture is used
+   instead.
+
+3. **net_g (per-voice).**  The export script tries ``infer_pack.models`` first
+   (exact upstream architecture); falls back to a minimal self-contained
+   reconstruction with the same I/O contract when the WebUI is not installed.
+   Partial weight loading is expected for the fallback path.
+
+4. **Three-component pipeline.**  ContentVec and RMVPE are shared across all
+   voices; only ``net_g`` is voice-specific.  The adapter lazy-loads the
+   correct ``net_g`` per ``reference_voice`` call and caches it.
+
+5. **Sample rate is model-specific.**  RVC v2 models come in 40k and 48k
+   variants.  The adapter reads ``sample_rate`` from ONNX model metadata when
+   present; otherwise defaults to 40000 Hz.
+
+**Parity results (fp32, export_rvc.py on synthetic input):**
+
+| Component | max_abs | mean_abs | Pass |
+|---|---|---|---|
+| ContentVec hidden states (fp32 torch vs ORT) | 8.46e-06 | 1.07e-06 | ✓ |
+| RMVPE (community ONNX, smoke-check only — no torch reference) | n/a | n/a | ✓ |
+
+**Model sizes (from local export run):**
+
+| File | Size |
+|---|---|
+| `contentvec_768l12.onnx` (fp32) | 360.3 MB |
+| `contentvec_768l12_q8.onnx` (INT8) | 90.8 MB (74.8% reduction) |
+| `rmvpe.onnx` (fp32, community ONNX) | 344.9 MB |
+| `rmvpe_q8.onnx` (INT8) | 94.1 MB (72.7% reduction) |
+
+---
+
 ## Weight-license policy: distributable vs local-only
 
 vconnx never redistributes model weights it has no right to. Two classes of

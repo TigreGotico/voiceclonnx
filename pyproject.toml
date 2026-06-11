@@ -33,6 +33,12 @@ openvoice = [
     "numpy",
     "soundfile",
 ]
+rvc = [
+    "onnxruntime",
+    "numpy",
+    "soundfile",
+    "librosa",
+]
 convert = [
     "torch",
     "onnx",
