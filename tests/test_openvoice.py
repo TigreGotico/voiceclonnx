@@ -1,12 +1,11 @@
-"""Tests for the OpenVoice v2 adapter — vconnx/engines/openvoice.py.
+"""Tests for the OpenVoice v2 adapter -- vconnx/engines/openvoice.py.
 
 Structure
 ---------
 - Registry wiring (no model loading)
-- Mel-spectrogram / STFT helpers — real computation, pure numpy
-- Griffin-Lim vocoder — output shape and energy sanity checks
+- Linear spectrogram helper -- real computation, pure numpy
 - Mock-session contract tests (full adapter pipeline with stubbed ORT)
-- skipif-gated e2e: real conversion using edge-tts generated audio
+- skipif-gated e2e: real conversion using the real ONNX models
 """
 
 from __future__ import annotations
@@ -44,7 +43,7 @@ def _make_wav(path: str, duration_s: float = 1.0, sr: int = 22050) -> str:
 
 
 def test_openvoice_registered():
-    import vconnx.engines.openvoice  # noqa: F401 — trigger registration
+    import vconnx.engines.openvoice  # noqa: F401 -- trigger registration
     from vconnx.engines.base import ENGINE_REGISTRY
 
     assert "openvoice" in ENGINE_REGISTRY
@@ -78,135 +77,74 @@ def test_openvoice_quantized_flag_stored():
 
 
 # ---------------------------------------------------------------------------
-# 2. Mel / STFT helpers — real computation on synthetic signals
+# 2. Linear spectrogram helper -- real computation on synthetic signals
 # ---------------------------------------------------------------------------
 
 
-def test_stft_output_shape():
-    from vconnx.engines.openvoice import _stft
+def test_compute_linear_spec_shape():
+    from vconnx.engines.openvoice import _compute_linear_spec
 
     audio = np.zeros(22050, dtype=np.float32)
-    spec = _stft(audio, n_fft=1024, hop_length=256, win_length=1024)
-    # Expected bins: n_fft//2+1 = 513
-    assert spec.shape[0] == 513
-    # Frames: roughly sr/hop
+    spec = _compute_linear_spec(audio)
+    assert spec.shape[0] == 513, f"Expected 513 freq bins, got {spec.shape[0]}"
     assert spec.shape[1] > 0
     assert spec.dtype == np.float32
 
 
-def test_stft_sine_energy():
-    """STFT of a pure tone should have energy concentrated at the tone frequency."""
-    from vconnx.engines.openvoice import _stft
+def test_compute_linear_spec_positive():
+    """Magnitude spectrogram must be positive (sqrt of sum of squares + eps)."""
+    from vconnx.engines.openvoice import _compute_linear_spec
+
+    rng = np.random.default_rng(42)
+    audio = rng.uniform(-0.5, 0.5, 22050).astype(np.float32)
+    spec = _compute_linear_spec(audio)
+    assert (spec > 0).all(), "Linear spec has non-positive values"
+
+
+def test_compute_linear_spec_finite():
+    from vconnx.engines.openvoice import _compute_linear_spec
+
+    audio = np.zeros(22050, dtype=np.float32)
+    spec = _compute_linear_spec(audio)
+    assert np.isfinite(spec).all()
+
+
+def test_compute_linear_spec_sine_energy():
+    """Sine wave should concentrate energy at the tone frequency bin."""
+    from vconnx.engines.openvoice import _compute_linear_spec
 
     sr = 22050
     freq = 440.0
-    n = sr  # 1 second
-    t = np.linspace(0, 1.0, n, endpoint=False)
+    n_fft = 1024
+    t = np.linspace(0, 1.0, sr, endpoint=False)
     audio = np.sin(2 * np.pi * freq * t).astype(np.float32)
 
-    spec = _stft(audio, n_fft=1024, hop_length=256, win_length=1024)
-    # Find bin with most energy
+    spec = _compute_linear_spec(audio)  # (513, T)
     energy_per_bin = spec.sum(axis=1)
     peak_bin = int(np.argmax(energy_per_bin))
-    # Expected bin for 440 Hz: 440 / (sr/n_fft) = 440 * 1024 / 22050 ≈ 20
-    expected_bin = int(round(freq * 1024 / sr))
+    expected_bin = int(round(freq * n_fft / sr))
     assert abs(peak_bin - expected_bin) <= 2, (
         f"Peak energy at bin {peak_bin}, expected ~{expected_bin} for {freq} Hz"
     )
 
 
-def test_mel_filterbank_shape():
-    from vconnx.engines.openvoice import _mel_filterbank
-
-    fb = _mel_filterbank(sr=22050, n_fft=1024, n_mels=80, f_min=0.0, f_max=8000.0)
-    assert fb.shape == (80, 513)
-    assert fb.dtype == np.float32
-    # All values non-negative
-    assert (fb >= 0).all()
-
-
-def test_mel_filterbank_sums_to_positive():
-    """Each mel filter must have at least one positive weight."""
-    from vconnx.engines.openvoice import _mel_filterbank
-
-    fb = _mel_filterbank(sr=22050, n_fft=1024, n_mels=80, f_min=0.0, f_max=8000.0)
-    row_sums = fb.sum(axis=1)
-    assert (row_sums > 0).all(), "Some mel filters have zero weight"
-
-
-def test_compute_mel_shape():
-    from vconnx.engines.openvoice import _compute_mel
-
-    audio = np.zeros(22050, dtype=np.float32)
-    mel = _compute_mel(audio)
-    assert mel.shape[0] == 80
-    assert mel.shape[1] > 0
-    assert mel.dtype == np.float32
-
-
-def test_compute_mel_finite_values():
-    """Log-mel of silence should produce finite values (not -inf)."""
-    from vconnx.engines.openvoice import _compute_mel
-
-    audio = np.zeros(22050, dtype=np.float32)
-    mel = _compute_mel(audio)
-    assert np.isfinite(mel).all(), "Mel spectrogram contains non-finite values"
-
-
-def test_compute_mel_sine_different_from_silence():
-    """A sine wave should produce a different mel from silence."""
-    from vconnx.engines.openvoice import _compute_mel
+def test_compute_linear_spec_different_signals():
+    from vconnx.engines.openvoice import _compute_linear_spec
 
     sr = 22050
     t = np.linspace(0, 1.0, sr, endpoint=False)
     sine = np.sin(2 * np.pi * 440 * t).astype(np.float32)
     silence = np.zeros(sr, dtype=np.float32)
-
-    mel_sine = _compute_mel(sine)
-    mel_silence = _compute_mel(silence)
-    assert not np.allclose(mel_sine, mel_silence), "Sine and silence give identical mel"
+    assert not np.allclose(_compute_linear_spec(sine), _compute_linear_spec(silence))
 
 
 # ---------------------------------------------------------------------------
-# 3. Griffin-Lim vocoder — shape and energy checks
-# ---------------------------------------------------------------------------
-
-
-def test_griffin_lim_output_shape():
-    from vconnx.engines.openvoice import _griffin_lim
-
-    mel = np.zeros((80, 100), dtype=np.float32)
-    audio = _griffin_lim(mel, sr=22050, n_fft=1024, hop_length=256, win_length=1024, n_iter=2)
-    assert audio.ndim == 1
-    assert len(audio) > 0
-    assert audio.dtype == np.float32
-
-
-def test_griffin_lim_finite():
-    from vconnx.engines.openvoice import _griffin_lim
-
-    rng = np.random.default_rng(42)
-    mel = rng.uniform(-5, 2, (80, 50)).astype(np.float32)
-    audio = _griffin_lim(mel, sr=22050, n_fft=1024, hop_length=256, win_length=1024, n_iter=4)
-    assert np.isfinite(audio).all(), "Griffin-Lim produced non-finite audio"
-
-
-def test_griffin_lim_nonzero_for_nonzero_mel():
-    from vconnx.engines.openvoice import _griffin_lim
-
-    rng = np.random.default_rng(7)
-    mel = rng.uniform(-3, 0, (80, 60)).astype(np.float32)  # realistic log-mel range
-    audio = _griffin_lim(mel, sr=22050, n_fft=1024, hop_length=256, win_length=1024, n_iter=4)
-    assert np.any(audio != 0.0), "Griffin-Lim produced all-zero output"
-
-
-# ---------------------------------------------------------------------------
-# 4. Adapter contract with mocked ORT sessions
+# 3. Adapter contract with mocked ORT sessions
 # ---------------------------------------------------------------------------
 
 
 class _MockRefEncSession:
-    """Fake reference encoder ORT session — returns (1, 256) tone embedding."""
+    """Fake reference encoder ORT session -- returns (1, 256) tone embedding."""
 
     def run(self, output_names, inputs):
         rng = np.random.default_rng(42)
@@ -215,13 +153,16 @@ class _MockRefEncSession:
 
 
 class _MockConverterSession:
-    """Fake converter ORT session — returns mel with same shape as input."""
+    """Fake converter ORT session -- returns (1, 1, samples) waveform."""
 
     def run(self, output_names, inputs):
-        mel = inputs["mel"]
-        # Return slightly modified mel to simulate conversion
-        rng = np.random.default_rng(0)
-        return [mel + rng.uniform(-0.1, 0.1, mel.shape).astype(np.float32)]
+        spec = inputs["spec"]  # (1, 513, T)
+        T = spec.shape[2]
+        # Upscale factor: hop_length = 256; HiFi-GAN upsamples 256x
+        n_samples = T * 256
+        rng = np.random.default_rng(7)
+        waveform = rng.uniform(-0.01, 0.01, (1, 1, n_samples)).astype(np.float32)
+        return [waveform]
 
 
 def test_adapter_clone_voice_mock(tmp_path):
@@ -232,7 +173,7 @@ def test_adapter_clone_voice_mock(tmp_path):
     ref_wav = _make_wav(str(tmp_path / "ref.wav"), duration_s=0.5, sr=22050)
     out_wav = str(tmp_path / "out.wav")
 
-    adapter = OpenVoiceV2Adapter(gl_iters=2)
+    adapter = OpenVoiceV2Adapter()
     adapter._ref_enc_sess = _MockRefEncSession()
     adapter._converter_sess = _MockConverterSession()
 
@@ -240,7 +181,6 @@ def test_adapter_clone_voice_mock(tmp_path):
     assert result == str(Path(out_wav).resolve())
     assert Path(out_wav).exists()
 
-    # Verify output is a valid WAV at 22050 Hz
     with wave.open(out_wav, "rb") as wf:
         assert wf.getframerate() == 22050
         assert wf.getsampwidth() == 2
@@ -250,9 +190,7 @@ def test_adapter_clone_voice_mock(tmp_path):
 def test_adapter_output_is_22050hz(tmp_path):
     """Output WAV must be 22050 Hz regardless of input sample rate."""
     from vconnx.engines.openvoice import OpenVoiceV2Adapter
-    import struct
 
-    # Write 16000 Hz source
     src_path = str(tmp_path / "src16k.wav")
     n = 16000
     data = np.zeros(n, dtype=np.int16)
@@ -265,7 +203,7 @@ def test_adapter_output_is_22050hz(tmp_path):
     ref_wav = _make_wav(str(tmp_path / "ref.wav"), sr=22050)
     out_wav = str(tmp_path / "out.wav")
 
-    adapter = OpenVoiceV2Adapter(gl_iters=2)
+    adapter = OpenVoiceV2Adapter()
     adapter._ref_enc_sess = _MockRefEncSession()
     adapter._converter_sess = _MockConverterSession()
 
@@ -294,7 +232,7 @@ def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
             adapter._ensure_models()
 
 
-def test_adapter_extract_tone_embedding_shape(tmp_path):
+def test_adapter_extract_tone_embedding_shape():
     """_extract_tone_embedding returns (1, 256) array."""
     from vconnx.engines.openvoice import OpenVoiceV2Adapter
 
@@ -309,17 +247,69 @@ def test_adapter_extract_tone_embedding_shape(tmp_path):
     assert emb.dtype == np.float32
 
 
-def test_adapter_different_tones_for_different_references(tmp_path):
+def test_adapter_spec_shape_to_ref_enc():
+    """Spec passed to ref_enc session has shape (1, T, 513)."""
+    from vconnx.engines.openvoice import OpenVoiceV2Adapter, _SPEC_CHANNELS
+
+    received = {}
+
+    class _SpySession:
+        def run(self, output_names, inputs):
+            received["spec"] = inputs["spec"].shape
+            return [np.zeros((1, 256), dtype=np.float32)]
+
+    adapter = OpenVoiceV2Adapter()
+    adapter._ref_enc_sess = _SpySession()
+    adapter._converter_sess = _MockConverterSession()
+
+    audio = np.zeros(22050, dtype=np.float32)
+    adapter._extract_tone_embedding(audio)
+
+    shape = received["spec"]
+    assert shape[0] == 1, "Batch dim must be 1"
+    assert shape[2] == _SPEC_CHANNELS, f"Expected {_SPEC_CHANNELS} freq bins, got {shape[2]}"
+
+
+def test_adapter_spec_shape_to_converter():
+    """Spec passed to converter session has shape (1, 513, T)."""
+    from vconnx.engines.openvoice import OpenVoiceV2Adapter, _SPEC_CHANNELS
+
+    received = {}
+
+    class _SpyConverterSession:
+        def run(self, output_names, inputs):
+            received["spec"] = inputs["spec"].shape
+            T = inputs["spec"].shape[2]
+            return [np.zeros((1, 1, T * 256), dtype=np.float32)]
+
+    adapter = OpenVoiceV2Adapter()
+    adapter._ref_enc_sess = _MockRefEncSession()
+    adapter._converter_sess = _SpyConverterSession()
+
+    audio = np.zeros(22050, dtype=np.float32)
+    import wave as _wave, tempfile
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
+        path = f.name
+    _make_wav(path, duration_s=0.5)
+    import tempfile, os
+    out = path + "_out.wav"
+    adapter.clone_voice(path, path, out)
+
+    shape = received["spec"]
+    assert shape[0] == 1
+    assert shape[1] == _SPEC_CHANNELS
+
+
+def test_adapter_different_tones_for_different_references():
     """Different audio inputs must produce different tone embeddings."""
     from vconnx.engines.openvoice import OpenVoiceV2Adapter
 
-    # Use a session that actually depends on the input
     class _InputDependentSession:
         def run(self, output_names, inputs):
-            mel = inputs["mel"]
-            # Return mean of mel as a pseudo-embedding
-            tone = mel.mean(axis=(1, 2), keepdims=True).repeat(256, axis=2).reshape(1, 256)
-            return [tone.astype(np.float32)]
+            spec = inputs["spec"]  # (1, T, 513)
+            # scalar mean -> broadcast to (1, 256)
+            tone = np.full((1, 256), float(np.mean(spec)), dtype=np.float32)
+            return [tone]
 
     adapter = OpenVoiceV2Adapter()
     adapter._ref_enc_sess = _InputDependentSession()
@@ -336,11 +326,11 @@ def test_adapter_different_tones_for_different_references(tmp_path):
 
 
 # ---------------------------------------------------------------------------
-# 5. E2E test — real model, real audio (skip unless HF_TOKEN set)
+# 4. E2E test -- real models downloaded from HF (opt-in)
 # ---------------------------------------------------------------------------
 
 
-_SKIP_E2E = not os.environ.get("VCONNX_E2E", "")  # models are public; gate on opt-in (large downloads)
+_SKIP_E2E = not os.environ.get("VCONNX_E2E", "")
 
 _E2E_REASON = (
     "E2E openvoice test downloads public models; set VCONNX_E2E=1 to run "
@@ -354,8 +344,9 @@ def test_e2e_openvoice_clone_edge_tts_voices(tmp_path):
 
     Validates:
     - Output is a valid 16-bit 22050 Hz WAV.
-    - Duration is in a reasonable range (0.5 s – 15 s).
+    - Duration is in a reasonable range (0.5 s - 15 s).
     - File size > 0 bytes.
+    - Output waveform has nonzero energy (not silence / white noise).
     """
     import asyncio
     import soundfile as sf
@@ -390,7 +381,7 @@ def test_e2e_openvoice_clone_edge_tts_voices(tmp_path):
         subprocess.run(["ffmpeg", "-y", "-i", src_mp3, src_wav], check=True, capture_output=True)
         subprocess.run(["ffmpeg", "-y", "-i", ref_mp3, ref_wav], check=True, capture_output=True)
 
-    adapter = OpenVoiceV2Adapter(quantized=False, gl_iters=32)
+    adapter = OpenVoiceV2Adapter(quantized=False)
     result = adapter.clone_voice(src_wav, ref_wav, out_wav)
 
     assert Path(result).exists(), f"Output not found: {result}"
@@ -407,8 +398,13 @@ def test_e2e_openvoice_clone_edge_tts_voices(tmp_path):
     assert sampwidth == 2, f"Expected 16-bit PCM, got {sampwidth * 8}-bit"
     assert 0.5 <= duration_s <= 15.0, f"Suspicious output duration: {duration_s:.2f} s"
 
+    # Sanity: nonzero energy
+    audio_data, _ = sf.read(result, dtype="float32")
+    rms = float(np.sqrt(np.mean(audio_data ** 2)))
+    assert rms > 1e-4, f"Output RMS too low ({rms:.2e}): likely silence or failed conversion"
+
     print(
         f"\n[e2e openvoice] output={result}  "
         f"duration={duration_s:.2f}s  sr={sr_out}  "
-        f"size={size_bytes // 1024} KiB"
+        f"size={size_bytes // 1024} KiB  rms={rms:.4f}"
     )
