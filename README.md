@@ -1,73 +1,12655 @@
-# vconnx
+## OVOS integration
 
-Pure-ONNX multi-engine voice-cloning library.  No PyTorch at runtime.
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
 
-## Scope
+### OVOS integration
 
-**vconnx is audio-to-audio only.**  It converts the voice in an existing
-speech file to sound like a reference speaker.  Text-to-speech synthesis
-with voice cloning (text → cloned audio) is a TTS-engine concern and is
-explicitly out of scope here; see `chatterbox_onnx` or similar TTS
-libraries for that path.
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
 
-## Install
+ ## OVOS integration
 
-```bash
-pip install vconnx                   # core only
-pip install "vconnx[chatterbox]"     # + Chatterbox ONNX engine
-```
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
 
-## Quick start
+v## OVOS integration
 
-```python
-from vconnx import VoiceCloner
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
 
-cloner = VoiceCloner(engine="chatterbox")
-out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
-print(cloner.sample_rate)  # 24000
-```
+c## OVOS integration
 
-## CLI
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
 
-```bash
-vconnx clone --engine chatterbox \
-             --audio source.wav \
-             --voice reference.wav \
-             --out converted.wav
+o## OVOS integration
 
-vconnx list   # show registered engines
-```
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
 
-## Engine matrix
+n## OVOS integration
 
-| Alias | Package | Sample rate | Status |
-|---|---|---|---|
-| `chatterbox` | `vconnx[chatterbox]` → `chatterbox_onnx` | 24 kHz | Supported |
-| `seed-vc` | — | — | Planned (see issue) |
-| `openvoice` | — | — | Planned (see issue) |
-| `knn-vc` | — | — | Planned (see issue) |
-| `rvc` | — | — | Planned (see issue) |
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
 
-## OPM plugin
+n## OVOS integration
 
-When `ovos-plugin-manager` ships the `VoiceClonePlugin` base class, the
-bundled plugin activates automatically via the `opm.vc` entry-point group:
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
 
-| Entry-point name | Class |
-|---|---|
-| `ovos-vc-plugin-chatterbox-onnx` | `vconnx.opm.ChatterboxVCPlugin` |
+x## OVOS integration
 
-Until OPM ships that family, import `VoiceCloner` directly.
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
 
-## Adding an engine
 
-1. Subclass `VoiceClonerBase` from `vconnx.engines.base`.
-2. Implement `clone_voice(audio, reference_voice, out_path) -> str`.
-3. Call `register_engine(EngineEntry(alias=..., adapter_class=...))`.
-4. Add an extras group in `pyproject.toml`.
+## OVOS integration
 
-## Attribution
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
 
-Developed by [TigreGotico](https://github.com/TigreGotico) for
-[OpenVoiceOS](https://github.com/OpenVoiceOS), funded by the
-[NGI0 Commons Fund](https://nlnet.nl/commonsfund/) / NLnet grant 101135429.
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+P## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+O## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+N## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+N## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+X## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+y## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+N## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+P## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+y## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+T## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+S## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+*## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+*## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+y## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+*## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+*## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+I## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+f## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+k## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+f## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+k## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+T## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+y## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+w## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+(## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+→## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+)## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+T## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+T## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+S## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+y## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+f## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+;## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+_## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+T## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+T## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+S## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+f## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+I## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+y## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+"## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+[## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+]## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+"## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
++## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+C## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+O## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+N## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+N## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+X## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+Q## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+k## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+y## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+f## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+V## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+C## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+=## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+V## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+C## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+(## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+=## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+"## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+"## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+)## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+=## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+_## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+(## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+"## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+w## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+"## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+,## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+"## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+f## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+w## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+"## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+,## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+"## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+w## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+"## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+)## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+(## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+_## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+)## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+2## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+4## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+0## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+0## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+0## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+C## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+L## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+I## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+\## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+w## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+\## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+f## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+w## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+\## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+w## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+w## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+E## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+A## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+P## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+k## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+S## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+S## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+[## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+]## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+→## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+_## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+2## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+4## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+k## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+H## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+z## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+S## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+—## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+—## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+P## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+(## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+)## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+—## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+—## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+P## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+(## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+)## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+k## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+—## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+—## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+P## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+(## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+)## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+—## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+—## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+P## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+(## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+)## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+O## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+P## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+M## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+W## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+V## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+C## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+P## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+,## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+y## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+y## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+:## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+E## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+y## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+C## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+C## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+V## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+C## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+P## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+|## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+U## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+O## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+P## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+M## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+f## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+y## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+,## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+V## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+C## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+y## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+A## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+1## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+S## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+V## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+C## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+B## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+f## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+2## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+I## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+_## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+(## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+,## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+f## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+_## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+,## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+_## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+)## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+-## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+>## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+3## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+C## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+_## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+(## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+E## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+E## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+y## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+(## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+=## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+,## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+_## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+=## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+)## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+)## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+4## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+A## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+x## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+y## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+j## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+`## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+### OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+A## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+D## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+v## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+y## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+[## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+T## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+G## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+]## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+(## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+:## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+/## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+/## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+/## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+T## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+G## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+)## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+f## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+[## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+O## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+V## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+O## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+S## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+]## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+(## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+:## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+/## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+/## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+/## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+O## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+V## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+i## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+O## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+S## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+)## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+,## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+f## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+b## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+y## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+[## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+N## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+G## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+I## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+0## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+C## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+F## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+]## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+(## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+h## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+p## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+:## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+/## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+/## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+l## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+/## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+c## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+m## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+o## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+s## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+f## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+u## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+d## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+/## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+)## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+/## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+N## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+L## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+e## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+g## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+r## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+a## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+n## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+t## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+ ## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+1## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+0## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+1## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+1## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+3## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+5## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+4## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+2## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+9## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+.## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
+
+## OVOS integration
+
+vconnx is an independent library. A dedicated OVOS plugin (entry-point
+group `opm.vc`) is planned as its own repo under the OpenVoiceOS org once
+vconnx is public and released.
+
