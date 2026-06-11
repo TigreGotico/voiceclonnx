@@ -416,3 +416,87 @@ engines' conversion scripts drive the upstream repo as an external checkout.
 | `speaker_encoder_q8.onnx` (INT8) | 1.4 MB (74.5% reduction) |
 | `freevc_decoder.onnx` (fp32) | 116.4 MB |
 | `freevc_decoder_q8.onnx` (INT8) | 37.3 MB (68.0% reduction) |
+
+## Worked example: triaan-vc
+
+TriAAN-VC (ICASSP 2023, MIT license) is a three-component pipeline.
+All three components are exported from the GitHub release v1.0 checkpoints.
+
+### License verification
+
+The upstream repository at `winddori2002/TriAAN-VC` carries an MIT license.
+The CPC encoder checkpoint (`cpc.pt`) is derived from `facebookresearch/CPC_audio`,
+also MIT.  The ParallelWaveGAN vocoder is MIT via `kan-bayashi/ParallelWaveGAN`.
+All three weights are distributable.
+
+### Deviations from standard export
+
+**CPC encoder architecture reconstruction** — there is no public Python model
+definition for the exact CPC checkpoint used by TriAAN-VC (`gEncoder` + `gAR`
+key layout).  The encoder was reconstructed by inspecting checkpoint keys and
+shapes:
+
+- 5-layer `Conv1d` with `bias=True`, 256 channels throughout
+- `LearnedNorm1d` (per-channel affine, shape `(1, C, 1)`) instead of standard
+  `BatchNorm1d` — required because the stored key shape differs from BatchNorm
+- Single-layer LSTM (not GRU) — verified from `weight_ih_l0` shape `(1024, 256)` = 4×256 LSTM gates
+
+**TriAAN-VC model key names** — the upstream `model.py` class attribute names
+(`cnt_encoder`, `spk_encoder`, `rnn_layer`, `linear`) differ from an initial
+reconstruction (`content_enc`, `speaker_enc`, `rnn`, `rnn_proj`).
+The model is loaded directly from a local clone of the upstream repo to guarantee
+exact architecture match.
+
+**`_AttrDict` parameter objects** — the `TriAANVC` constructor uses encoder/decoder
+params as both dict-spread (`ContentEncoder(**encoder_params)`) and attribute
+access (`encoder_params.c_out`).  `SimpleNamespace` supports attributes but not
+`**`-spread; `easydict.EasyDict` is an optional dep.  A minimal `_AttrDict(dict)`
+subclass (pure stdlib) resolves both access patterns.
+
+**dynamo=False** — PyTorch 2.9+ defaults to the new dynamo-based ONNX exporter,
+which raises `ValueError: Found conflicts between user-specified ranges and
+inferred ranges` on TriAAN-VC's dynamic attention maps.  Pass `dynamo=False`
+to force the legacy TorchScript-based export path.
+
+**scipy.signal.kaiser compatibility** — `parallel_wavegan` imports
+`from scipy.signal import kaiser`, removed in newer scipy.  Patch before
+importing the package:
+
+```python
+import scipy.signal
+from scipy.signal.windows import kaiser
+scipy.signal.kaiser = kaiser
+```
+
+**PWG `assert c.size(-1) == z.size(-1)` bypass** — the standard PWG `forward(z, c)`
+asserts that the upsampled conditioning length matches the noise length; this assert
+cannot be traced by TorchScript.  The wrapper calls `model.upsample_net(mel)` first,
+reads the resulting `T_audio`, then passes noise of that exact length and reimplements
+the WaveNet forward inline (bypassing the assert).
+
+**Actual upsample factor** — expected `4×4×5×2 = 160×` but actual `ConvInUpsampleNetwork`
+with `aux_context_window=2` produces `~147.2×` at T=50 (7 360 audio samples for 50 mel
+frames).  The wrapper must read `T_audio = c_up.shape[-1]` dynamically.
+
+**Noise input** — the vocoder is exported with explicit `(mel, noise)` inputs (not
+the upstream `model.inference()` which generates noise internally).  This makes the
+ONNX graph deterministic and allows the adapter to pass its own noise tensor.
+
+### Parity results
+
+| Component | max\_abs Δ | mean\_abs Δ | Verdict |
+|---|---|---|---|
+| CPC encoder | 1.06e-05 | 1.46e-07 | PASS |
+| TriAAN-VC decoder | 3.76e-06 | 6.39e-07 | PASS |
+| ParallelWaveGAN vocoder | 4.39e-05 | 1.19e-06 | PASS |
+
+### Model sizes
+
+| File | Size |
+|---|---|
+| `cpc_encoder.onnx` | 7.0 MB |
+| `cpc_encoder_q8.onnx` | 1.8 MB (−74.6 %) |
+| `triaan_vc.onnx` | 266.3 MB |
+| `triaan_vc_q8.onnx` | 76.3 MB (−71.3 %) |
+| `pwg_vocoder.onnx` | 7.0 MB |
+| `pwg_vocoder_q8.onnx` | 2.0 MB (−70.9 %) |

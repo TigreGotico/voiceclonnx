@@ -22,6 +22,7 @@ the source utterance spoken in the reference voice, as that engine hears it.
 | freevc | [`outputs/freevc__aria.wav`](outputs/freevc__aria.wav) | [`outputs/freevc__sonia.wav`](outputs/freevc__sonia.wav) |
 | knnvc | [`outputs/knnvc__aria.wav`](outputs/knnvc__aria.wav) | [`outputs/knnvc__sonia.wav`](outputs/knnvc__sonia.wav) |
 | openvoice | [`outputs/openvoice__aria.wav`](outputs/openvoice__aria.wav) | [`outputs/openvoice__sonia.wav`](outputs/openvoice__sonia.wav) |
+| triaan | [`outputs/triaan__aria.wav`](outputs/triaan__aria.wav) | [`outputs/triaan__sonia.wav`](outputs/triaan__sonia.wav) |
 
 Any-to-ONE engines convert to a fixed voice model instead of a reference wav
 (one column per demo model):
