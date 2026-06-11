@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vconnx"
+dynamic = ["version"]
+description = "Pure-ONNX multi-engine voice-cloning library — no torch at runtime"
+license = {text = "Apache-2.0"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+authors = [{name = "JarbasAI", email = "jarbasai@mailfence.com"}]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "onnxruntime",
+    "huggingface_hub",
+]
+
+[project.optional-dependencies]
+chatterbox = ["chatterbox_onnx"]
+test = [
+    "pytest",
+    "edge-tts",
+]
+
+[project.scripts]
+vconnx = "vconnx.__main__:main"
+
+[project.entry-points."opm.vc"]
+"ovos-vc-plugin-chatterbox-onnx" = "vconnx.opm:ChatterboxVCPlugin"
+
+[project.urls]
+Homepage = "https://github.com/TigreGotico/vconnx"
+
+[tool.setuptools.dynamic]
+version = {attr = "vconnx.version.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.package-data]
+"vconnx" = ["**/*"]
+
+[tool.mypy]
+python_version = "3.9"
+ignore_missing_imports = true
+no_site_packages = true
+strict = false
+warn_unused_ignores = true
+warn_return_any = false
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
