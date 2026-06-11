@@ -112,6 +112,7 @@ def write_manifest(
     components: Dict[str, str],
     sample_rates: Dict[str, int],
     metadata: Optional[Dict[str, Any]] = None,
+    distributable: bool = True,
 ) -> Path:
     """Write a ``config.json`` manifest next to the ONNX files.
 
@@ -126,6 +127,10 @@ def write_manifest(
         Mapping of role → sample rate in Hz, e.g. ``{"output": 16000}``.
     metadata:
         Optional free-form key/value pairs embedded in the manifest.
+    distributable:
+        ``False`` for engines whose upstream weight license does not allow
+        redistribution (``local-only-weights``): the converted models stay on
+        the user's machine and ``push_models`` refuses to upload them.
 
     Returns
     -------
@@ -136,6 +141,7 @@ def write_manifest(
         "engine": layout.engine_name,
         "components": components,
         "sample_rates": sample_rates,
+        "distributable": distributable,
     }
     if metadata:
         manifest["metadata"] = metadata

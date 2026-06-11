@@ -84,6 +84,18 @@ def push_engine(
     commit_message:
         Optional commit message for the Hub upload.
     """
+
+    engine_dir = Path(engine_dir)
+    manifest_file = engine_dir / "config.json"
+    if manifest_file.is_file():
+        import json
+        if json.loads(manifest_file.read_text()).get("distributable", True) is False:
+            raise RuntimeError(
+                f"{engine_name}: manifest is marked distributable=false "
+                "(local-only weights — upstream license does not allow "
+                "redistribution). Refusing to upload; this engine's models "
+                "stay on the machine that converted them."
+            )
     engine_dir = Path(engine_dir)
 
     if not engine_dir.is_dir():

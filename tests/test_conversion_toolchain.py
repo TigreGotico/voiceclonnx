@@ -450,3 +450,24 @@ class TestSyntheticEndToEnd:
         manifest = read_manifest(layout.engine_dir)
         assert manifest["engine"] == "synth-e2e"
         assert "PROVENANCE.md" in [f.name for f in layout.engine_dir.iterdir()]
+
+
+class TestDistributablePolicy:
+    def test_manifest_distributable_default_true(self, tmp_path):
+        from conversion.export_base import OutputLayout, write_manifest
+        import json
+        layout = OutputLayout(base_dir=tmp_path, engine_name="eng")
+        layout.engine_dir.mkdir(parents=True, exist_ok=True)
+        p = write_manifest(layout, {"m": "m.onnx"}, {"output": 16000})
+        assert json.loads(p.read_text())["distributable"] is True
+
+    def test_push_engine_refuses_local_only(self, tmp_path):
+        from conversion.export_base import OutputLayout, write_manifest
+        from conversion.push_models import push_engine
+        import pytest
+        layout = OutputLayout(base_dir=tmp_path, engine_name="eng")
+        layout.engine_dir.mkdir(parents=True, exist_ok=True)
+        write_manifest(layout, {"m": "m.onnx"}, {"output": 16000},
+                       distributable=False)
+        with pytest.raises(RuntimeError, match="local-only"):
+            push_engine(layout.engine_dir, "eng", dry_run=True)

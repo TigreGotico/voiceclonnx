@@ -240,3 +240,23 @@ Follow the contract in this guide; the per-engine issue records any deviations
 | `wavlm_layer6_q8.onnx` (INT8) | 97.5 MB (75% reduction) |
 | `hifigan_knnvc.onnx` (fp32) | 63.1 MB |
 | `hifigan_knnvc_q8.onnx` (INT8) | 25.1 MB (60% reduction) |
+
+## Weight-license policy: distributable vs local-only
+
+vconnx never redistributes model weights it has no right to. Two classes of
+engine, decided per-engine in its tracking issue:
+
+- **distributable** — upstream license permits redistribution (MIT/Apache/
+  BSD/CC-BY): converted models are pushed to the `vconnx-models` HF repo with
+  the upstream LICENSE file and PROVENANCE.md alongside; adapters download
+  them automatically.
+- **local-only-weights** — upstream license does not permit redistribution
+  (NC/ND variants, unlicensed repos) but inference and private conversion are
+  fine: the conversion script runs on YOUR machine, `write_manifest(...,
+  distributable=False)` marks the output, `push_models` refuses to upload it,
+  and the adapter loads from the local path (`model_dir` config key) instead
+  of HF. GPL upstreams additionally require the conversion script to invoke
+  the upstream repo as an external checkout (never vendor GPL code here).
+
+The engine's tracking issue carries the `local-only-weights` label when the
+second class applies.
