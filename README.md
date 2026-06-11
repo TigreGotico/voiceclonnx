@@ -1,21 +1,28 @@
 # vconnx
 
-Pure-ONNX multi-engine voice-cloning library.  No PyTorch at runtime.
+![PyPI](https://img.shields.io/pypi/v/vconnx)
+![Python](https://img.shields.io/pypi/pyversions/vconnx)
+![License](https://img.shields.io/pypi/l/vconnx)
 
-## Scope
+Pure-ONNX multi-engine voice-cloning library — no PyTorch at runtime.
 
-**vconnx is audio-to-audio only.**  It converts the voice in an existing
-speech file to sound like a reference speaker.  Text-to-speech synthesis
-with voice cloning (text → cloned audio) is a TTS-engine concern and is
-explicitly out of scope here; see `chatterbox_onnx` or similar TTS
-libraries for that path.
+**Audio-to-audio only.** vconnx converts the voice in an existing speech file to
+sound like a reference speaker. Text-driven synthesis (text → cloned audio) is a
+TTS-engine concern and is explicitly out of scope; see `chatterbox_onnx` or similar
+libraries for that.
+
+---
 
 ## Install
 
 ```bash
-pip install vconnx                   # core only
-pip install "vconnx[chatterbox]"     # + Chatterbox ONNX engine
+pip install vconnx                    # core (no engine)
+pip install "vconnx[chatterbox]"      # Chatterbox AR codec-LM (default)
+pip install "vconnx[knnvc]"           # kNN-VC — WavLM + HiFi-GAN
+pip install "vconnx[openvoice]"       # OpenVoice v2 tone-color converter
 ```
+
+---
 
 ## Quick start
 
@@ -24,87 +31,43 @@ from vconnx import VoiceCloner
 
 cloner = VoiceCloner(engine="chatterbox")
 out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
-print(cloner.sample_rate)  # 24000
+print(cloner.sample_rate)   # 24000
 ```
+
+---
 
 ## CLI
 
 ```bash
+# Convert a WAV file
 vconnx clone --engine chatterbox \
              --audio source.wav \
              --voice reference.wav \
              --out converted.wav
 
-vconnx list   # show registered engines
+# With optional engine flags
+vconnx clone --engine chatterbox \
+             --audio source.wav \
+             --voice reference.wav \
+             --out converted.wav \
+             --exaggeration 0.5 \
+             --max-new-tokens 1024
+
+# List registered engines
+vconnx list
 ```
+
+---
 
 ## Engine matrix
 
-| Alias | Package | Sample rate | Status |
-|---|---|---|---|
-| `chatterbox` | `vconnx[chatterbox]` → `chatterbox_onnx` | 24 kHz | Supported |
-| `knnvc` | `vconnx[knnvc]` | 16 kHz | Supported |
-| `openvoice` | `vconnx[openvoice]` | 22 kHz | Supported |
-| `seed-vc` | — | — | Planned (see issue) |
-| `rvc` | — | — | Planned (see issue) |
+| Alias | Install extra | Sample rate | Model repo | License |
+|---|---|---|---|---|
+| `chatterbox` | `vconnx[chatterbox]` | 24 kHz | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | See upstream |
+| `knnvc` | `vconnx[knnvc]` | 16 kHz | [TigreGotico/vconnx-knn-vc](https://huggingface.co/TigreGotico/vconnx-knn-vc) | MIT |
+| `openvoice` | `vconnx[openvoice]` | 22 kHz | [TigreGotico/vconnx-openvoice-v2](https://huggingface.co/TigreGotico/vconnx-openvoice-v2) | MIT |
 
-### knnvc
-
-Zero-shot any-to-any voice conversion based on
-[kNN-VC](https://github.com/bshall/knn-vc) (Baas et al., Interspeech 2023).
-Architecture: WavLM-Large encoder (layer 6) → k-nearest-neighbour matching
-(pure numpy) → HiFi-GAN vocoder.  No autoregressive decoding; fully
-non-autoregressive and CPU-friendly.
-
-```bash
-pip install "vconnx[knnvc]"
-```
-
-```python
-from vconnx import VoiceCloner
-
-cloner = VoiceCloner(engine="knnvc")
-out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
-print(cloner.sample_rate)   # 16000
-```
-
-```bash
-vconnx clone --engine knnvc \
-             --audio source.wav \
-             --voice reference.wav \
-             --out converted.wav
-```
-
-ONNX artifacts: [`TigreGotico/vconnx-knn-vc`](https://huggingface.co/TigreGotico/vconnx-knn-vc) (public).
-
-### openvoice
-
-Zero-shot tone-color conversion based on
-[OpenVoice v2](https://github.com/myshell-ai/OpenVoice) (myshell-ai, MIT license).
-Architecture: reference encoder (mel → 256-dim tone-color embedding) + flow-based
-AdaIN-conditioned converter + Griffin-Lim vocoder.  MIT-licensed weights — artifacts
-distributed via the public per-engine `TigreGotico/vconnx-<engine>` repos (see the vconnx HF collection).
-
-```bash
-pip install "vconnx[openvoice]"
-```
-
-```python
-from vconnx import VoiceCloner
-
-cloner = VoiceCloner(engine="openvoice")
-out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
-print(cloner.sample_rate)   # 22050
-```
-
-```bash
-vconnx clone --engine openvoice \
-             --audio source.wav \
-             --voice reference.wav \
-             --out converted.wav
-```
-
-ONNX artifacts: `TigreGotico/vconnx-openvoice-v2` (public).
+---
 
 ## Adding an engine
 
@@ -112,3 +75,33 @@ ONNX artifacts: `TigreGotico/vconnx-openvoice-v2` (public).
 2. Implement `clone_voice(audio, reference_voice, out_path) -> str`.
 3. Call `register_engine(EngineEntry(alias=..., adapter_class=...))`.
 4. Add an extras group in `pyproject.toml`.
+
+See [docs/api.md](docs/api.md) for the full API reference.
+
+---
+
+## Documentation
+
+- [docs/index.md](docs/index.md) — overview, install matrix, engine table
+- [docs/api.md](docs/api.md) — VoiceCloner facade, VoiceClonerBase, registry
+- [docs/engines/chatterbox.md](docs/engines/chatterbox.md) — config keys, troubleshooting
+- [docs/engines/knnvc.md](docs/engines/knnvc.md) — config keys, model sizes, troubleshooting
+- [docs/engines/openvoice.md](docs/engines/openvoice.md) — config keys, mel params, troubleshooting
+- [docs/converting.md](docs/converting.md) — ONNX export / parity / quantize / push toolchain
+
+## Examples
+
+- [examples/basic_clone.py](examples/basic_clone.py) — knnvc demo with edge-tts
+- [examples/cli_batch.sh](examples/cli_batch.sh) — batch convert a folder via CLI
+- [examples/quantized_low_memory.py](examples/quantized_low_memory.py) — INT8 vs fp32 comparison
+- [examples/local_only_engine.md](examples/local_only_engine.md) — local-only weights walkthrough
+
+---
+
+## License
+
+Apache 2.0 — see [LICENSE](LICENSE).
+
+Model weights are governed by their upstream licenses. See
+[docs/converting.md](docs/converting.md) for the weight-license policy (distributable
+vs local-only).
