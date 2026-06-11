@@ -23,6 +23,11 @@ dependencies = [
 
 [project.optional-dependencies]
 chatterbox = ["chatterbox_onnx"]
+focalcodec = [
+    "onnxruntime",
+    "numpy",
+    "soundfile",
+]
 freevc = [
     "onnxruntime",
     "numpy",

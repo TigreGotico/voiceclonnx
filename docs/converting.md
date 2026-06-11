@@ -500,3 +500,37 @@ ONNX graph deterministic and allows the adapter to pass its own noise tensor.
 | `triaan_vc_q8.onnx` | 76.3 MB (−71.3 %) |
 | `pwg_vocoder.onnx` | 7.0 MB |
 | `pwg_vocoder_q8.onnx` | 2.0 MB (−70.9 %) |
+
+---
+
+## Appendix: FocalCodec export notes
+
+### ISTFT not in ONNX
+
+The Vocos ISTFT head uses `nn.functional.fold` with a dynamic `output_size = int((T-1)*hop+win)`
+which converts a tensor to a Python int inside the tracer — incompatible with both the legacy
+TorchScript ONNX exporter and the dynamo-based exporter (the latter produces a `DFT` node that
+ORT 1.x rejects with a `is_onesided` conflict).
+
+The solution: export only the **Vocos backbone + linear projection** (`focalcodec_vocoder.onnx`)
+which maps `(B, T, 1024) → (B, T, n_fft+2)` STFT coefficients, and re-implement the ISTFT in
+pure numpy using the known fixed parameters (n_fft=1024, hop=320, win=1024).
+
+Parity of the numpy ISTFT vs torch decoder: max abs ≤1.3e-5 (verified on 50-frame test input).
+
+### Parity results
+
+| Component | max\_abs Δ | mean\_abs Δ | Verdict |
+|---|---|---|---|
+| WavLM encoder | 4.2e-04 | 1.8e-05 | PASS |
+| Vocos backbone+proj | 2.7e-05 | 2.1e-06 | PASS |
+| numpy ISTFT vs torch | 1.3e-05 | 3.3e-07 | PASS |
+
+### Model sizes
+
+| File | Size |
+|---|---|
+| `focalcodec_encoder.onnx` | 594.6 MB |
+| `focalcodec_encoder_q8.onnx` | 341.2 MB (−42.6 %) |
+| `focalcodec_vocoder.onnx` | 64.3 MB |
+| `focalcodec_vocoder_q8.onnx` | 16.3 MB (−74.7 %) |
