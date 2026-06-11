@@ -23,9 +23,24 @@ dependencies = [
 
 [project.optional-dependencies]
 chatterbox = ["chatterbox_onnx"]
+convert = [
+    "torch",
+    "onnx",
+    "onnxruntime",
+    "onnxruntime-tools",
+    "huggingface_hub",
+]
 test = [
     "pytest",
     "edge-tts",
+]
+test-convert = [
+    "pytest",
+    "torch",
+    "onnx",
+    "onnxruntime",
+    "onnxruntime-tools",
+    "huggingface_hub",
 ]
 
 [project.scripts]
