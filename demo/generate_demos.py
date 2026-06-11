@@ -35,6 +35,12 @@ REFERENCES = [
     ("reference_sonia", "en-GB-SoniaNeural", REF_TEXT),
 ]
 
+# any-to-ONE engines take a voice MODEL as reference, not audio: one demo
+# output per (engine, model) instead of per reference wav.
+MODEL_REFERENCES = {
+    "rvc": [("woman1", "ozada/onnx_rvc::woman_1.onnx")],
+}
+
 
 def synth(name: str, voice: str, text: str) -> Path:
     wav = DEMO_DIR / f"{name}.wav"
@@ -79,6 +85,12 @@ def main() -> int:
         except Exception as exc:
             print(f"[demo] {engine}: cannot instantiate ({exc}); skipped")
             failures.append(engine)
+            continue
+        if engine in MODEL_REFERENCES:
+            for ref_name, model_ref in MODEL_REFERENCES[engine]:
+                out = OUT_DIR / f"{engine}__{ref_name}.wav"
+                print(f"[demo] {engine} ← model:{ref_name} → {out.name}")
+                cloner.clone_voice(str(src), model_ref, str(out))
             continue
         for ref_name, ref_wav in refs:
             out = OUT_DIR / f"{engine}__{ref_name.replace('reference_', '')}.wav"

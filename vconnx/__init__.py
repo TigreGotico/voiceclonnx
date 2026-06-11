@@ -39,6 +39,7 @@ from vconnx.engines.base import (
 import vconnx.engines.chatterbox  # noqa: F401
 import vconnx.engines.knnvc  # noqa: F401
 import vconnx.engines.openvoice  # noqa: F401
+import vconnx.engines.rvc  # noqa: F401
 
 __all__ = [
     "VoiceCloner",
