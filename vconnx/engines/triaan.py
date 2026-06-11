@@ -54,6 +54,7 @@ _TRIAAN_FP32 = "triaan_vc.onnx"
 _TRIAAN_INT8 = "triaan_vc_q8.onnx"
 _PWG_FP32 = "pwg_vocoder.onnx"
 _PWG_INT8 = "pwg_vocoder_q8.onnx"
+_MEL_STATS = "mel_stats.npy"
 
 
 # ---------------------------------------------------------------------------
@@ -183,6 +184,9 @@ class TriAANVCAdapter(VoiceClonerBase):
         self._triaan_sess = None
         self._pwg_sess = None
         self._pwg_context_trim: int = 4  # refined after model load (aux_context_window=2 → trims 4 frames)
+        # TriAAN output denormalization stats (mel_mean, mel_std): loaded from HF
+        self._mel_mean: Optional[np.ndarray] = None
+        self._mel_std: Optional[np.ndarray] = None
 
     # ------------------------------------------------------------------
     # Lazy model loading
@@ -212,6 +216,7 @@ class TriAANVCAdapter(VoiceClonerBase):
         cpc_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=cpc_file)
         triaan_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=triaan_file)
         pwg_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=pwg_file)
+        mel_stats_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=_MEL_STATS)
 
         sess_opts = ort.SessionOptions()
         n_threads = os.cpu_count() or 4
@@ -228,6 +233,13 @@ class TriAANVCAdapter(VoiceClonerBase):
         self._pwg_sess = ort.InferenceSession(
             pwg_path, sess_options=sess_opts, providers=providers
         )
+
+        # TriAAN output denormalization stats (shape: [2, 80]; row 0 = mean, row 1 = std)
+        # The TriAAN model outputs mel in a normalized space; we must denormalize before
+        # feeding the vocoder (which re-normalizes with its own VCTK training stats).
+        _mel_stats = np.load(mel_stats_path)
+        self._mel_mean = _mel_stats[0][:, np.newaxis].astype(np.float32)  # (80, 1)
+        self._mel_std = (_mel_stats[1][:, np.newaxis] + 1e-8).astype(np.float32)  # (80, 1)
 
         # The ParallelWaveGAN vocoder uses ConvInUpsampleNetwork with
         # aux_context_window=2, which strips 2*2=4 context frames from each end.
@@ -299,7 +311,14 @@ class TriAANVCAdapter(VoiceClonerBase):
                 "trg_cpc": trg_cpc.astype(np.float32),
             },
         )
-        return out[0]  # (1, 80, T_s)
+        mel = out[0]  # (1, 80, T_s) — in TriAAN's normalized mel space
+
+        # Denormalize: TriAAN is trained with mel_stats normalization; its output is in
+        # normalized space (zero-mean, unit-variance per mel bin). The PWG vocoder expects
+        # raw mel spectrogram values, which it then re-normalizes with its own VCTK stats.
+        # Skipping this step causes the vocoder to receive doubly-normalized input → noise.
+        mel = mel * self._mel_std + self._mel_mean  # (1,80,T) * (80,1) broadcasts correctly
+        return mel  # (1, 80, T_s) — raw mel space
 
     # ------------------------------------------------------------------
     # ParallelWaveGAN vocoding
