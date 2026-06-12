@@ -266,7 +266,10 @@ def _build_vqwav2vec_cnn_standalone(ckpt_path: str):
         conv = nn.Conv1d(in_ch, out_ch, kernel, stride=stride, bias=False)
         # GroupNorm with groups=1 (from fp32_group_norm=True in args)
         gn = nn.GroupNorm(1, out_ch, affine=True)
-        layer = nn.Sequential(conv, nn.GELU(), gn)
+        # Correct fairseq order: Conv → GroupNorm → GELU (dropout=0 at inference)
+        # Original ConvFeatureExtractionModel: block = Conv → Dropout → GN → activation
+        # With dropout=0 at inference: Conv → GN → GELU
+        layer = nn.Sequential(conv, gn, nn.GELU())
         layers.append(layer)
         in_ch = out_ch
 
@@ -276,19 +279,23 @@ def _build_vqwav2vec_cnn_standalone(ckpt_path: str):
     # Keys in checkpoint: feature_extractor.conv_layers.{i}.0.weight (conv)
     #                     feature_extractor.conv_layers.{i}.2.weight (gn weight)
     #                     feature_extractor.conv_layers.{i}.2.bias   (gn bias)
+    # Our Sequential layout: 0=Conv1d, 1=GroupNorm, 2=GELU (no params for GELU)
+    # Original layout: 0=Conv1d (idx 0), 1=Dropout (no params), 2=GroupNorm (idx 2)
     cnn_state = {}
     for key, val in model_state.items():
         if key.startswith("feature_extractor.conv_layers."):
-            # Convert to our Sequential layout
-            # Original: conv_layers.{i}.0.weight → layers.{i}.0.weight
             rest = key[len("feature_extractor."):]  # conv_layers.{i}.0.weight
             parts = rest.split(".")
             idx = int(parts[1])
             sub_idx = int(parts[2])
             name = parts[3]  # "weight" or "bias"
-            # In our Sequential: 0=Conv1d, 1=GELU (no params), 2=GroupNorm
-            # Original layout: 0=Conv1d, 2=GroupNorm (skipping activation)
-            new_key = f"conv_layers.{idx}.{sub_idx}.{name}"
+            # Map: original 0 (Conv) → our 0; original 2 (GN) → our 1
+            if sub_idx == 0:
+                new_key = f"conv_layers.{idx}.0.{name}"
+            elif sub_idx == 2:
+                new_key = f"conv_layers.{idx}.1.{name}"
+            else:
+                continue
             cnn_state[new_key] = val
 
     missing, unexpected = cnn.load_state_dict(cnn_state, strict=False)

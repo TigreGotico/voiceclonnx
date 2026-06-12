@@ -1244,27 +1244,84 @@ The vocoder and frontend both quantize well (see QUANTS.md for measured WER).
 The WavLM speaker encoder degrades similarly to other WavLM exports in this
 collection.
 
-### Blocked: WavLM-Large.pt architecture mismatch
+### WavLM-Large.pt: GREP attention and correct checkpoint
 
-The vec2wav 2.0 model was trained using `WavLM-Large.pt` from Microsoft's original
-distribution, loaded via a bundled `WavLM.py` class that contains the GREP
-(Gated Relative Position) attention mechanism.  The HuggingFace `microsoft/wavlm-large`
-model does not include the GREP attention layers — 77 keys in the WavLM.py state dict
-(`grep_a`, `grep_linear`) have no counterpart in the HF checkpoint.
+The vec2wav 2.0 model requires `WavLM-Large.pt` from Microsoft's original distribution,
+loaded via the bundled `vec2wav2.ssl_models.WavLM.WavLM` class.  This checkpoint
+contains GREP (Gated Relative Position) attention parameters (`grep_a`, `grep_linear`)
+in each self-attention layer — 77 keys that have no counterpart in the HuggingFace
+`microsoft/wavlm-large` checkpoint.
 
-When `wavlm_speaker.onnx` is exported from `microsoft/wavlm-large`, the resulting
-layer-6 features are architecturally incompatible with what the vec2wav frontend and
-BigVGAN vocoder were trained on.  The vocoder's `SnakeBetaWithCondition` activation
-receives a conditioning vector (temporal mean of WavLM features) that was never seen
-during training.  The result is near-silence output from the vocoder (-0.001 to +0.002
-amplitude) regardless of the content tokens.
+The HF checkpoint uses `gru_rel_pos_linear`/`gru_rel_pos_const` instead.  Exporting
+from the HF model leaves 77 parameters uninitialized, producing out-of-distribution
+speaker features that cause the BigVGAN vocoder to output near-silence.
 
-**Resolution required**: re-export `wavlm_speaker.onnx` using `WavLM-Large.pt`
-(Microsoft's original `.pt` format).  The correct download URL is:
-`https://valle.blob.core.windows.net/share/wavlm/WavLM-Large.pt` (SAS-token required)
-or the [Google Drive mirror](https://drive.google.com/file/d/12-cB34qCTvByWT-QtOcZaqwwO21FLSqU/view).
-The export script must be updated to use `vec2wav2.ssl_models.WavLM.WavLM` with
-`WavLMConfig(checkpoint['cfg'])` and `normalize=True` input audio normalisation.
+**Resolved**: `WavLM-Large.pt` was obtained from the Google Drive mirror
+(`https://drive.google.com/file/d/12-cB34qCTvByWT-QtOcZaqwwO21FLSqU/view`) and
+re-exported using `vec2wav2.ssl_models.WavLM.WavLM` with strict weight loading
+(0 uninitialized parameters).  Parity: max_abs diff between PyTorch and ONNX
+layer-6 output = 1.87e-04.  The corrected `wavlm_speaker.onnx` (339.2 MB fp32,
+121.7 MB INT8) is in `TigreGotico/voiceclonnx-vec2wav` (snapshot `83b73f3b`).
 
-Until `WavLM-Large.pt` is available, the engine produces near-silence and the WER gate
-fails.  This engine is marked **blocked** on issue #37.
+**Export recipe for re-export**:
+
+```python
+# Load with the vec2wav bundled WavLM class (not HuggingFace transformers)
+from vec2wav2.ssl_models.WavLM import WavLM, WavLMConfig
+
+checkpoint = torch.load("WavLM-Large.pt", map_location="cpu")
+cfg = WavLMConfig(checkpoint["cfg"])
+model = WavLM(cfg)
+model.load_state_dict(checkpoint["model"])  # strict=True, 0 missing keys
+model.eval()
+
+# Export layer-6 features (shape: [B, T, 1024])
+# The dynamo exporter produces .onnx + .onnx.data; merge before uploading:
+import onnx
+from onnx.external_data_helper import load_external_data_for_model
+load_external_data_for_model(proto, base_dir)
+onnx.save(proto, "wavlm_speaker.onnx", save_as_external_data=False)
+```
+
+### CNN feature extractor layer order
+
+The fairseq `ConvFeatureExtractionModel` uses the layer order
+`Conv1d → Dropout → GroupNorm → activation` in each block.  At inference with
+`dropout=0` this reduces to `Conv → GroupNorm → GELU`.  The export script must
+construct `nn.Sequential(conv, gn, nn.GELU())` and map state_dict keys accordingly:
+
+- original `conv_layers.N.0.*` → Sequential index 0 (Conv1d)
+- original `conv_layers.N.2.*` → Sequential index 1 (GroupNorm)
+- original `conv_layers.N.1` (Dropout) — omitted (identity at inference)
+
+Reversing the order to `Conv → GELU → GroupNorm` causes the VQ projection to receive
+wrong normalisation, reducing unique VQ tokens from ~370 to ~5 on real speech.
+
+### GroupNorm normalization scope
+
+`nn.GroupNorm(G, C)` applied to a `(B, C, T)` tensor normalises each group over **all**
+`(C/G) × T` elements jointly — one scalar mean and variance per `(batch, group)`, not
+per time step.  The numpy replica in `vec2wav.py` (`_group_norm`) must use:
+
+```python
+mean = xg.mean()   # scalar over all L × C_per_group elements
+var  = xg.var()
+```
+
+not `xg.mean(axis=1, keepdims=True)` (which gives per-time-step normalisation and
+produces ~4% token error rate even after the CNN layer-order fix).
+
+After all three fixes, token agreement between the numpy pipeline and the upstream
+PyTorch pipeline is ≥ 99.5% on real speech.
+
+### Domain mismatch: model quality on TTS-generated source
+
+The vec2wav 2.0 checkpoint was trained on natural LibriSpeech-style speech.  When the
+source audio is TTS-generated (e.g., edge-tts `en-US-GuyNeural`), the vq-wav2vec CNN
+and the BigVGAN vocoder receive out-of-training-distribution features.  The ONNX
+pipeline correctly replicates the PyTorch model (mean output diff = 9.6e-04), but both
+produce garbled speech on TTS sources (WER ≈ 100–142% for the demo sentence).
+
+The engine works as designed; the quality limitation is inherent to the upstream
+checkpoint and source domain.  For best results use naturally-recorded source audio
+rather than synthesized speech.

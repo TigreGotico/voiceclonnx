@@ -144,12 +144,15 @@ def _group_norm(x: np.ndarray, weight: np.ndarray, bias: np.ndarray, groups: int
                 eps: float = 1e-5) -> np.ndarray:
     """GroupNorm applied to (L, C) features.
 
-    Replicates ``nn.GroupNorm(groups, C)`` from fairseq's Fp32GroupNorm
-    (which casts to float32 before normalisation).
+    Replicates ``nn.GroupNorm(groups, C)`` applied to a (batch=1, C, T=L) BCT
+    tensor.  PyTorch GroupNorm normalises each group over *both* the
+    C_per_group channels AND the spatial dimension T simultaneously — so the
+    mean and variance are scalar per (batch, group), not per time step.
 
     Parameters
     ----------
-    x      : (L, C) float32
+    x      : (L, C) float32 — input, interpreted as a single BCT slice (C, L)
+             transposed for convenience.
     weight : (C,) float32 — per-channel scale (gamma)
     bias   : (C,) float32 — per-channel shift (beta)
     groups : number of normalisation groups
@@ -161,8 +164,10 @@ def _group_norm(x: np.ndarray, weight: np.ndarray, bias: np.ndarray, groups: int
     for g in range(groups):
         sl = slice(g * C_per_group, (g + 1) * C_per_group)
         xg = x[:, sl]  # (L, C_per_group)
-        mean = xg.mean(axis=1, keepdims=True)
-        var = xg.var(axis=1, keepdims=True)
+        # Normalise across all L*C_per_group elements (matches PyTorch GroupNorm
+        # which pools over the spatial+channel dims of each group jointly).
+        mean = xg.mean()
+        var = xg.var()
         out[:, sl] = (xg - mean) / np.sqrt(var + eps)
     return out * weight + bias
 
@@ -198,9 +203,9 @@ def _apply_vq_projection(
 def _vq_encode(
     cnn_features: np.ndarray,
     codebook: np.ndarray,
-    proj_conv_weight: np.ndarray,
-    proj_gn_weight: np.ndarray,
-    proj_gn_bias: np.ndarray,
+    proj_conv_weight: np.ndarray | None = None,
+    proj_gn_weight: np.ndarray | None = None,
+    proj_gn_bias: np.ndarray | None = None,
 ) -> np.ndarray:
     """Project → quantise CNN features → return nearest codebook entries.
 
@@ -213,17 +218,22 @@ def _vq_encode(
     ----------
     cnn_features    : (L, 512) float32 — raw CNN output.
     codebook        : (G, V, D) float32 — G=2, V=320, D=256.
-    proj_conv_weight: (512, 256, 1) float32 — grouped Conv1d weight.
-    proj_gn_weight  : (512,) float32 — GroupNorm scale.
-    proj_gn_bias    : (512,) float32 — GroupNorm bias.
+    proj_conv_weight: (512, 256, 1) float32 — grouped Conv1d weight, or None
+                      to skip projection (unit tests / synthetic data).
+    proj_gn_weight  : (512,) float32 — GroupNorm scale, or None.
+    proj_gn_bias    : (512,) float32 — GroupNorm bias, or None.
 
     Returns
     -------
     np.ndarray  (L, 512) float32 — VQ-vectors (codebook entries, concatenated
     across groups), matching upstream ``zq`` output.
     """
-    # Apply projection before codebook lookup (matches upstream forward())
-    ze = _apply_vq_projection(cnn_features, proj_conv_weight, proj_gn_weight, proj_gn_bias)
+    # Apply projection before codebook lookup (matches upstream forward()).
+    # Projection weights are None only in unit-test / synthetic-data paths.
+    if proj_conv_weight is not None:
+        ze = _apply_vq_projection(cnn_features, proj_conv_weight, proj_gn_weight, proj_gn_bias)
+    else:
+        ze = cnn_features
 
     G, V, D = codebook.shape  # G=2, V=320, D=256
     # Split projected features into G groups of D dims

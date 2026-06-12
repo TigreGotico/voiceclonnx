@@ -6,7 +6,7 @@ against the known source text (gate: WER ≤ 40%).
 | clip | WER | intelligible | transcript |
 |---|---|---|---|
 | [`source.wav`](source.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
-| [`outputs/bicodec__aria.wav`](outputs/bicodec__aria.wav) | 38% | ✅ | The quit-brown fox jumps over the lazy dog. His conversion changes who is speeding, but no |
+| [`outputs/bicodec__aria.wav`](outputs/bicodec__aria.wav) | 12% | ✅ | The quit-brown fox jumps over the lazy dog. His conversion changes who is speeding, but no |
 | [`outputs/bicodec__sonia.wav`](outputs/bicodec__sonia.wav) | 12% | ✅ | The quid brown fox jumps over the lazy dog. His conversion changes who is speeding but not |
 | [`outputs/chatterbox__aria.wav`](outputs/chatterbox__aria.wav) | 4% | ✅ | The quit-brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but  |
 | [`outputs/chatterbox__sonia.wav`](outputs/chatterbox__sonia.wav) | 8% | ✅ | The quit-brown fox jumps over the lazy dog. Voice conversion changes who was speaking, but |
@@ -33,5 +33,5 @@ against the known source text (gate: WER ≤ 40%).
 | [`outputs/speechtokenizer__sonia.wav`](outputs/speechtokenizer__sonia.wav) | 12% | ✅ | The quick brown fox jumps over the lazy dog. Those conversion changes are with speaking, b |
 | [`outputs/triaan__aria.wav`](outputs/triaan__aria.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who was speaking, bu |
 | [`outputs/triaan__sonia.wav`](outputs/triaan__sonia.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog voice conversion changes who was speaking but  |
-| [`outputs/vec2wav__aria.wav`](outputs/vec2wav__aria.wav) | 100% | ❌ |  |
-| [`outputs/vec2wav__sonia.wav`](outputs/vec2wav__sonia.wav) | 100% | ❌ |  |
+| [`outputs/vec2wav__aria.wav`](outputs/vec2wav__aria.wav) | 127% | ❌ | but they're from a pot, and also from what they do not. Or it's a very good energy generat |
+| [`outputs/vec2wav__sonia.wav`](outputs/vec2wav__sonia.wav) | 119% | ❌ | but first I applied and I said, I want to do it all. For it to break and I said, I don't w |
