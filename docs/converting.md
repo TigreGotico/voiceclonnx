@@ -987,3 +987,101 @@ amortises weight loading across sessions sharing a cache).
 **Recommendation:** keep the two-session path.  If a single-file distribution
 is needed, pack the two fp32 models into a ZIP/tar alongside the adapter; do
 not attempt a merged ONNX graph.
+
+---
+
+## Appendix: CosyVoice export notes
+
+### Non-AR VC path
+
+CosyVoice-300M (`FunAudioLLM/CosyVoice-300M`, Apache-2.0) supports voice
+conversion without the autoregressive LLM by using three components:
+
+| Role | Checkpoint | ONNX artifact |
+|---|---|---|
+| Source content tokenizer | `speech_tokenizer_v1.onnx` (upstream) | upstream |
+| Reference speaker encoder | `campplus.onnx` (upstream, CAM++) | upstream |
+| Flow encoder (tokens → mu) | `flow.pt` | `flow_encoder.onnx` |
+| ODE flow decoder (mu → mel) | `flow.decoder.estimator.fp32.onnx` (upstream) | `flow_decoder.onnx` |
+| HiFiGAN F0 + NSF source | `hift.pt` | `hifigan_f0_source.onnx` |
+| HiFiGAN backbone | `hift.pt` | `hifigan_backbone.onnx` |
+| Speaker affine layer | extracted from `flow.pt` | `spk_proj.npz` |
+
+Upstream artifacts are downloaded from `FunAudioLLM/CosyVoice-300M` via
+`hf_hub_download`; exported artifacts are produced by
+`conversion/export_cosyvoice.py`.
+
+### STFT/ISTFT limitation at opset 14
+
+`aten::stft` / `aten::istft` are not representable at opset 14.  The HiFiGAN
+`decode()` method calls both internally.  Solution: split HiFiGAN into two
+separate ONNX subgraphs at the STFT boundary.
+
+- **`hifigan_f0_source.onnx`**: takes mel `(1, 80, T_mel)`, outputs 1-D NSF
+  source signal `(1, 1, T_audio)`.  Contains `ConvRNNF0Predictor` +
+  `SourceModuleHnNSF` upsampling; no STFT involved.
+- **`hifigan_backbone.onnx`**: takes `(mel, source_stft)` where `source_stft`
+  is `(1, 18, T_stft)` (9 real + 9 imaginary bins from numpy STFT).  Outputs
+  `(magnitude, phase)` in the same STFT domain; no STFT inside the graph.
+- Numpy STFT and ISTFT are computed in the adapter (`_stft` / `_istft` in
+  `voiceclonnx/engines/cosyvoice.py`) using scipy's `get_window("hann")` with
+  `n_fft=16`, `hop_len=4`, center-pad = `n_fft // 2`.
+
+Parameters (`n_fft=16`, `hop_len=4`, Hann window, center-pad) must match
+exactly between the export script and the adapter.  Parity verified at export
+time: `STFT max_abs ≤ 1.4e-6`, `ISTFT roundtrip max_abs ≤ 5e-7`.
+
+### NSF source noise tolerance
+
+`SineGen` injects Gaussian noise (`std=0.003`) at every forward pass.  When
+exported to ONNX, this noise is baked as a constant in the initializer.  At
+inference time the ONNX graph uses the baked constant; the torch reference uses
+freshly sampled noise.  The resulting parity gap (`max_abs ≈ 0.115`) is
+expected — the amplitude of the noise (~3% of signal) is well within
+perceptually irrelevant territory.  Export tolerance is set to `0.15`; a value
+above `0.5` would indicate a structural error.
+
+### Dimension matching for backbone export
+
+The backbone's `source_downs` upsampling path requires that `T_stft` (the STFT
+frame count of the source signal) matches the upsampled activation length
+exactly.  When constructing the dummy input for export, compute the actual
+source STFT from a real forward pass of `hifigan_f0_source.onnx`:
+
+```python
+src_1d = f0_src_wrapper(dummy_mel).squeeze().numpy()   # (T_audio,)
+src_real, src_imag = _numpy_stft(src_1d, n_fft=16, hop_len=4)
+dummy_stft = torch.from_numpy(
+    np.concatenate([src_real, src_imag], axis=0)[np.newaxis].astype(np.float32)
+)  # (1, 18, T_stft)  — correct T_stft
+```
+
+Using a formula-derived `T_stft` may be off by ±1 frame due to STFT padding,
+causing a `RuntimeError: tensor size mismatch` inside the source_resblocks.
+
+### Speaker projection
+
+The `spk_embed_affine_layer` (192 → 80) is a `Linear(192, 80)` inside the
+flow model.  It maps the CAM++ 192-d embedding into the 80-d conditioning space
+expected by the flow decoder.  Weights are extracted at export time and saved as
+`spk_proj.npz` (`weight: (80, 192)`, `bias: (80,)`) so the adapter can apply
+the projection in pure numpy without loading the full flow model.
+
+### Reproduce the export
+
+```bash
+# Clone CosyVoice source (needed for model class definitions)
+git clone https://github.com/FunAudioLLM/CosyVoice /tmp/CosyVoice
+pip install /tmp/CosyVoice/third_party/AcademiCodec \
+            /tmp/CosyVoice/third_party/Matcha-TTS
+
+# Run export (torch + onnx required)
+PYTHONPATH=/tmp/CosyVoice python3 conversion/export_cosyvoice.py \
+    --out /tmp/vc-cosy-out --push
+
+# Push to HF Hub (requires HF_TOKEN with write access to TigreGotico org)
+huggingface-cli upload TigreGotico/voiceclonnx-cosyvoice /tmp/vc-cosy-out/cosyvoice
+```
+
+The `--push` flag skips re-exporting already-present ONNX files (checks by
+filename) and calls `huggingface_hub.upload_folder` directly after export.

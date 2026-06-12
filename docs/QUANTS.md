@@ -4,6 +4,32 @@ WER measured with faster-whisper `base.en` against the known source text.
 Sizes are ONNX model totals from the TigreGotico HF repos (fp32 + INT8).
 Gate: int8 flagged ⚠ when WER > 25% **and** > 15 points worse than fp32.
 
+## cosyvoice
+
+INT8 variants are produced by `conversion/export_cosyvoice.py` using
+`onnxruntime.quantization.quantize_dynamic` and hosted at
+`TigreGotico/voiceclonnx-cosyvoice`.
+
+`quantized=True` loads `flow_encoder_q8.onnx` + `flow_decoder_q8.onnx` +
+`hifigan_f0_source_q8.onnx` + `hifigan_backbone_q8.onnx`.
+`speech_tokenizer_v1.onnx` and `campplus.onnx` are never quantized — the
+tokenizer is upstream-provided and quantizing it risks integer-lookup
+instability; CAM++ is small enough (27 MB) that the savings are not worth the
+risk.
+
+Quantized component sizes:
+
+| Component | fp32 (MB) | INT8 (MB) | Reduction |
+|---|---|---|---|
+| `flow_encoder` | 108 | 42 | 61% |
+| `flow_decoder` | 314 | 82 | 74% |
+| `hifigan_f0_source` | 13 | 3 | 77% |
+| `hifigan_backbone` | 66 | 25 | 62% |
+
+E2E WER results are gated on `VOICECLONNX_E2E=1` (real model download
+required).  The row in the comparison table above is marked `pending E2E`
+until that run completes.
+
 ## chatterbox
 
 INT8 variants are produced by the voiceclonnx export pipeline and hosted at
@@ -28,6 +54,7 @@ no external-data sidecars).
 | Engine | fp32 WER | int8 WER | fp32 size (MB) | int8 size (MB) | Saving | Verdict |
 |--------|----------|----------|----------------|----------------|--------|---------|
 | `bicodec` | 12% | 0% | 1390.7 | 419.0 | 70% | ✅ int8 recommended |
+| `cosyvoice` | — | — | 1027.0 | 152.0 | 85% (quantized components only) | pending E2E |
 | `chatterbox` | 8% | 8% | 1080.3 | 467.0 | 57% | ✅ int8 recommended |
 | `facodec` | 0% | 0% | 156.3 | 69.3 | 56% | ✅ int8 recommended |
 | `focalcodec` | 15% | 31% | 690.9 | 374.8 | 46% | ⚠ int8 degraded (31% vs fp32 15%) |
