@@ -4,18 +4,31 @@ WER measured with faster-whisper `base.en` against the known source text.
 Sizes are ONNX model totals from the TigreGotico HF repos (fp32 + INT8).
 Gate: int8 flagged ⚠ when WER > 25% **and** > 15 points worse than fp32.
 
-## chatterbox — fp32 only
+## chatterbox
 
-The upstream `onnx-community/chatterbox-onnx` repository does not publish
-INT8 variants of `speech_encoder.onnx` or `conditional_decoder.onnx`.
-The `quantized=True` parameter is accepted (uniform API) but silently
-ignored; chatterbox always runs fp32 until upstream ships q8 exports.
+INT8 variants are produced by the vconnx export pipeline and hosted at
+`TigreGotico/vconnx-chatterbox`.  `quantized=True` loads
+`speech_encoder_q8.onnx` + `conditional_decoder_q8.onnx` (self-contained,
+no external-data sidecars).
+
+**Quantization quirks resolved in the export pipeline:**
+
+- `speech_encoder.onnx` — two `Gemm(transB=1)` nodes in the S3 VQ codebook
+  (`project_down`) trigger a known ORT `quantize_dynamic` preprocessing bug:
+  the decomposed `MatMul` is generated with the un-transposed weight, causing
+  `[ShapeInferenceError] Incompatible dimensions` at session load.  The export
+  script pre-transposes the weight and rewrites the nodes as `MatMul+Add`
+  before quantization.
+- `conditional_decoder.onnx` — 20 `If` nodes with subgraph `MatMul` ops cause
+  ORT's session initializer to hang when those ops are quantized.  The
+  If-subgraph nodes are enumerated and excluded from quantization.
 
 ## Engine comparison
 
 | Engine | fp32 WER | int8 WER | fp32 size (MB) | int8 size (MB) | Saving | Verdict |
 |--------|----------|----------|----------------|----------------|--------|---------|
 | `bicodec` | 12% | 0% | 1390.7 | 419.0 | 70% | ✅ int8 recommended |
+| `chatterbox` | 8% | 8% | 1080.3 | 467.0 | 57% | ✅ int8 recommended |
 | `facodec` | 0% | 0% | 156.3 | 69.3 | 56% | ✅ int8 recommended |
 | `focalcodec` | 15% | 31% | 690.9 | 374.8 | 46% | ⚠ int8 degraded (31% vs fp32 15%) |
 | `freevc` | 12% | 62% | 1390.7 | 358.8 | 74% | ⚠ int8 degraded (62% vs fp32 12%) |

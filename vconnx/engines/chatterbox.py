@@ -17,7 +17,7 @@ audio's prompt tokens are concatenated directly with the target prompt tokens
 and fed straight to the decoder — bypassing the generation loop entirely.
 No tokenizer.json is downloaded or parsed.
 
-Models: ``onnx-community/chatterbox-onnx`` (HF, Apache-2.0).
+Models: ``TigreGotico/vconnx-chatterbox`` (HF, Apache-2.0).
 Output sample rate: 24 kHz.
 Core deps: onnxruntime, numpy, soundfile, huggingface_hub.
 """
@@ -35,13 +35,17 @@ from vconnx.engines.base import VoiceClonerBase, EngineEntry, register_engine
 _CHATTERBOX_SR = 24000
 
 # HF model repo hosting the ONNX files
-_HF_MODEL_ID = "onnx-community/chatterbox-onnx"
+_HF_MODEL_ID = "TigreGotico/vconnx-chatterbox"
 
-# ONNX filenames within the ``onnx/`` subdirectory of the repo
+# ONNX filenames within the ``onnx/`` subdirectory of the repo — fp32 variants
 _SPEECH_ENC_ONNX = "onnx/speech_encoder.onnx"
 _SPEECH_ENC_DATA = "onnx/speech_encoder.onnx_data"
 _COND_DEC_ONNX = "onnx/conditional_decoder.onnx"
 _COND_DEC_DATA = "onnx/conditional_decoder.onnx_data"
+
+# INT8 quantized variants (single self-contained files, no external data)
+_SPEECH_ENC_Q8_ONNX = "onnx/speech_encoder_q8.onnx"
+_COND_DEC_Q8_ONNX = "onnx/conditional_decoder_q8.onnx"
 
 
 # ---------------------------------------------------------------------------
@@ -99,10 +103,10 @@ class ChatterboxAdapter(VoiceClonerBase):
     Parameters
     ----------
     quantized:
-        Accepted for API uniformity with other engines but **ignored** —
-        ``onnx-community/chatterbox-onnx`` does not publish INT8 variants of
-        the ``speech_encoder`` or ``conditional_decoder`` used for VC.
-        Chatterbox is fp32-only until upstream ships q8 exports.
+        When ``True``, load the INT8-quantized variants
+        (``speech_encoder_q8.onnx`` + ``conditional_decoder_q8.onnx``) from
+        ``TigreGotico/vconnx-chatterbox``.  INT8 reduces total model size from
+        ~1 081 MB to ~468 MB (57% saving) with identical WER on reference clips.
     exaggeration:
         Voice-exaggeration scalar (default ``0.6``).  Stored for API
         compatibility; the conditional decoder does not expose this as a
@@ -113,8 +117,6 @@ class ChatterboxAdapter(VoiceClonerBase):
     """
 
     _sample_rate = _CHATTERBOX_SR
-    #: INT8 variants are not available in onnx-community/chatterbox-onnx.
-    fp32_only: bool = True
 
     def __init__(
         self,
@@ -123,7 +125,7 @@ class ChatterboxAdapter(VoiceClonerBase):
         **cfg,
     ):
         super().__init__(**cfg)
-        self._quantized = quantized  # accepted but unused; fp32-only engine
+        self._quantized = quantized
         self._exaggeration = exaggeration
         self._speech_enc_sess = None
         self._cond_dec_sess = None
@@ -149,11 +151,16 @@ class ChatterboxAdapter(VoiceClonerBase):
         except ImportError as exc:
             raise ImportError("huggingface_hub is required.") from exc
 
-        # Download ONNX files and their external-data companions
-        enc_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_SPEECH_ENC_ONNX)
-        hf_hub_download(repo_id=_HF_MODEL_ID, filename=_SPEECH_ENC_DATA)
-        dec_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_COND_DEC_ONNX)
-        hf_hub_download(repo_id=_HF_MODEL_ID, filename=_COND_DEC_DATA)
+        if self._quantized:
+            # INT8 variants: single self-contained files, no external-data sidecar
+            enc_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_SPEECH_ENC_Q8_ONNX)
+            dec_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_COND_DEC_Q8_ONNX)
+        else:
+            # fp32 variants: main .onnx + external-data sidecar (must be co-located)
+            enc_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_SPEECH_ENC_ONNX)
+            hf_hub_download(repo_id=_HF_MODEL_ID, filename=_SPEECH_ENC_DATA)
+            dec_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_COND_DEC_ONNX)
+            hf_hub_download(repo_id=_HF_MODEL_ID, filename=_COND_DEC_DATA)
 
         sess_opts = ort.SessionOptions()
         n = os.cpu_count() or 4
@@ -261,8 +268,9 @@ register_engine(
         adapter_class=ChatterboxAdapter,
         description=(
             "Chatterbox AR codec-LM (Resemble AI). ONNX export via "
-            "onnx-community/chatterbox-onnx (HF). Voice conversion at 24 kHz. "
-            "VC path only — no tokenizer, no LLM generation loop."
+            "TigreGotico/vconnx-chatterbox (HF). Voice conversion at 24 kHz. "
+            "VC path only — no tokenizer, no LLM generation loop. "
+            "INT8 quantized variant available via quantized=True (57% smaller, same WER)."
         ),
         extras="",
         onnx_native=True,
