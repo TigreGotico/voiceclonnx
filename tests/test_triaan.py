@@ -106,7 +106,7 @@ def test_triaan_entry_metadata():
     entry = get_engine("triaan")
     assert entry.alias == "triaan"
     assert entry.onnx_native is True
-    assert entry.extras == "triaan"
+    assert entry.extras == ""
     assert entry.adapter_class.__name__ == "TriAANVCAdapter"
 
 

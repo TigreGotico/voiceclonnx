@@ -35,8 +35,8 @@ Voice models are user-supplied (community .pth files converted to ONNX via
 ``convert_rvc_model.py``, or pulled from HF repos that redistribute ONNX
 files).
 
-Requires: ``pip install vconnx[rvc]``
-  → onnxruntime, numpy, soundfile, librosa
+Requires: ``pip install vconnx``
+  -> onnxruntime, numpy, soundfile, huggingface_hub
 
 References
 ----------
@@ -648,7 +648,7 @@ register_engine(
             "Base models from TigreGotico/vconnx-rvc (MIT).  "
             "(RVC-Project, MIT license)"
         ),
-        extras="rvc",
+        extras="",
         onnx_native=True,
     )
 )

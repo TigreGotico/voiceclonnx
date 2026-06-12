@@ -12,8 +12,8 @@ conversion system.  At inference it uses:
 All neural components run via onnxruntime.  The kNN step is pure numpy —
 no ONNX, no torch at inference.
 
-Requires: ``pip install vconnx[knnvc]``
-  → onnxruntime, numpy, soundfile (already in core deps except soundfile)
+Requires: ``pip install vconnx``
+  -> onnxruntime, numpy, soundfile, huggingface_hub
 
 References
 ----------
@@ -289,7 +289,7 @@ register_engine(
             "ONNX artifacts from TigreGotico/vconnx-knn-vc. "
             "(Baas et al., Interspeech 2023, MIT license)"
         ),
-        extras="knnvc",
+        extras="",
         onnx_native=True,
     )
 )

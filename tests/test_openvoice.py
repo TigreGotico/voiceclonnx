@@ -56,7 +56,7 @@ def test_openvoice_entry_metadata():
     entry = get_engine("openvoice")
     assert entry.alias == "openvoice"
     assert entry.onnx_native is True
-    assert entry.extras == "openvoice"
+    assert entry.extras == ""
     assert entry.adapter_class.__name__ == "OpenVoiceV2Adapter"
 
 

@@ -4,8 +4,12 @@ This guide walks an engine-issue implementer through the full pipeline:
 **export → parity → quantize → push → adapter**.
 
 All toolchain scripts live under `conversion/` and require the
-`vconnx[convert]` extras group (PyTorch, onnxruntime, huggingface_hub, etc.).
-They are never imported by the vconnx runtime.
+`vconnx[convert]` extras group (PyTorch, onnxruntime, transformers, librosa,
+huggingface_hub, etc.).  They are never imported by the vconnx runtime.
+
+> **Dependency note:** `torch`, `librosa`, `transformers`, and `onnx` are
+> conversion/export-only dependencies.  The inference runtime (`pip install vconnx`)
+> requires only `onnxruntime`, `numpy`, `soundfile`, and `huggingface_hub`.
 
 ---
 

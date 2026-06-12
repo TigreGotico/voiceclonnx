@@ -8,22 +8,25 @@ Pure-ONNX multi-engine voice-cloning library — no PyTorch at runtime.
 
 **Audio-to-audio only.** vconnx converts the voice in an existing speech file to
 sound like a reference speaker. Text-driven synthesis (text → cloned audio) is a
-TTS-engine concern and is explicitly out of scope; see `chatterbox_onnx` or similar
-libraries for that.
+TTS-engine concern and is explicitly out of scope.
 
 ---
 
 ## Install
 
 ```bash
-pip install vconnx                    # core (no engine)
-pip install "vconnx[chatterbox]"      # Chatterbox AR codec-LM (default)
-pip install "vconnx[focalcodec]"      # FocalCodec — WavLM + kNN cosine + Vocos
-pip install "vconnx[freevc]"          # FreeVC — WavLM + VITS decoder
-pip install "vconnx[knnvc]"           # kNN-VC — WavLM + HiFi-GAN
-pip install "vconnx[openvoice]"       # OpenVoice v2 tone-color converter
-pip install "vconnx[rvc]"             # RVC any-to-one (community voice models)
-pip install "vconnx[triaan]"          # TriAAN-VC — CPC + TriAAN decoder + PWG
+pip install vconnx
+```
+
+That single command installs **every engine** — no per-engine extras required.
+Core dependencies: `onnxruntime`, `numpy`, `soundfile`, `huggingface_hub`.
+ONNX models are downloaded on first use from Hugging Face Hub.
+
+For model conversion / export tooling only:
+
+```bash
+pip install "vconnx[convert]"   # torch, onnx, transformers, librosa (conversion only)
+pip install "vconnx[test]"      # pytest, faster-whisper, edge-tts (testing)
 ```
 
 ---
@@ -65,15 +68,17 @@ vconnx list
 
 ## Engine matrix
 
-| Alias | Install extra | Sample rate | Model repo | License |
-|---|---|---|---|---|
-| `chatterbox` | `vconnx[chatterbox]` | 24 kHz | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | See upstream |
-| `focalcodec` | `vconnx[focalcodec]` | 16 kHz | [TigreGotico/vconnx-focalcodec](https://huggingface.co/TigreGotico/vconnx-focalcodec) | Apache-2.0 |
-| `freevc` | `vconnx[freevc]` | 16 kHz | [TigreGotico/vconnx-freevc](https://huggingface.co/TigreGotico/vconnx-freevc) | MIT |
-| `knnvc` | `vconnx[knnvc]` | 16 kHz | [TigreGotico/vconnx-knn-vc](https://huggingface.co/TigreGotico/vconnx-knn-vc) | MIT |
-| `openvoice` | `vconnx[openvoice]` | 22 kHz | [TigreGotico/vconnx-openvoice-v2](https://huggingface.co/TigreGotico/vconnx-openvoice-v2) | MIT |
-| `rvc` | `vconnx[rvc]` | 40/48 kHz (per voice model) | [TigreGotico/vconnx-rvc](https://huggingface.co/TigreGotico/vconnx-rvc) | MIT |
-| `triaan` | `vconnx[triaan]` | 16 kHz | [TigreGotico/vconnx-triaan-vc](https://huggingface.co/TigreGotico/vconnx-triaan-vc) | MIT |
+All engines ship with `pip install vconnx` — no per-engine extras needed.
+
+| Alias | Sample rate | Model repo | License |
+|---|---|---|---|
+| `chatterbox` | 24 kHz | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | Apache-2.0 |
+| `focalcodec` | 16 kHz | [TigreGotico/vconnx-focalcodec](https://huggingface.co/TigreGotico/vconnx-focalcodec) | Apache-2.0 |
+| `freevc` | 16 kHz | [TigreGotico/vconnx-freevc](https://huggingface.co/TigreGotico/vconnx-freevc) | MIT |
+| `knnvc` | 16 kHz | [TigreGotico/vconnx-knn-vc](https://huggingface.co/TigreGotico/vconnx-knn-vc) | MIT |
+| `openvoice` | 22 kHz | [TigreGotico/vconnx-openvoice-v2](https://huggingface.co/TigreGotico/vconnx-openvoice-v2) | MIT |
+| `rvc` | 40/48 kHz | [TigreGotico/vconnx-rvc](https://huggingface.co/TigreGotico/vconnx-rvc) | MIT |
+| `triaan` | 16 kHz | [TigreGotico/vconnx-triaan-vc](https://huggingface.co/TigreGotico/vconnx-triaan-vc) | MIT |
 
 ### rvc
 
@@ -88,10 +93,6 @@ voices are available on Hugging Face.
 (local ``.onnx`` or HF repo ID ``owner/repo``), not a reference audio file.
 The target speaker identity is encoded in the model weights.  Use
 ``default_model`` in the constructor to set a fallback.
-
-```bash
-pip install "vconnx[rvc]"
-```
 
 ```python
 from vconnx import VoiceCloner
@@ -124,7 +125,7 @@ python -m conversion.convert_rvc_model myvoice.pth myvoice.onnx
 1. Subclass `VoiceClonerBase` from `vconnx.engines.base`.
 2. Implement `clone_voice(audio, reference_voice, out_path) -> str`.
 3. Call `register_engine(EngineEntry(alias=..., adapter_class=...))`.
-4. Add an extras group in `pyproject.toml`.
+4. Add the auto-import to `vconnx/__init__.py`.
 
 See [docs/api.md](docs/api.md) for the full API reference.
 

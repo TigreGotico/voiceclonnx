@@ -1,49 +1,62 @@
 """End-to-end test: real Chatterbox ONNX voice conversion.
 
-Skipped unless chatterbox_onnx is importable.  Runs a real voice_convert
-call using edge-tts output as source audio.  Timeout-bound for CI.
+Skipped unless VCONNX_E2E=1 is set; also requires edge-tts + ffmpeg for
+audio generation.  Runs a real voice_convert call using native vconnx
+chatterbox adapter (no chatterbox_onnx package needed).
 
 Run locally with:
-    pytest tests/test_e2e_chatterbox.py -v -s
+    VCONNX_E2E=1 pytest tests/test_e2e_chatterbox.py -v -s
 """
 
 import asyncio
 import os
-import tempfile
+import subprocess
 import time
 import wave
 from pathlib import Path
 
 import pytest
 
-pytest.importorskip("chatterbox_onnx", reason="chatterbox_onnx not installed")
-pytest.importorskip("edge_tts", reason="edge-tts not installed")
+_SKIP_E2E = not os.environ.get("VCONNX_E2E", "")
+_E2E_REASON = (
+    "E2E chatterbox test downloads large ONNX models and requires ffmpeg+edge-tts; "
+    "set VCONNX_E2E=1 to run."
+)
+
+
+def _synth_wav(text: str, voice: str, out_wav: str) -> None:
+    """Generate a WAV via edge-tts + ffmpeg (no librosa required)."""
+    import edge_tts
+
+    mp3_path = out_wav.replace(".wav", ".mp3")
+
+    async def _run():
+        await edge_tts.Communicate(text, voice).save(mp3_path)
+
+    asyncio.run(_run())
+    subprocess.run(
+        ["ffmpeg", "-y", "-loglevel", "error", "-i", mp3_path,
+         "-ar", "24000", "-ac", "1", "-sample_fmt", "s16", out_wav],
+        check=True,
+    )
+    Path(mp3_path).unlink(missing_ok=True)
 
 
 @pytest.fixture(scope="module")
 def tts_wav(tmp_path_factory):
-    """Generate a short WAV via edge-tts for use as source + reference."""
-    import edge_tts
+    """Generate short WAVs via edge-tts for use as source and reference."""
+    pytest.importorskip("edge_tts", reason="edge-tts not installed")
 
     tmp = tmp_path_factory.mktemp("e2e_audio")
     src_path = str(tmp / "source.wav")
     ref_path = str(tmp / "reference.wav")
 
-    async def _gen(text, path):
-        comm = edge_tts.Communicate(text, "en-US-AriaNeural")
-        # edge-tts produces mp3; use a temp mp3 then convert via soundfile/librosa
-        mp3_path = path.replace(".wav", ".mp3")
-        await comm.save(mp3_path)
-        import librosa
-        import soundfile as sf
-        y, sr = librosa.load(mp3_path, sr=24000, mono=True)
-        sf.write(path, y, sr, subtype="PCM_16")
-
-    asyncio.run(_gen("Hello, this is a voice cloning test using vconnx.", src_path))
-    asyncio.run(_gen("The quick brown fox jumps over the lazy dog.", ref_path))
+    _synth_wav("Hello, this is a voice cloning test using vconnx.", "en-US-AriaNeural", src_path)
+    _synth_wav("The quick brown fox jumps over the lazy dog.", "en-GB-SoniaNeural", ref_path)
     return src_path, ref_path
 
 
+@pytest.mark.skipif(_SKIP_E2E, reason=_E2E_REASON)
 @pytest.mark.timeout(360)
 def test_chatterbox_voice_convert(tts_wav, tmp_path):
     from vconnx import VoiceCloner
@@ -52,7 +65,7 @@ def test_chatterbox_voice_convert(tts_wav, tmp_path):
     out_path = str(tmp_path / "converted.wav")
 
     t0 = time.time()
-    cloner = VoiceCloner(engine="chatterbox", quantized=True, max_new_tokens=256)
+    cloner = VoiceCloner(engine="chatterbox")
     result = cloner.clone_voice(src_path, ref_path, out_path)
     elapsed = time.time() - t0
 

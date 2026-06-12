@@ -18,7 +18,8 @@ FocalCodec) and decoder (Vocos ISTFT vocoder):
 
 Runtime requirements: ``onnxruntime``, ``numpy``, ``soundfile``.
 
-Requires: ``pip install vconnx[focalcodec]``
+Requires: ``pip install vconnx``
+  -> onnxruntime, numpy, soundfile, huggingface_hub
 
 References
 ----------
@@ -357,7 +358,7 @@ register_engine(
             "ONNX artifacts from TigreGotico/vconnx-focalcodec. "
             "(Della Libera et al., NeurIPS 2025, Apache-2.0)"
         ),
-        extras="focalcodec",
+        extras="",
         onnx_native=True,
     )
 )

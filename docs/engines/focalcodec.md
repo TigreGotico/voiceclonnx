@@ -20,7 +20,7 @@ Output sample rate: **16 kHz**.
 ## Install
 
 ```bash
-pip install "vconnx[focalcodec]"
+pip install vconnx
 ```
 
 Dependencies pulled in: `onnxruntime`, `numpy`, `soundfile`.
@@ -81,7 +81,7 @@ cloner = VoiceCloner(engine="focalcodec", k=8)
 ### CLI
 
 ```bash
-pip install "vconnx[focalcodec]"
+pip install vconnx
 
 vconnx clone --engine focalcodec \
              --audio source.wav \
@@ -102,7 +102,7 @@ vconnx clone --engine focalcodec \
 ## Troubleshooting
 
 **`ImportError: onnxruntime is required`**
-Install the extras group: `pip install "vconnx[focalcodec]"`.
+Install the extras group: `pip install vconnx`.
 
 **Output sounds noisy or garbled**
 Ensure the reference clip is clean, at least 5 s long, and recorded at 16 kHz (or

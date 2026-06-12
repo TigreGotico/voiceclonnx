@@ -60,7 +60,7 @@ def test_focalcodec_entry_metadata():
     entry = get_engine("focalcodec")
     assert entry.alias == "focalcodec"
     assert entry.onnx_native is True
-    assert entry.extras == "focalcodec"
+    assert entry.extras == ""
     assert entry.adapter_class.__name__ == "FocalCodecAdapter"
 
 

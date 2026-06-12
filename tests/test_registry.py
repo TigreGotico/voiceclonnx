@@ -21,7 +21,7 @@ def test_get_engine_returns_entry():
     entry = get_engine("chatterbox")
     assert entry.alias == "chatterbox"
     assert entry.onnx_native is True
-    assert entry.extras == "chatterbox"
+    assert entry.extras == ""
 
 
 def test_get_engine_unknown_raises():

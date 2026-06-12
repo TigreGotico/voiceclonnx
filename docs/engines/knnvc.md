@@ -18,7 +18,7 @@ Output sample rate: **16 kHz**.
 ## Install
 
 ```bash
-pip install "vconnx[knnvc]"
+pip install vconnx
 ```
 
 Dependencies pulled in: `onnxruntime`, `numpy`, `soundfile`.
@@ -69,7 +69,7 @@ cloner = VoiceCloner(engine="knnvc", k=8)
 ### CLI
 
 ```bash
-pip install "vconnx[knnvc]"
+pip install vconnx
 
 vconnx clone --engine knnvc \
              --audio source.wav \
@@ -89,10 +89,10 @@ vconnx clone --engine knnvc \
 ## Troubleshooting
 
 **`ImportError: onnxruntime is required`**
-Install the extras group: `pip install "vconnx[knnvc]"`.
+Install the extras group: `pip install vconnx`.
 
 **`ImportError: soundfile`**
-Same fix: `pip install "vconnx[knnvc]"` pulls soundfile.
+Same fix: `pip install vconnx` pulls soundfile.
 
 **Output sounds noisy or garbled**
 The conversion quality depends on having a reference clip that is clean and close to

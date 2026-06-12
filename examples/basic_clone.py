@@ -5,7 +5,7 @@ voice conversion, and prints a one-line summary.
 
 Requirements::
 
-    pip install "vconnx[knnvc]" edge-tts
+    pip install vconnx edge-tts
 
 Run::
 

@@ -10,7 +10,7 @@ Model footprints:
 
 Requirements::
 
-    pip install "vconnx[knnvc]" "vconnx[openvoice]"
+    pip install vconnx
 
 Run::
 

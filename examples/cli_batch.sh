@@ -14,7 +14,7 @@
 #   ./examples/cli_batch.sh ./wavs ref_speaker.wav ./out chatterbox
 #
 # Requirements:
-#   pip install "vconnx[chatterbox]"   # or whichever engine you choose
+#   pip install vconnx   # all engines included
 
 set -euo pipefail
 
