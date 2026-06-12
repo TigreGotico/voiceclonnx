@@ -217,6 +217,8 @@ def export_model(
     total_params = sum(p.numel() * p.element_size() for p in model.parameters())
     use_external = total_params > external_data_threshold_bytes
 
+    # Use legacy TorchScript-based export (dynamo=False) for compatibility with
+    # models that have data-dependent shapes in torchaudio / WavLM internals.
     torch.onnx.export(
         model,
         dummy_inputs,

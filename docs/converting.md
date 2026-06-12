@@ -1162,3 +1162,77 @@ weight-only quantization without activation calibration.  Cosyvoice is listed
 in `docs/QUANTS.md` with INT8 flagged ⚠.  Activation-calibrated (static) INT8
 via ONNX Runtime calibration tools may recover quality but requires a
 representative dataset and is out of scope for this release.
+
+---
+
+## Appendix E: External-checkout pattern (LinaCodec / future engines)
+
+Some upstream model codebases carry licenses that are incompatible with
+vendoring into the MIT-licensed voiceclonnx repository.  LinaCodec is the
+first engine to use this pattern:
+
+- The LinaCodec Transformer backbone derives from Meta's Llama-3
+  (Llama 3 Community License).
+- The distill_wavlm module derives from torchaudio (BSD-2-Clause).
+
+Neither license prohibits *export* or *distribution of ONNX weights*, but
+vendoring the source code into a MIT repository would misrepresent the
+licensing of the resulting library.
+
+### Pattern: external clone at export time
+
+```
+conversion/
+  export_linacodec.py        ← export script; clones upstream at runtime
+voiceclonnx/
+  engines/linacodec.py       ← runtime adapter; ZERO upstream code
+```
+
+The export script (`export_linacodec.py`) does:
+
+1. Clones the upstream repository to a **throwaway path** (`/tmp/LinaCodec`)
+   using `git clone`.  The clone is never committed to voiceclonnx.
+2. Adds `<clone>/src` to `sys.path` at runtime.
+3. Imports and instantiates the upstream models.
+4. Exports ONNX artifacts.
+5. The clone is discarded after export.
+
+```python
+def _ensure_linacodec_clone(dest: str = "/tmp/LinaCodec") -> None:
+    import subprocess, sys
+    if not Path(dest).exists():
+        subprocess.run(
+            ["git", "clone", "--depth=1",
+             "https://github.com/ysharma3501/LinaCodec", dest],
+            check=True,
+        )
+    sys.path.insert(0, str(Path(dest) / "src"))
+```
+
+The runtime adapter (`voiceclonnx/engines/linacodec.py`) contains:
+- Pure `onnxruntime` + `numpy` — no imports from the upstream repository.
+- No upstream source code whatsoever.
+
+### ONNX weight licensing
+
+The exported ONNX artifacts ARE published to HF Hub
+(`TigreGotico/voiceclonnx-linacodec`).  The model card states the upstream
+licenses plainly: Llama 3 Community License (Transformer backbone) + BSD-2-Clause
+(distill_wavlm).  Users who download the weights should review those licenses.
+
+### Adapting this pattern for other engines
+
+Use this pattern whenever an upstream codebase carries a license that is
+incompatible with the MIT-labeled voiceclonnx source, but the ONNX weights
+may be re-distributed under their upstream license:
+
+1. Create `conversion/export_<engine>.py` with a `_ensure_<engine>_clone()`
+   helper that clones to `/tmp/`.
+2. Keep `voiceclonnx/engines/<engine>.py` free of all upstream source code.
+3. State the upstream license(s) explicitly in the adapter module docstring
+   and in the HF model card.
+4. Document the pattern in this appendix so future maintainers understand why
+   the export script clones externally.
+
+This pattern is also appropriate for SeedVC (planned as issue #25), which
+uses a similar Transformer architecture under a research license.
