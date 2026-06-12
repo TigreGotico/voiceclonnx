@@ -72,6 +72,20 @@ class _MockPWGSess:
         return [wav]
 
 
+def _make_mock_adapter(**kwargs):
+    """Return a TriAANVCAdapter with all sessions and mel_stats stubbed out."""
+    from vconnx.engines.triaan import TriAANVCAdapter
+
+    adapter = TriAANVCAdapter(**kwargs)
+    adapter._cpc_sess = _MockCPCSess()
+    adapter._triaan_sess = _MockTriAANSess()
+    adapter._pwg_sess = _MockPWGSess()
+    # Identity denorm stats so _convert is a no-op under the mock
+    adapter._mel_mean = np.zeros((80, 1), dtype=np.float32)
+    adapter._mel_std = np.ones((80, 1), dtype=np.float32)
+    return adapter
+
+
 # ---------------------------------------------------------------------------
 # 1. Registry wiring
 # ---------------------------------------------------------------------------
@@ -170,16 +184,11 @@ def test_lf0_deterministic():
 
 def test_adapter_clone_voice_mock(tmp_path):
     """Adapter pipeline completes with mocked ORT sessions."""
-    from vconnx.engines.triaan import TriAANVCAdapter
-
     src = _make_wav(str(tmp_path / "src.wav"), duration_s=1.0)
     ref = _make_wav(str(tmp_path / "ref.wav"), duration_s=1.5, freq=330.0)
     out = str(tmp_path / "out.wav")
 
-    adapter = TriAANVCAdapter()
-    adapter._cpc_sess = _MockCPCSess()
-    adapter._triaan_sess = _MockTriAANSess()
-    adapter._pwg_sess = _MockPWGSess()
+    adapter = _make_mock_adapter()
 
     result = adapter.clone_voice(src, ref, out)
     assert result == str(Path(out).resolve())
@@ -207,10 +216,7 @@ def test_adapter_output_is_16khz(tmp_path):
     ref = _make_wav(str(tmp_path / "ref.wav"))
     out = str(tmp_path / "out.wav")
 
-    adapter = TriAANVCAdapter()
-    adapter._cpc_sess = _MockCPCSess()
-    adapter._triaan_sess = _MockTriAANSess()
-    adapter._pwg_sess = _MockPWGSess()
+    adapter = _make_mock_adapter()
 
     adapter.clone_voice(src_path, ref, out)
 
@@ -248,10 +254,7 @@ def test_adapter_lf0_alignment(tmp_path):
     ref = _make_wav(str(tmp_path / "ref.wav"), duration_s=0.7)
     out = str(tmp_path / "out.wav")
 
-    adapter = TriAANVCAdapter()
-    adapter._cpc_sess = _MockCPCSess()
-    adapter._triaan_sess = _MockTriAANSess()
-    adapter._pwg_sess = _MockPWGSess()
+    adapter = _make_mock_adapter()
 
     # Should not raise
     adapter.clone_voice(src, ref, out)
@@ -271,10 +274,7 @@ def test_adapter_stereo_source_mixed_down(tmp_path):
     ref = _make_wav(str(tmp_path / "ref.wav"))
     out = str(tmp_path / "out.wav")
 
-    adapter = TriAANVCAdapter()
-    adapter._cpc_sess = _MockCPCSess()
-    adapter._triaan_sess = _MockTriAANSess()
-    adapter._pwg_sess = _MockPWGSess()
+    adapter = _make_mock_adapter()
 
     adapter.clone_voice(src_path, ref, out)
     assert Path(out).exists()

@@ -21,8 +21,12 @@ Architecture exported here (all verified from checkpoint keys):
 
 Export strategy
 ---------------
-- CPC encoder: reconstructed architecture with naming that exactly matches
-  checkpoint keys.  Strict weight loading.
+- CPC encoder: loaded via upstream ``src/cpc.load_cpc`` from a local clone
+  of the winddori2002/TriAAN-VC repo (which bundles facebookresearch/CPC_audio
+  code).  Uses the real ``ChannelNorm`` (per-channel layer-norm with affine)
+  and correct ``Conv1d`` padding, producing 100 frames per 16 kHz second.
+  A reconstructed architecture without padding produced 98 frames and 1.46
+  max-abs divergence from the real model (the parity-vs-self trap).
 - TriAAN-VC: loaded from a local clone of winddori2002/TriAAN-VC so the
   architecture exactly matches the checkpoint.  Uses legacy TorchScript-based
   ``torch.onnx.export(dynamo=False)``.
@@ -158,65 +162,42 @@ def _fix_scipy_kaiser() -> None:
 # ---------------------------------------------------------------------------
 
 
-def _build_cpc_encoder():
-    """Reconstruct CPC encoder exactly matching the checkpoint layout.
+def _load_cpc_model(clone_dir: Path, ckpt_path: Path):
+    """Load CPC encoder from upstream checkpoint via upstream src/cpc.py.
 
-    Verified from cpc.pt['weights']:
-      gEncoder.conv[0-4].weight / .bias       → conv[0-4].weight / .bias
-      gEncoder.batchNorm[0-4].weight / .bias  → batchNorm[0-4].weight / .bias
-        (shape 1, C, 1 — learned per-channel affine transform)
-      gAR.baseNet.weight_ih_l0 ...            → gru.weight_ih_l0 ...
-        (LSTM: weight_ih shape (1024, 256) = 4×256 gates × 256 input)
+    Uses the real CPCModel from facebookresearch/CPC_audio (cloned inside
+    the TriAAN-VC repo), with exact ChannelNorm + padding that matches the
+    checkpoint.  Wraps the model to return only cFeature (B, T, 256) for
+    ONNX export — the same shape the adapter transposes to (B, 256, T).
+
+    The previous reconstruction used LearnedNorm1d (affine-only) instead of
+    ChannelNorm (per-channel layer-norm) and omitted conv padding, causing
+    100 vs 98 frame counts and 1.46 max-abs divergence from the real output.
     """
     import torch
     import torch.nn as nn
 
-    class LearnedNorm1d(nn.Module):
-        def __init__(self, channels: int):
+    _add_to_path(clone_dir)
+    from src.cpc import load_cpc  # upstream loader: strict state-dict load
+
+    cpc_model = load_cpc(str(ckpt_path))
+    cpc_model.eval()
+
+    class CPCWrapper(nn.Module):
+        """Returns only cFeature (first of three outputs) for ONNX tracing."""
+        def __init__(self, cpc):
             super().__init__()
-            self.weight = nn.Parameter(torch.ones(1, channels, 1))
-            self.bias = nn.Parameter(torch.zeros(1, channels, 1))
+            self.cpc = cpc
 
-        def forward(self, x):
-            return x * self.weight + self.bias
+        def forward(self, audio: torch.Tensor) -> torch.Tensor:
+            # audio: (B, 1, T) → cFeature: (B, T_frames, 256)
+            cFeature, _, _ = self.cpc(audio, None)
+            return cFeature
 
-    class CPCEncoder(nn.Module):
-        def __init__(self):
-            super().__init__()
-            specs = [(1, 256, 10, 5), (256, 256, 8, 4),
-                     (256, 256, 4, 2), (256, 256, 4, 2), (256, 256, 4, 2)]
-            for i, (ci, co, k, s) in enumerate(specs):
-                setattr(self, f"conv{i}", nn.Conv1d(ci, co, k, stride=s, bias=True))
-                setattr(self, f"batchNorm{i}", LearnedNorm1d(co))
-            self.relu = nn.ReLU()
-            # gAR.baseNet is LSTM (4×256=1024 gates in weight_ih_l0)
-            self.gru = nn.LSTM(CPC_HIDDEN, CPC_HIDDEN, num_layers=1, batch_first=True)
-
-        def forward(self, audio):
-            x = audio  # (B, 1, T)
-            for i in range(5):
-                x = self.relu(getattr(self, f"batchNorm{i}")(getattr(self, f"conv{i}")(x)))
-            x = x.permute(0, 2, 1)       # (B, T_frames, 256)
-            x, _ = self.gru(x)            # LSTM: (output, (h, c))
-            return x                       # (B, T_frames, 256)
-
-    return CPCEncoder()
-
-
-def _load_cpc_weights(model, ckpt_path: Path):
-    import torch
-
-    state = torch.load(str(ckpt_path), map_location="cpu")["weights"]
-    new_state = {}
-    for key, val in state.items():
-        if key.startswith("gEncoder."):
-            new_state[key[len("gEncoder."):]] = val
-        elif key.startswith("gAR.baseNet."):
-            new_state["gru." + key[len("gAR.baseNet."):]] = val
-
-    model.load_state_dict(new_state, strict=True)
-    print(f"[export/cpc] loaded (strict=True) — {len(new_state)} keys")
-    return model
+    wrapper = CPCWrapper(cpc_model)
+    wrapper.eval()
+    print(f"[export/cpc] loaded upstream CPCModel via load_cpc (strict)")
+    return wrapper
 
 
 # ---------------------------------------------------------------------------
@@ -432,9 +413,7 @@ def export_triaan_vc(output_dir: str, no_push: bool = False,
     # 2. CPC encoder
     # -----------------------------------------------------------------------
     print("\n=== Step 2: Export CPC encoder ===")
-    cpc_model = _build_cpc_encoder()
-    _load_cpc_weights(cpc_model, cpc_ckpt)
-    cpc_model.eval()
+    cpc_model = _load_cpc_model(clone_path, cpc_ckpt)
 
     dummy_audio = torch.zeros(1, 1, SAMPLE_RATE)
     with torch.no_grad():

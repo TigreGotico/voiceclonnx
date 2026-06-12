@@ -417,6 +417,24 @@ engines' conversion scripts drive the upstream repo as an external checkout.
 | `freevc_decoder.onnx` (fp32) | 116.4 MB |
 | `freevc_decoder_q8.onnx` (INT8) | 37.3 MB (68.0% reduction) |
 
+**Root cause of unintelligible output (issue #6):**
+
+All three ONNX components passed individual parity checks against their torch
+counterparts, yet end-to-end conversion produced 81% WER.  The root cause is
+that both WavLM-Large and the VITS SynthesizerTrn decoder degrade significantly
+when given sequences longer than ~2–3 seconds as ONNX models.  Individual
+parity tests used short dummy inputs (≤2 s); the demo source is 10.7 s, which
+exposed the degradation.
+
+The fix is in `vconnx/engines/freevc.py` (`clone_voice`): source audio is now
+processed in overlapping 2-second chunks (0.25 s crossfade) through the full
+WavLM→decoder pipeline, and the waveform segments are blended back together.
+This reduces demo WER from 81% to 12% on both reference voices.
+
+Note: the ONNX model artifacts themselves are correct; no re-export is required.
+The parity checks were always sound — the issue was an inference-time chunking
+gap, not an export defect.
+
 ## Worked example: triaan-vc
 
 TriAAN-VC (ICASSP 2023, MIT license) is a three-component pipeline.
@@ -431,15 +449,19 @@ All three weights are distributable.
 
 ### Deviations from standard export
 
-**CPC encoder architecture reconstruction** — there is no public Python model
-definition for the exact CPC checkpoint used by TriAAN-VC (`gEncoder` + `gAR`
-key layout).  The encoder was reconstructed by inspecting checkpoint keys and
-shapes:
+**CPC encoder — load via upstream code, not reconstruction** — the TriAAN-VC
+repository bundles `facebookresearch/CPC_audio` source under `src/cpc.py`.
+Use `load_cpc(ckpt_path)` from that module; it performs a strict state-dict
+load into the real `CPCModel` with `ChannelNorm` (per-channel layer-norm with
+affine transform) and correct `Conv1d` `padding=3/2/1/1/1` for each layer.
 
-- 5-layer `Conv1d` with `bias=True`, 256 channels throughout
-- `LearnedNorm1d` (per-channel affine, shape `(1, C, 1)`) instead of standard
-  `BatchNorm1d` — required because the stored key shape differs from BatchNorm
-- Single-layer LSTM (not GRU) — verified from `weight_ih_l0` shape `(1024, 256)` = 4×256 LSTM gates
+An earlier attempt reconstructed the architecture by inspecting checkpoint keys.
+That reconstruction used `LearnedNorm1d` (affine-only, no layer-norm) and
+omitted conv padding, producing 98 frames per 16 kHz second instead of 100,
+with 1.46 max-abs divergence vs the real model output.  Parity against that
+reconstruction passed (parity-vs-self trap), while end-to-end voice conversion
+produced noise (100 % WER in STT verification).  Always validate ONNX parity
+against the upstream torch forward, not against a reconstruction.
 
 **TriAAN-VC model key names** — the upstream `model.py` class attribute names
 (`cnt_encoder`, `spk_encoder`, `rnn_layer`, `linear`) differ from an initial
@@ -452,6 +474,18 @@ params as both dict-spread (`ContentEncoder(**encoder_params)`) and attribute
 access (`encoder_params.c_out`).  `SimpleNamespace` supports attributes but not
 `**`-spread; `easydict.EasyDict` is an optional dep.  A minimal `_AttrDict(dict)`
 subclass (pure stdlib) resolves both access patterns.
+
+**TriAAN output denormalization (`mel_stats.npy`)** — the TriAAN-VC model is
+trained to output mel spectrograms in a normalized space (zero-mean, unit-variance
+per mel bin, using `base_data/mel_stats.npy`).  The upstream `convert.py` denormalizes
+the output before writing it to disk: `output = output * std + mean`.  The
+ParallelWaveGAN vocoder then re-normalizes with its own VCTK training stats
+(`vocoder/vctk_stats.npy`).
+
+The adapter must apply this denormalization between the TriAAN and PWG steps.
+Omitting it passes doubly-normalized mel to the vocoder → the signal is in the
+wrong range → noise output even though parity tests pass.  `mel_stats.npy` is
+bundled in the HF repo (`TigreGotico/vconnx-triaan-vc`) and loaded by the adapter.
 
 **dynamo=False** — PyTorch 2.9+ defaults to the new dynamo-based ONNX exporter,
 which raises `ValueError: Found conflicts between user-specified ranges and
