@@ -17,5 +17,7 @@ against the known source text (gate: WER ≤ 40%).
 | [`outputs/openvoice__aria.wav`](outputs/openvoice__aria.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/openvoice__sonia.wav`](outputs/openvoice__sonia.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/rvc__woman1.wav`](outputs/rvc__woman1.wav) | 38% | ✅ | The quick round five jumps on the lazy dog. Moiscan Christian changes with speaking, but n |
+| [`outputs/speechtokenizer__aria.wav`](outputs/speechtokenizer__aria.wav) | 19% | ✅ | The quick-branthed fox jumps over the lazy dog. This conversion changes with the speeding, |
+| [`outputs/speechtokenizer__sonia.wav`](outputs/speechtokenizer__sonia.wav) | 58% | ❌ | I think we browned fast jumps over the lazy dog. Those converting changes at least we didn |
 | [`outputs/triaan__aria.wav`](outputs/triaan__aria.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who was speaking, bu |
 | [`outputs/triaan__sonia.wav`](outputs/triaan__sonia.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog voice conversion changes who was speaking but  |
