@@ -199,7 +199,9 @@ class Vec2WavAdapter(VoiceClonerBase):
         cnn_file = _CNN_INT8 if self._quantized else _CNN_FP32
         wavlm_file = _WAVLM_INT8 if self._quantized else _WAVLM_FP32
         frontend_file = _FRONTEND_INT8 if self._quantized else _FRONTEND_FP32
-        vocoder_file = _VOCODER_INT8 if self._quantized else _VOCODER_FP32
+        # The BigVGAN vocoder uses alias_free_torch ops (Snake-Beta + sinc resamplers)
+        # that prevent INT8 shape-inference during quantization; vocoder is fp32-only.
+        vocoder_file = _VOCODER_FP32
 
         cnn_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=cnn_file)
         codebook_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=_CODEBOOK)

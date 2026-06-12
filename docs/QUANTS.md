@@ -38,7 +38,7 @@ no external-data sidecars).
 | `rvc` | 38% | 69% | 739.4 | 193.9 | 74% | ⚠ int8 degraded (69% vs fp32 38%) |
 | `speechtokenizer` | 4% | — | 411.6 | 157.7 | 62% | fp32 only |
 | `triaan` | 4% | 8% | 294.0 | 84.1 | 71% | ✅ int8 recommended |
-| `vec2wav` | — | — | — | — | — | pending E2E run |
+| `vec2wav` | — | — | 526.1 | 206.4 | 61% | no E2E yet |
 
 ## Notes
 
@@ -47,5 +47,8 @@ no external-data sidecars).
 - Shared numpy artifacts (codebooks, mel filterbanks, mel stats) are never
   quantized — they are not ONNX models.
 - **vec2wav**: `vqwav2vec_codebook.npy` is never quantized (numpy array, not ONNX).
-  The row will be filled after the HF push and E2E verification run.
+  The BigVGAN vocoder (alias_free_torch ops) cannot be INT8-quantized due to
+  shape-inference conflicts; vocoder stays fp32 in both `quantized=False` and
+  `quantized=True` modes. fp32 size = encoder(23.1)+WavLM(338.7)+frontend(73.2)+vocoder(91.1).
+  int8 size = encoder_q8(5.8)+WavLM_q8(85.4)+frontend_q8(24.1)+vocoder_fp32(91.1).
 - Sizes include only ONNX model files from the respective HF repo.

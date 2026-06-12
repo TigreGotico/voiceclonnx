@@ -160,36 +160,159 @@ def _download(url: str, dest: Path, desc: str) -> Path:
 # ---------------------------------------------------------------------------
 
 
-def _build_vqwav2vec_cnn_wrapper(model):
-    """Return a torch module: audio (1, T) → CNN features (1, T', 512).
+def _load_vqwav2vec_checkpoint_standalone(ckpt_path: str):
+    """Load vq-wav2vec checkpoint without requiring fairseq to be importable.
 
-    Only the CNN feature extractor is exported. VQ discretization is numpy.
+    Uses a meta-path finder to stub all fairseq submodules so that torch.load
+    can unpickle the checkpoint (which contains fairseq Namespace objects) without
+    triggering fairseq's hydra initialisation (broken on Python ≥3.11).
+
+    Returns (model_state_dict, args_namespace).
+    """
+    import sys
+    import types
+    import argparse
+    import torch
+
+    # Stub every fairseq submodule so pickle can find the classes
+    class _AutoStubModule(types.ModuleType):
+        def __getattr__(self, name):
+            # Return a string for dunder-file so inspect.getsourcefile doesn't fail
+            if name == "__file__":
+                return "<fairseq-stub>"
+            class _Stub:
+                def __init__(self, *a, **kw): pass
+                def __call__(self, *a, **kw): return self
+                def __getattr__(self, n): return _Stub
+            return _Stub
+
+    class _FairseqFinder:
+        def find_module(self, name, path=None):
+            if name.startswith("fairseq"):
+                return self
+        def load_module(self, name):
+            if name in sys.modules:
+                return sys.modules[name]
+            mod = _AutoStubModule(name)
+            mod.__path__ = []
+            mod.__package__ = name
+            mod.__file__ = f"<fairseq-stub:{name}>"
+            sys.modules[name] = mod
+            return mod
+
+    # Only inject the finder if fairseq is not already importable
+    _finder = _FairseqFinder()
+    if "fairseq" not in sys.modules:
+        sys.meta_path.insert(0, _finder)
+
+    try:
+        torch.serialization.add_safe_globals([argparse.Namespace])
+        ckpt = torch.load(str(ckpt_path), map_location="cpu", weights_only=False)
+    finally:
+        if _finder in sys.meta_path:
+            sys.meta_path.remove(_finder)
+        # Remove stub modules from sys.modules so later imports (e.g. torch.onnx)
+        # don't find _AutoStubModule instances when inspect iterates sys.modules.
+        for key in [k for k in sys.modules if k.startswith("fairseq")]:
+            del sys.modules[key]
+
+    return ckpt["model"], ckpt["args"]
+
+
+def _build_vqwav2vec_cnn_standalone(ckpt_path: str):
+    """Build a standalone PyTorch CNN module from vq-wav2vec weights.
+
+    Reconstructs the feature_extractor CNN directly from the checkpoint state dict
+    (8 conv layers: (512,10,5), (512,8,4), (512,4,2)×3, (512,1,1)×3) with
+    group-norm, without needing any fairseq code at export time.
+
+    Returns (cnn_module, codebook_np) where:
+    - cnn_module: nn.Module that takes (1, T) → (1, T', 512)
+    - codebook_np: np.ndarray of shape (2, 320, 256) — the VQ codebook
     """
     import torch
     import torch.nn as nn
+    import numpy as np
+
+    model_state, args = _load_vqwav2vec_checkpoint_standalone(ckpt_path)
+
+    # ----------------------------------------------------------------
+    # Reconstruct the CNN feature extractor
+    # The architecture is given by args.conv_feature_layers:
+    # [(512, 10, 5), (512, 8, 4), (512, 4, 2), (512, 4, 2), (512, 4, 2),
+    #  (512, 1, 1), (512, 1, 1), (512, 1, 1)]
+    # Each layer is: Conv1d + GroupNorm (groups=1, affine) [fp32]
+    # ----------------------------------------------------------------
+    import ast
+    conv_cfg = ast.literal_eval(args.conv_feature_layers)  # [(channels, kernel, stride), ...]
 
     class VQWav2VecCNN(nn.Module):
-        """Wraps the vq-wav2vec CNN feature extractor (before VQ)."""
+        """Standalone vq-wav2vec CNN feature extractor (fairseq-independent)."""
 
-        def __init__(self, feature_extractor):
+        def __init__(self, layers):
             super().__init__()
-            self.feature_extractor = feature_extractor
+            self.conv_layers = nn.ModuleList(layers)
 
         def forward(self, input_values: torch.Tensor) -> torch.Tensor:
-            """
-            Parameters
-            ----------
-            input_values : (1, T) float32
+            """(1, T) → (1, T', 512)"""
+            x = input_values.unsqueeze(1)  # (1, 1, T) → first layer needs mono input
+            for layer in self.conv_layers:
+                x = layer(x)
+            return x.transpose(1, 2)  # (1, 512, T') → (1, T', 512)
 
-            Returns
-            -------
-            (1, T', 512) float32 — pre-VQ CNN features (transposed to match
-            the VQ module's expected input layout).
-            """
-            z = self.feature_extractor(input_values)  # (1, 512, T')
-            return z.transpose(1, 2)  # (1, T', 512)
+    layers = []
+    in_ch = 1
+    for i, (out_ch, kernel, stride) in enumerate(conv_cfg):
+        conv = nn.Conv1d(in_ch, out_ch, kernel, stride=stride, bias=False)
+        # GroupNorm with groups=1 (from fp32_group_norm=True in args)
+        gn = nn.GroupNorm(1, out_ch, affine=True)
+        layer = nn.Sequential(conv, nn.GELU(), gn)
+        layers.append(layer)
+        in_ch = out_ch
 
-    return VQWav2VecCNN(model.feature_extractor)
+    cnn = VQWav2VecCNN(layers)
+
+    # Load weights from checkpoint
+    # Keys in checkpoint: feature_extractor.conv_layers.{i}.0.weight (conv)
+    #                     feature_extractor.conv_layers.{i}.2.weight (gn weight)
+    #                     feature_extractor.conv_layers.{i}.2.bias   (gn bias)
+    cnn_state = {}
+    for key, val in model_state.items():
+        if key.startswith("feature_extractor.conv_layers."):
+            # Convert to our Sequential layout
+            # Original: conv_layers.{i}.0.weight → layers.{i}.0.weight
+            rest = key[len("feature_extractor."):]  # conv_layers.{i}.0.weight
+            parts = rest.split(".")
+            idx = int(parts[1])
+            sub_idx = int(parts[2])
+            name = parts[3]  # "weight" or "bias"
+            # In our Sequential: 0=Conv1d, 1=GELU (no params), 2=GroupNorm
+            # Original layout: 0=Conv1d, 2=GroupNorm (skipping activation)
+            new_key = f"conv_layers.{idx}.{sub_idx}.{name}"
+            cnn_state[new_key] = val
+
+    missing, unexpected = cnn.load_state_dict(cnn_state, strict=False)
+    if missing:
+        print(f"[export] WARNING: missing CNN keys: {missing[:5]}")
+    if unexpected:
+        print(f"[export] WARNING: unexpected CNN keys: {unexpected[:5]}")
+
+    cnn.eval()
+    for p in cnn.parameters():
+        p.requires_grad_(False)
+
+    # ----------------------------------------------------------------
+    # Extract VQ codebook
+    # vector_quantizer.embedding: (320, 1, 256)
+    # With combine_groups=True and vq_groups=2, the same codebook is used
+    # for both groups. The codebook shape expected by the adapter is (2, 320, 256).
+    # ----------------------------------------------------------------
+    cb = model_state["vector_quantizer.embedding"]  # (320, 1, 256)
+    # Expand to (2, 320, 256) — both groups use the same embeddings
+    codebook_np = cb.squeeze(1).numpy()  # (320, 256)
+    codebook_np = np.stack([codebook_np, codebook_np], axis=0)  # (2, 320, 256)
+
+    return cnn, codebook_np
 
 
 def _build_wavlm_layer6_wrapper():
@@ -279,8 +402,6 @@ def export_vec2wav(output_dir: str, cache_dir: Optional[str] = None) -> Path:
     import yaml
     import sys
 
-    sys.path.insert(0, "/tmp/vec2wav2_upstream")
-
     from conversion.export_base import OutputLayout, export_model, write_manifest, write_provenance
     from conversion.parity import compare_outputs, check_tolerance, run_ort
     from conversion.quantize import quantize_model
@@ -309,33 +430,13 @@ def export_vec2wav(output_dir: str, cache_dir: Optional[str] = None) -> Path:
     # ------------------------------------------------------------------
     # 1. Export vq-wav2vec CNN encoder (pre-VQ features)
     # ------------------------------------------------------------------
-    print("[export] Loading vq-wav2vec ...")
-    import fairseq
-    [vqw2v_model], cfg, task = fairseq.checkpoint_utils.load_model_ensemble_and_task(
-        [str(vqw2v_ckpt)]
-    )
-    vqw2v_model.eval()
-    for p in vqw2v_model.parameters():
-        p.requires_grad_(False)
+    print("[export] Loading vq-wav2vec (standalone, no fairseq required) ...")
+    cnn_wrapper, codebook_np = _build_vqwav2vec_cnn_standalone(str(vqw2v_ckpt))
 
     # Save codebook for numpy VQ at runtime (shape [G, V, D])
-    quantizer = vqw2v_model.vector_quantizer
-    if cfg.model.vq_type == "kmeans":
-        codebook = quantizer.expand_embedding.data.transpose(0, 1).contiguous()  # (G, V, D)
-    else:
-        codebook = quantizer.vars.data
-        if quantizer.combine_groups:
-            codebook = codebook.repeat(1, quantizer.groups, 1)
-        codebook = codebook.view(quantizer.groups, quantizer.num_vars, -1)
-
-    codebook_np = codebook.cpu().numpy()
     codebook_path = layout.component_path("vqwav2vec_codebook.npy")
     np.save(str(codebook_path), codebook_np)
     print(f"[export] Codebook saved: {codebook_path}  shape={codebook_np.shape}")
-
-    # Export CNN encoder
-    cnn_wrapper = _build_vqwav2vec_cnn_wrapper(vqw2v_model)
-    cnn_wrapper.eval()
 
     dummy_audio = torch.zeros(1, 16000)  # 1 second
     cnn_onnx = layout.component_path("vqwav2vec_encoder.onnx")
@@ -372,7 +473,7 @@ def export_vec2wav(output_dir: str, cache_dir: Optional[str] = None) -> Path:
     cnn_quant = quantize_model(cnn_onnx, output_path=cnn_q8_path)
     print(cnn_quant.summary())
 
-    del vqw2v_model, cnn_wrapper
+    del cnn_wrapper
 
     # ------------------------------------------------------------------
     # 2. Export WavLM-Large layer-6 speaker encoder
@@ -430,6 +531,7 @@ def export_vec2wav(output_dir: str, cache_dir: Optional[str] = None) -> Path:
     # 3. Load vec2wav generator and export frontend + vocoder
     # ------------------------------------------------------------------
     print("[export] Loading vec2wav generator ...")
+    sys.path.insert(0, "/tmp/vec2wav2_upstream")
     import vec2wav2.models
     generator = vec2wav2.models.VEC2WAV2Generator(
         vec2wav2.models.CTXVEC2WAVFrontend(
@@ -493,20 +595,36 @@ def export_vec2wav(output_dir: str, cache_dir: Optional[str] = None) -> Path:
     print(frontend_quant.summary())
 
     # Export vocoder
+    # BigVGAN uses alias_free_torch (Snake-Beta + sinc-resampling) which requires
+    # the dynamo exporter path (torch.export.export) for reliable ONNX tracing.
+    # The dynamo path emits external-data files (.onnx + .onnx.data); we merge
+    # them into a single self-contained .onnx immediately after export.
     vocoder_onnx = layout.component_path("vec2wav_vocoder.onnx")
+    _vocoder_onnx_tmp = vocoder_onnx.with_suffix(".onnx_tmp")
     print(f"[export] Exporting BigVGAN vocoder → {vocoder_onnx} ...")
-    export_model(
-        model=vocoder_wrapper,
-        dummy_inputs=(dummy_hidden, dummy_cond),
-        output_path=vocoder_onnx,
+    torch.onnx.export(
+        vocoder_wrapper,
+        (dummy_hidden, dummy_cond),
+        str(_vocoder_onnx_tmp),
         input_names=["hidden", "cond"],
         output_names=["waveform"],
         dynamic_axes={
             "hidden": {0: "batch", 2: "frames"},
             "waveform": {0: "batch", 2: "samples"},
         },
-        opset_version=14,
     )
+    # Inline external data back into a single .onnx file
+    import onnx
+    from onnx.external_data_helper import load_external_data_for_model
+    _voc_model = onnx.load(str(_vocoder_onnx_tmp), load_external_data=False)
+    load_external_data_for_model(_voc_model, str(_vocoder_onnx_tmp.parent))
+    onnx.save(_voc_model, str(vocoder_onnx), save_as_external_data=False)
+    # Clean up tmp files
+    _vocoder_onnx_tmp.unlink(missing_ok=True)
+    _data_file = Path(str(_vocoder_onnx_tmp) + ".data")
+    if _data_file.exists():
+        _data_file.unlink()
+    del _voc_model
     sz = vocoder_onnx.stat().st_size / 1024**2
     print(f"[export] Vocoder ONNX written: {sz:.1f} MB")
 
@@ -523,9 +641,14 @@ def export_vec2wav(output_dir: str, cache_dir: Optional[str] = None) -> Path:
     vocoder_report.save(layout.component_path("vocoder_parity_report.json"))
 
     # Quantize vocoder
+    # The dynamo-exported BigVGAN ONNX has shape annotations that confuse
+    # onnxruntime's shape-inference pass; skip INT8 quantization if it fails.
     vocoder_q8_path = layout.component_path("vec2wav_vocoder_q8.onnx")
-    vocoder_quant = quantize_model(vocoder_onnx, output_path=vocoder_q8_path)
-    print(vocoder_quant.summary())
+    try:
+        vocoder_quant = quantize_model(vocoder_onnx, output_path=vocoder_q8_path)
+        print(vocoder_quant.summary())
+    except Exception as _e:
+        print(f"[export] Vocoder INT8 quantization skipped ({type(_e).__name__}: {_e})")
 
     del generator, frontend_wrapper, vocoder_wrapper
 
