@@ -97,6 +97,7 @@ import voiceclonnx.engines.speechtokenizer  # noqa: F401
 import voiceclonnx.engines.triaan  # noqa: F401
 import voiceclonnx.engines.bicodec  # noqa: F401
 import voiceclonnx.engines.facodec  # noqa: F401
+import voiceclonnx.engines.cosyvoice  # noqa: F401
 import voiceclonnx.engines.quickvc  # noqa: F401
 import voiceclonnx.engines.vec2wav  # noqa: F401
 

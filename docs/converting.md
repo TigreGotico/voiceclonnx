@@ -1022,6 +1022,152 @@ Upstream reference:
 
 ---
 
+## Appendix: CosyVoice export notes
+
+### Non-AR VC path
+
+CosyVoice-300M (`FunAudioLLM/CosyVoice-300M`, Apache-2.0) supports voice
+conversion without the autoregressive LLM by using three components:
+
+| Role | Checkpoint | ONNX artifact |
+|---|---|---|
+| Source content tokenizer | `speech_tokenizer_v1.onnx` (upstream) | upstream |
+| Reference speaker encoder | `campplus.onnx` (upstream, CAM++) | upstream |
+| Flow encoder (tokens → mu) | `flow.pt` | `flow_encoder.onnx` |
+| ODE flow decoder (mu → mel) | `flow.decoder.estimator.fp32.onnx` (upstream) | `flow_decoder.onnx` |
+| HiFiGAN F0 + NSF source | `hift.pt` | `hifigan_f0_source.onnx` |
+| HiFiGAN backbone | `hift.pt` | `hifigan_backbone.onnx` |
+| Speaker affine layer | extracted from `flow.pt` | `spk_proj.npz` |
+
+Upstream artifacts are downloaded from `FunAudioLLM/CosyVoice-300M` via
+`hf_hub_download`; exported artifacts are produced by
+`conversion/export_cosyvoice.py`.
+
+### STFT/ISTFT limitation at opset 14
+
+`aten::stft` / `aten::istft` are not representable at opset 14.  The HiFiGAN
+`decode()` method calls both internally.  Solution: split HiFiGAN into two
+separate ONNX subgraphs at the STFT boundary.
+
+- **`hifigan_f0_source.onnx`**: takes mel `(1, 80, T_mel)`, outputs 1-D NSF
+  source signal `(1, 1, T_audio)`.  Contains `ConvRNNF0Predictor` +
+  `SourceModuleHnNSF` upsampling; no STFT involved.
+- **`hifigan_backbone.onnx`**: takes `(mel, source_stft)` where `source_stft`
+  is `(1, 18, T_stft)` (9 real + 9 imaginary bins from numpy STFT).  Outputs
+  `(magnitude, phase)` in the same STFT domain; no STFT inside the graph.
+- Numpy STFT and ISTFT are computed in the adapter (`_stft` / `_istft` in
+  `voiceclonnx/engines/cosyvoice.py`) using scipy's `get_window("hann")` with
+  `n_fft=16`, `hop_len=4`, center-pad = `n_fft // 2`.
+
+Parameters (`n_fft=16`, `hop_len=4`, Hann window, center-pad) must match
+exactly between the export script and the adapter.  Parity verified at export
+time: `STFT max_abs ≤ 1.4e-6`, `ISTFT roundtrip max_abs ≤ 5e-7`.
+
+### NSF source noise tolerance
+
+`SineGen` injects Gaussian noise (`std=0.003`) at every forward pass.  When
+exported to ONNX, this noise is baked as a constant in the initializer.  At
+inference time the ONNX graph uses the baked constant; the torch reference uses
+freshly sampled noise.  The resulting parity gap (`max_abs ≈ 0.115`) is
+expected — the amplitude of the noise (~3% of signal) is well within
+perceptually irrelevant territory.  Export tolerance is set to `0.15`; a value
+above `0.5` would indicate a structural error.
+
+### Dimension matching for backbone export
+
+The backbone's `source_downs` upsampling path requires that `T_stft` (the STFT
+frame count of the source signal) matches the upsampled activation length
+exactly.  When constructing the dummy input for export, compute the actual
+source STFT from a real forward pass of `hifigan_f0_source.onnx`:
+
+```python
+src_1d = f0_src_wrapper(dummy_mel).squeeze().numpy()   # (T_audio,)
+src_real, src_imag = _numpy_stft(src_1d, n_fft=16, hop_len=4)
+dummy_stft = torch.from_numpy(
+    np.concatenate([src_real, src_imag], axis=0)[np.newaxis].astype(np.float32)
+)  # (1, 18, T_stft)  — correct T_stft
+```
+
+Using a formula-derived `T_stft` may be off by ±1 frame due to STFT padding,
+causing a `RuntimeError: tensor size mismatch` inside the source_resblocks.
+
+### Speaker projection
+
+The `spk_embed_affine_layer` (192 → 80) is a `Linear(192, 80)` inside the
+flow model.  It maps the CAM++ 192-d embedding into the 80-d conditioning space
+expected by the flow decoder.  Weights are extracted at export time and saved as
+`spk_proj.npz` (`weight: (80, 192)`, `bias: (80,)`) so the adapter can apply
+the projection in pure numpy without loading the full flow model.
+
+### Reproduce the export
+
+```bash
+# Clone CosyVoice source (needed for model class definitions)
+git clone https://github.com/FunAudioLLM/CosyVoice /tmp/CosyVoice
+pip install /tmp/CosyVoice/third_party/AcademiCodec \
+            /tmp/CosyVoice/third_party/Matcha-TTS
+
+# Run export (torch + onnx required)
+PYTHONPATH=/tmp/CosyVoice python3 conversion/export_cosyvoice.py \
+    --out /tmp/vc-cosy-out --push
+
+# Push to HF Hub (requires HF_TOKEN with write access to TigreGotico org)
+huggingface-cli upload TigreGotico/voiceclonnx-cosyvoice /tmp/vc-cosy-out/cosyvoice
+```
+
+The `--push` flag skips re-exporting already-present ONNX files (checks by
+filename) and calls `huggingface_hub.upload_folder` directly after export.
+
+### Root-cause record: adapter silent-noise regression
+
+Six bugs in the adapter caused 100% WER (pure noise output) despite all seven
+ONNX components passing per-component parity:
+
+1. **Baked mel length in flow\_encoder.onnx** — the original export used a
+   single `F.interpolate(..., size=mel_len)` where `mel_len` was derived from
+   `tokens.shape[1]` inside the traced model.  ONNX tracing bakes the Resize
+   `sizes` input as a constant (e.g. `86`), so every input length would produce
+   `(1, 80, 86)` regardless of token count.  Fix: split the encoder into
+   `flow_encoder_conformer.onnx` (conformer only, explicit `token_len` input)
+   plus a numpy `InterpolateRegulator` applied post-ONNX with `lr_weights.npz`.
+
+2. **Baked attention mask in conformer** — a first re-export attempt derived
+   `token_len` from `tokens.shape[1]` inside the model; ONNX tracing baked the
+   padding mask as a constant.  Fix: pass `token_len` as a named ONNX input so
+   it flows through the graph at runtime.
+
+3. **Wrong CFG wiring** — both slots of the batch-2 ODE input were set to the
+   conditioned signal.  The correct idiom is slot 0 = conditioned (`mu`, `spks`
+   set), slot 1 = unconditioned (zeros for `mu`/`spks`/`cond`); velocity
+   combined as `(1 + cfg_rate) * v_cond − cfg_rate * v_uncond`
+   (`cfg_rate = 0.7`).
+
+4. **Linear vs cosine ODE time schedule** — the adapter used
+   `t_span = linspace(0, 1, n+1)` whereas upstream `ConditionalCFM.solve_euler`
+   uses `t_span[i] = 1 − cos(i/n · π/2)`.
+
+5. **Phase `arcsin` error in HiFiGAN ISTFT** — the backbone outputs the phase
+   directly as an angle (via `sin(raw)` inside the network); the adapter was
+   applying `arcsin(clip(phi, −1, 1))` before `_istft`, introducing severe phase
+   distortion.  Fix: use `phi` directly as the angle.
+
+6. **Kaldi fbank mismatch** — the numpy fbank approximation had different
+   frequency warping and length compared with `torchaudio.compliance.kaldi.fbank`
+   (dither=0).  Fix: `_kaldi_fbank_compat` calls torchaudio when available,
+   falling back to numpy only when torch is absent.
+
+After all six fixes: cosyvoice fp32 WER = 8% on both reference clips (gate ≤ 40%).
+
+**INT8 note**: `quantize_dynamic` on `flow_decoder.onnx` produces weight-only
+INT8 with correlation ≈ 0.19 vs fp32 output (WER 100%).  The transformer
+attention architecture in the flow-matching estimator is sensitive to
+weight-only quantization without activation calibration.  Cosyvoice is listed
+in `docs/QUANTS.md` with INT8 flagged ⚠.  Activation-calibrated (static) INT8
+via ONNX Runtime calibration tools may recover quality but requires a
+representative dataset and is out of scope for this release.
+
+---
+
 ## Engine: vec2wav 2.0
 
 ### Architecture reality vs. issue description

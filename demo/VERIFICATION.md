@@ -10,6 +10,8 @@ against the known source text (gate: WER ≤ 40%).
 | [`outputs/bicodec__sonia.wav`](outputs/bicodec__sonia.wav) | 12% | ✅ | The quid brown fox jumps over the lazy dog. His conversion changes who is speeding but not |
 | [`outputs/chatterbox__aria.wav`](outputs/chatterbox__aria.wav) | 4% | ✅ | The quit-brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but  |
 | [`outputs/chatterbox__sonia.wav`](outputs/chatterbox__sonia.wav) | 8% | ✅ | The quit-brown fox jumps over the lazy dog. Voice conversion changes who was speaking, but |
+| [`outputs/cosyvoice__aria.wav`](outputs/cosyvoice__aria.wav) | 8% | ✅ | But Quick Brown Fox jumps over the lazy dog. Voice conversion changes who was speaking, bu |
+| [`outputs/cosyvoice__sonia.wav`](outputs/cosyvoice__sonia.wav) | 8% | ✅ | But Quick Brown Fox jumps over the lazy dog. Voice conversion changes who was speaking, bu |
 | [`outputs/facodec__aria.wav`](outputs/facodec__aria.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/facodec__sonia.wav`](outputs/facodec__sonia.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/focalcodec__aria.wav`](outputs/focalcodec__aria.wav) | 15% | ✅ | The quit-brown fox jumps over the lazy dog. Voice conversion changes always speedy, but no |
@@ -22,12 +24,12 @@ against the known source text (gate: WER ≤ 40%).
 | [`outputs/mimi__sonia.wav`](outputs/mimi__sonia.wav) | 0% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/openvoice__aria.wav`](outputs/openvoice__aria.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/openvoice__sonia.wav`](outputs/openvoice__sonia.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
+| [`outputs/quickvc__reference_aria.wav`](outputs/quickvc__reference_aria.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
+| [`outputs/quickvc__reference_sonia.wav`](outputs/quickvc__reference_sonia.wav) | 0% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
+| [`outputs/quickvc_q8__reference_aria.wav`](outputs/quickvc_q8__reference_aria.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog voice conversion changes who is speaking but n |
+| [`outputs/quickvc_q8__reference_sonia.wav`](outputs/quickvc_q8__reference_sonia.wav) | 4% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/rvc__woman1.wav`](outputs/rvc__woman1.wav) | 38% | ✅ | The quick round five jumps on the lazy dog. Moiscan Christian changes with speaking, but n |
 | [`outputs/speechtokenizer__aria.wav`](outputs/speechtokenizer__aria.wav) | 4% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who was speaking, bu |
 | [`outputs/speechtokenizer__sonia.wav`](outputs/speechtokenizer__sonia.wav) | 12% | ✅ | The quick brown fox jumps over the lazy dog. Those conversion changes are with speaking, b |
 | [`outputs/triaan__aria.wav`](outputs/triaan__aria.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who was speaking, bu |
 | [`outputs/triaan__sonia.wav`](outputs/triaan__sonia.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog voice conversion changes who was speaking but  |
-| [`outputs/quickvc__reference_aria.wav`](outputs/quickvc__reference_aria.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but not what |
-| [`outputs/quickvc__reference_sonia.wav`](outputs/quickvc__reference_sonia.wav) | 0% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but not what |
-| [`outputs/quickvc_q8__reference_aria.wav`](outputs/quickvc_q8__reference_aria.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog voice conversion changes who is speaking but none what i |
-| [`outputs/quickvc_q8__reference_sonia.wav`](outputs/quickvc_q8__reference_sonia.wav) | 4% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but none what |
