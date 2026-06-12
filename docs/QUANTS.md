@@ -16,6 +16,7 @@ ignored; chatterbox always runs fp32 until upstream ships q8 exports.
 | Engine | fp32 WER | int8 WER | fp32 size (MB) | int8 size (MB) | Saving | Verdict |
 |--------|----------|----------|----------------|----------------|--------|---------|
 | `cosyvoice` | 8% | 100% | 0.0 | 0.0 | 0% | ⚠ int8 degraded (100% vs fp32 8%) |
+| `linacodec` | 12% | ~100% | 694 | 186 | −73% | ⚠ int8 degraded (AdaLN+attention sensitive to weight-only INT8) |
 
 ## Notes
 

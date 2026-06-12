@@ -25,6 +25,7 @@ the source utterance spoken in the reference voice, as that engine hears it.
 | facodec | [`outputs/facodec__aria.wav`](outputs/facodec__aria.wav) | [`outputs/facodec__sonia.wav`](outputs/facodec__sonia.wav) |
 | focalcodec | [`outputs/focalcodec__aria.wav`](outputs/focalcodec__aria.wav) | [`outputs/focalcodec__sonia.wav`](outputs/focalcodec__sonia.wav) |
 | speechtokenizer | [`outputs/speechtokenizer__aria.wav`](outputs/speechtokenizer__aria.wav) | [`outputs/speechtokenizer__sonia.wav`](outputs/speechtokenizer__sonia.wav) |
+| linacodec | [`outputs/linacodec__aria.wav`](outputs/linacodec__aria.wav) | [`outputs/linacodec__sonia.wav`](outputs/linacodec__sonia.wav) |
 | mimi | [`outputs/mimi__aria.wav`](outputs/mimi__aria.wav) | [`outputs/mimi__sonia.wav`](outputs/mimi__sonia.wav) |
 | openvoice | [`outputs/openvoice__aria.wav`](outputs/openvoice__aria.wav) | [`outputs/openvoice__sonia.wav`](outputs/openvoice__sonia.wav) |
 | triaan | [`outputs/triaan__aria.wav`](outputs/triaan__aria.wav) | [`outputs/triaan__sonia.wav`](outputs/triaan__sonia.wav) |
