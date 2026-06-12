@@ -1188,13 +1188,24 @@ both extract layer-6 hidden states, the vec2wav weights are the original Microso
 WavLM-Large `.pt` format (loaded via a bundled `WavLM.py` class), while kNN-VC uses
 the HuggingFace transformers API. The numerical outputs differ.
 
-### VQ discretisation (pure numpy, not ONNX)
+### VQ discretisation — KmeansVectorQuantizer projection (critical)
 
-The vq-wav2vec VQ step is implemented as a numpy codebook look-up and is **not
-exported to ONNX**. Rationale: the VQ step involves argmin over a small integer space
-(V=320) with G=2 groups — this is faster in numpy than as an ONNX subgraph, and avoids
-embedding the codebook inside the ONNX model (it is saved separately as
-`vqwav2vec_codebook.npy`).
+The vq-wav2vec uses a `KmeansVectorQuantizer` (not GumbelVQ).  Before the codebook
+argmin, the checkpoint applies `self.projection(x)` — a grouped `Conv1d(512, 512,
+kernel_size=1, groups=2, bias=False)` followed by `Fp32GroupNorm(groups=2, dim=512)`.
+The quantisation argmin is computed on these **projected** features, not the raw CNN
+output.
+
+**Bug that was fixed**: the original export omitted this projection entirely.  On real
+speech the VQ token indices had 0% agreement with the upstream fairseq model.  After
+fixing, agreement is ≈92% (the remaining 8% is from numerical precision differences
+between the ONNX CNN export and the fairseq PyTorch CNN — boundary cases where the
+nearest codeword distance differs by less than the ONNX/torch floating-point gap).
+
+The projection weights are saved as `vqwav2vec_projection.npz` (conv_weight, gn_weight,
+gn_bias, totalling ~530 KB) and applied in pure numpy at inference.  The codebook
+(`vqwav2vec_codebook.npy`) is used only for the final lookup after projection; the
+argmin is also done on projected features.
 
 ### License
 
@@ -1232,3 +1243,28 @@ Exports 4 ONNX components + codebook npy + 4 INT8 quantized variants.
 The vocoder and frontend both quantize well (see QUANTS.md for measured WER).
 The WavLM speaker encoder degrades similarly to other WavLM exports in this
 collection.
+
+### Blocked: WavLM-Large.pt architecture mismatch
+
+The vec2wav 2.0 model was trained using `WavLM-Large.pt` from Microsoft's original
+distribution, loaded via a bundled `WavLM.py` class that contains the GREP
+(Gated Relative Position) attention mechanism.  The HuggingFace `microsoft/wavlm-large`
+model does not include the GREP attention layers — 77 keys in the WavLM.py state dict
+(`grep_a`, `grep_linear`) have no counterpart in the HF checkpoint.
+
+When `wavlm_speaker.onnx` is exported from `microsoft/wavlm-large`, the resulting
+layer-6 features are architecturally incompatible with what the vec2wav frontend and
+BigVGAN vocoder were trained on.  The vocoder's `SnakeBetaWithCondition` activation
+receives a conditioning vector (temporal mean of WavLM features) that was never seen
+during training.  The result is near-silence output from the vocoder (-0.001 to +0.002
+amplitude) regardless of the content tokens.
+
+**Resolution required**: re-export `wavlm_speaker.onnx` using `WavLM-Large.pt`
+(Microsoft's original `.pt` format).  The correct download URL is:
+`https://valle.blob.core.windows.net/share/wavlm/WavLM-Large.pt` (SAS-token required)
+or the [Google Drive mirror](https://drive.google.com/file/d/12-cB34qCTvByWT-QtOcZaqwwO21FLSqU/view).
+The export script must be updated to use `vec2wav2.ssl_models.WavLM.WavLM` with
+`WavLMConfig(checkpoint['cfg'])` and `normalize=True` input audio normalisation.
+
+Until `WavLM-Large.pt` is available, the engine produces near-silence and the WER gate
+fails.  This engine is marked **blocked** on issue #37.

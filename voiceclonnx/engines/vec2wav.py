@@ -60,6 +60,7 @@ _HF_REPO_ID = "TigreGotico/voiceclonnx-vec2wav"
 _CNN_FP32 = "vqwav2vec_encoder.onnx"
 _CNN_INT8 = "vqwav2vec_encoder_q8.onnx"
 _CODEBOOK = "vqwav2vec_codebook.npy"
+_PROJECTION = "vqwav2vec_projection.npz"
 _WAVLM_FP32 = "wavlm_speaker.onnx"
 _WAVLM_INT8 = "wavlm_speaker_q8.onnx"
 _FRONTEND_FP32 = "vec2wav_frontend.onnx"
@@ -110,29 +111,128 @@ def _save_wav(path: str, audio: np.ndarray, sr: int) -> None:
 # ---------------------------------------------------------------------------
 
 
-def _vq_encode(cnn_features: np.ndarray, codebook: np.ndarray) -> np.ndarray:
-    """Quantise CNN features to nearest codebook entries.
+def _grouped_conv1d(x: np.ndarray, weight: np.ndarray) -> np.ndarray:
+    """Grouped Conv1d with kernel_size=1 and no bias.
+
+    Implements ``nn.Conv1d(C, C, kernel_size=1, groups=G, bias=False)`` in numpy.
 
     Parameters
     ----------
-    cnn_features : (L, 512) float32 — pre-VQ CNN features.
-    codebook     : (G, V, D) float32 — G=2, V=320, D=256.
+    x      : (L, C) float32 — input features.
+    weight : (C, C//G, 1) float32 — Conv1d weight; out_ch=C, in_ch=C//G, k=1.
+
+    Returns
+    -------
+    (L, C) float32
+    """
+    C_out, C_in_per_group, _ = weight.shape  # (512, 256, 1)
+    G = C_out // C_in_per_group  # = 2
+    L = x.shape[0]
+    out = np.empty((L, C_out), dtype=np.float32)
+    for g in range(G):
+        x_g = x[:, g * C_in_per_group: (g + 1) * C_in_per_group]   # (L, 256)
+        w_g = weight[g * C_in_per_group: (g + 1) * C_in_per_group, :, 0]  # (256, 256)
+        # Grouped conv1d k=1: y = x @ w^T (each output channel is a dot product)
+        # weight[g*256:(g+1)*256] has shape (256, 256, 1) — 256 output channels, 256 input
+        # Reindex: out_ch_in_group=256, in_ch=256 → w_g: (256, 256)
+        w_g = weight[g * (C_out // G): (g + 1) * (C_out // G), :, 0]  # (256, 256)
+        out[:, g * (C_out // G): (g + 1) * (C_out // G)] = x_g @ w_g.T  # (L, 256)
+    return out
+
+
+def _group_norm(x: np.ndarray, weight: np.ndarray, bias: np.ndarray, groups: int = 2,
+                eps: float = 1e-5) -> np.ndarray:
+    """GroupNorm applied to (L, C) features.
+
+    Replicates ``nn.GroupNorm(groups, C)`` from fairseq's Fp32GroupNorm
+    (which casts to float32 before normalisation).
+
+    Parameters
+    ----------
+    x      : (L, C) float32
+    weight : (C,) float32 — per-channel scale (gamma)
+    bias   : (C,) float32 — per-channel shift (beta)
+    groups : number of normalisation groups
+    """
+    x = x.astype(np.float32)
+    L, C = x.shape
+    C_per_group = C // groups
+    out = np.empty_like(x)
+    for g in range(groups):
+        sl = slice(g * C_per_group, (g + 1) * C_per_group)
+        xg = x[:, sl]  # (L, C_per_group)
+        mean = xg.mean(axis=1, keepdims=True)
+        var = xg.var(axis=1, keepdims=True)
+        out[:, sl] = (xg - mean) / np.sqrt(var + eps)
+    return out * weight + bias
+
+
+def _apply_vq_projection(
+    cnn_features: np.ndarray,
+    proj_conv_weight: np.ndarray,
+    proj_gn_weight: np.ndarray,
+    proj_gn_bias: np.ndarray,
+) -> np.ndarray:
+    """Apply the KmeansVectorQuantizer projection (grouped conv + GroupNorm).
+
+    The fairseq KmeansVectorQuantizer applies ``self.projection(x)`` before
+    computing L2 distances to the codebook entries.  Skipping this step yields
+    completely wrong token indices (0% agreement with upstream).
+
+    Parameters
+    ----------
+    cnn_features    : (L, 512) float32 — raw CNN output (BTC, single batch).
+    proj_conv_weight: (512, 256, 1) float32 — grouped Conv1d weight.
+    proj_gn_weight  : (512,) float32 — GroupNorm scale.
+    proj_gn_bias    : (512,) float32 — GroupNorm bias.
+
+    Returns
+    -------
+    (L, 512) float32 — projected features ready for codebook argmin.
+    """
+    ze = _grouped_conv1d(cnn_features, proj_conv_weight)
+    ze = _group_norm(ze, proj_gn_weight, proj_gn_bias, groups=2)
+    return ze
+
+
+def _vq_encode(
+    cnn_features: np.ndarray,
+    codebook: np.ndarray,
+    proj_conv_weight: np.ndarray,
+    proj_gn_weight: np.ndarray,
+    proj_gn_bias: np.ndarray,
+) -> np.ndarray:
+    """Project → quantise CNN features → return nearest codebook entries.
+
+    The upstream KmeansVectorQuantizer first passes CNN features through a
+    grouped Conv1d + GroupNorm projection before computing L2 distances to the
+    codebook.  The adapter must replicate this step to produce correct token
+    indices.
+
+    Parameters
+    ----------
+    cnn_features    : (L, 512) float32 — raw CNN output.
+    codebook        : (G, V, D) float32 — G=2, V=320, D=256.
+    proj_conv_weight: (512, 256, 1) float32 — grouped Conv1d weight.
+    proj_gn_weight  : (512,) float32 — GroupNorm scale.
+    proj_gn_bias    : (512,) float32 — GroupNorm bias.
 
     Returns
     -------
     np.ndarray  (L, 512) float32 — VQ-vectors (codebook entries, concatenated
-    across groups), equivalent to what idx2vec returns in the original code.
+    across groups), matching upstream ``zq`` output.
     """
-    G, V, D = codebook.shape  # G=2, V=320, D=256
-    L = cnn_features.shape[0]
+    # Apply projection before codebook lookup (matches upstream forward())
+    ze = _apply_vq_projection(cnn_features, proj_conv_weight, proj_gn_weight, proj_gn_bias)
 
-    # Split the 512-dim feature into G groups of D dims
-    groups = np.split(cnn_features, G, axis=1)  # list of (L, D)
+    G, V, D = codebook.shape  # G=2, V=320, D=256
+    # Split projected features into G groups of D dims
+    groups = np.split(ze, G, axis=1)  # list of (L, D)
     vqvecs = []
     for g in range(G):
         feat_g = groups[g]  # (L, D)
         cb_g = codebook[g]  # (V, D)
-        # L2 nearest-neighbour search
+        # L2 nearest-neighbour search against codebook
         dists = (
             np.sum(feat_g ** 2, axis=1, keepdims=True)    # (L, 1)
             + np.sum(cb_g ** 2, axis=1)                    # (V,)
@@ -174,6 +274,9 @@ class Vec2WavAdapter(VoiceClonerBase):
         self._frontend_sess = None
         self._vocoder_sess = None
         self._codebook: Optional[np.ndarray] = None
+        self._proj_conv_weight: Optional[np.ndarray] = None
+        self._proj_gn_weight: Optional[np.ndarray] = None
+        self._proj_gn_bias: Optional[np.ndarray] = None
 
     # ------------------------------------------------------------------
     # Lazy model loading
@@ -205,6 +308,7 @@ class Vec2WavAdapter(VoiceClonerBase):
 
         cnn_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=cnn_file)
         codebook_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=_CODEBOOK)
+        projection_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=_PROJECTION)
         wavlm_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=wavlm_file)
         frontend_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=frontend_file)
         vocoder_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=vocoder_file)
@@ -227,19 +331,29 @@ class Vec2WavAdapter(VoiceClonerBase):
             vocoder_path, sess_options=sess_opts, providers=providers
         )
         self._codebook = np.load(codebook_path)  # (G, V, D)
+        proj = np.load(projection_path)
+        self._proj_conv_weight = proj["conv_weight"].astype(np.float32)   # (512, 256, 1)
+        self._proj_gn_weight = proj["gn_weight"].astype(np.float32)       # (512,)
+        self._proj_gn_bias = proj["gn_bias"].astype(np.float32)           # (512,)
 
     # ------------------------------------------------------------------
     # Content encoding
     # ------------------------------------------------------------------
 
     def _encode_content(self, audio: np.ndarray) -> np.ndarray:
-        """vq-wav2vec CNN → VQ discretisation → (1, L, 512) float32 VQ-vectors."""
+        """vq-wav2vec CNN → projection → VQ quantisation → (1, L, 512) VQ-vectors."""
         self._ensure_models()
         inp = audio[np.newaxis, :].astype(np.float32)  # (1, T)
         cnn_out = self._cnn_sess.run(None, {"input_values": inp})
-        # cnn_out[0]: (1, L, 512)
+        # cnn_out[0]: (1, L, 512) — raw CNN features before VQ projection
         cnn_feats = cnn_out[0][0]  # (L, 512)
-        vqvec = _vq_encode(cnn_feats, self._codebook)  # (L, 512)
+        vqvec = _vq_encode(
+            cnn_feats,
+            self._codebook,
+            self._proj_conv_weight,
+            self._proj_gn_weight,
+            self._proj_gn_bias,
+        )  # (L, 512)
         return vqvec[np.newaxis, :, :]  # (1, L, 512)
 
     # ------------------------------------------------------------------

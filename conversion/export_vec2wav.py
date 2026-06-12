@@ -312,7 +312,7 @@ def _build_vqwav2vec_cnn_standalone(ckpt_path: str):
     codebook_np = cb.squeeze(1).numpy()  # (320, 256)
     codebook_np = np.stack([codebook_np, codebook_np], axis=0)  # (2, 320, 256)
 
-    return cnn, codebook_np
+    return cnn, codebook_np, model_state
 
 
 def _build_wavlm_layer6_wrapper():
@@ -431,12 +431,29 @@ def export_vec2wav(output_dir: str, cache_dir: Optional[str] = None) -> Path:
     # 1. Export vq-wav2vec CNN encoder (pre-VQ features)
     # ------------------------------------------------------------------
     print("[export] Loading vq-wav2vec (standalone, no fairseq required) ...")
-    cnn_wrapper, codebook_np = _build_vqwav2vec_cnn_standalone(str(vqw2v_ckpt))
+    cnn_wrapper, codebook_np, model_state = _build_vqwav2vec_cnn_standalone(str(vqw2v_ckpt))
 
     # Save codebook for numpy VQ at runtime (shape [G, V, D])
     codebook_path = layout.component_path("vqwav2vec_codebook.npy")
     np.save(str(codebook_path), codebook_np)
     print(f"[export] Codebook saved: {codebook_path}  shape={codebook_np.shape}")
+
+    # Save the KmeansVectorQuantizer projection weights for numpy application at runtime.
+    # The KmeansVectorQuantizer applies ``self.projection(x)`` (grouped Conv1d + GroupNorm)
+    # BEFORE computing L2 distances to the codebook. Without this step the VQ indices are
+    # computed on raw CNN features instead of projected features, producing completely wrong
+    # token sequences (0% index agreement with upstream fairseq).
+    projection_path = layout.component_path("vqwav2vec_projection.npz")
+    proj_conv_weight = model_state["vector_quantizer.projection.0.weight"].numpy()  # (512, 256, 1)
+    proj_gn_weight = model_state["vector_quantizer.projection.1.weight"].numpy()    # (512,)
+    proj_gn_bias = model_state["vector_quantizer.projection.1.bias"].numpy()        # (512,)
+    np.savez(
+        str(projection_path),
+        conv_weight=proj_conv_weight.astype(np.float32),
+        gn_weight=proj_gn_weight.astype(np.float32),
+        gn_bias=proj_gn_bias.astype(np.float32),
+    )
+    print(f"[export] Projection weights saved: {projection_path}")
 
     dummy_audio = torch.zeros(1, 16000)  # 1 second
     cnn_onnx = layout.component_path("vqwav2vec_encoder.onnx")
@@ -661,6 +678,7 @@ def export_vec2wav(output_dir: str, cache_dir: Optional[str] = None) -> Path:
             "vqwav2vec_encoder": "vqwav2vec_encoder.onnx",
             "vqwav2vec_encoder_q8": "vqwav2vec_encoder_q8.onnx",
             "vqwav2vec_codebook": "vqwav2vec_codebook.npy",
+            "vqwav2vec_projection": "vqwav2vec_projection.npz",
             "wavlm_speaker": "wavlm_speaker.onnx",
             "wavlm_speaker_q8": "wavlm_speaker_q8.onnx",
             "vec2wav_frontend": "vec2wav_frontend.onnx",

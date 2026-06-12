@@ -27,7 +27,7 @@ ignored; chatterbox always runs fp32 until upstream ships q8 exports.
 | `rvc` | 38% | 69% | 739.4 | 193.9 | 74% | ⚠ int8 degraded (69% vs fp32 38%) |
 | `speechtokenizer` | 4% | — | 411.6 | 157.7 | 62% | fp32 only |
 | `triaan` | 4% | 8% | 294.0 | 84.1 | 71% | ✅ int8 recommended |
-| `vec2wav` | — | — | 526.1 | 206.4 | 61% | no E2E yet |
+| `vec2wav` | — | — | 526.1 | 206.4 | 61% | ❌ blocked — WavLM-Large.pt required |
 
 ## Notes
 
