@@ -164,7 +164,7 @@ def _rvq_decode(codes: np.ndarray, codebooks: np.ndarray) -> np.ndarray:
 def _swap_rvq_tokens(
     src_codes: np.ndarray,
     ref_codes: np.ndarray,
-    content_layers: int = 1,
+    content_layers: int = 2,
 ) -> np.ndarray:
     """Swap timbre layers from *ref_codes* into *src_codes*.
 
@@ -175,7 +175,10 @@ def _swap_rvq_tokens(
     ref_codes:
         (Q, T_ref) int64 — RVQ codes from reference audio.
     content_layers:
-        Number of leading RVQ layers treated as content (default 1).
+        Number of leading RVQ layers treated as content (default 2 —
+        measured intelligibility/timbre tradeoff: 1 layer → strong timbre
+        but reference-dependent WER (58% on one demo voice); 2 → 12% WER;
+        3 → 0% WER with weaker timbre transfer).
         Layers [0 … content_layers-1] are kept from source.
         Layers [content_layers … Q-1] are taken from reference.
 
@@ -243,7 +246,7 @@ class SpeechTokenizerAdapter(VoiceClonerBase):
     def __init__(
         self,
         quantized: bool = False,
-        content_layers: int = 1,
+        content_layers: int = 2,
         **cfg,
     ):
         super().__init__(**cfg)
