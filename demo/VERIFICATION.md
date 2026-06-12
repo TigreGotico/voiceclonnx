@@ -27,3 +27,7 @@ against the known source text (gate: WER ≤ 40%).
 | [`outputs/speechtokenizer__sonia.wav`](outputs/speechtokenizer__sonia.wav) | 12% | ✅ | The quick brown fox jumps over the lazy dog. Those conversion changes are with speaking, b |
 | [`outputs/triaan__aria.wav`](outputs/triaan__aria.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who was speaking, bu |
 | [`outputs/triaan__sonia.wav`](outputs/triaan__sonia.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog voice conversion changes who was speaking but  |
+| [`outputs/quickvc__reference_aria.wav`](outputs/quickvc__reference_aria.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but not what |
+| [`outputs/quickvc__reference_sonia.wav`](outputs/quickvc__reference_sonia.wav) | 0% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but not what |
+| [`outputs/quickvc_q8__reference_aria.wav`](outputs/quickvc_q8__reference_aria.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog voice conversion changes who is speaking but none what i |
+| [`outputs/quickvc_q8__reference_sonia.wav`](outputs/quickvc_q8__reference_sonia.wav) | 4% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but none what |
