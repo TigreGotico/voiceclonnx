@@ -202,6 +202,7 @@ Each supported engine has a dedicated GitHub issue with engine-specific notes:
 - [#13 knn-vc](https://github.com/TigreGotico/voiceclonnx/issues/13)
 - [#14 rvc](https://github.com/TigreGotico/voiceclonnx/issues/14)
 - [#15 freevc](https://github.com/TigreGotico/voiceclonnx/issues/15)
+- [#37 vec2wav](https://github.com/TigreGotico/voiceclonnx/issues/37)
 
 Follow the contract in this guide; the per-engine issue records any deviations
 (e.g. custom opset, extra quantization exclusions, multi-component manifests).
@@ -1018,3 +1019,70 @@ adapter level.  Audio of duration N seconds is split into ceil(N) non-overlappin
 Upstream reference:
 - https://github.com/quickvc/QuickVC-VoiceConversion (MIT)
 - https://github.com/bshall/hubert (MIT, HuBERT-soft checkpoint)
+
+---
+
+## Engine: vec2wav 2.0
+
+### Architecture reality vs. issue description
+
+The GitHub issue (#37) describes vec2wav 2.0 as using "WavLM discrete content tokens".
+The actual implementation uses **vq-wav2vec** (Facebook AI, fairseq) for content
+discretisation, not WavLM. WavLM-Large (layer 6) is used only for the **speaker**
+(prompt) side. This distinction matters for the ONNX export design:
+
+- **Content path**: vq-wav2vec CNN feature extractor → numpy VQ nearest-neighbour
+  (2 groups × 320 vocab × 256 dims, concatenated to 512 dims) → (L, 512) VQ-vectors.
+- **Speaker path**: WavLM-Large layer-6 → (T, 1024) features → cross-attention inside
+  Conformer + temporal mean for BigVGAN conditioning.
+
+The WavLM exported here (`wavlm_speaker.onnx`) is **not interchangeable** with the
+kNN-VC WavLM (`wavlm_layer6.onnx` in `TigreGotico/voiceclonnx-knn-vc`). Although
+both extract layer-6 hidden states, the vec2wav weights are the original Microsoft
+WavLM-Large `.pt` format (loaded via a bundled `WavLM.py` class), while kNN-VC uses
+the HuggingFace transformers API. The numerical outputs differ.
+
+### VQ discretisation (pure numpy, not ONNX)
+
+The vq-wav2vec VQ step is implemented as a numpy codebook look-up and is **not
+exported to ONNX**. Rationale: the VQ step involves argmin over a small integer space
+(V=320) with G=2 groups — this is faster in numpy than as an ONNX subgraph, and avoids
+embedding the codebook inside the ONNX model (it is saved separately as
+`vqwav2vec_codebook.npy`).
+
+### License
+
+The GitHub repository (cantabile-kwok/vec2wav2.0) is Apache-2.0.
+The HuggingFace weights repo (cantabile-kwok/vec2wav2.0) is **GPL-3.0**.
+The ONNX artifacts in `TigreGotico/voiceclonnx-vec2wav` are derived from the
+GPL-3.0 weights and therefore inherit that term. The adapter code itself is
+Apache-2.0. Users of `quantized=True` or `quantized=False` are bound by GPL-3.0
+for the model artifacts.
+
+### Export
+
+```bash
+python -m conversion.export_vec2wav --output-dir /tmp/vec2wav-out --no-push
+```
+
+Downloads ~162 MB generator + ~1.3 GB vq-wav2vec + ~1.8 GB WavLM-Large on first run.
+Exports 4 ONNX components + codebook npy + 4 INT8 quantized variants.
+
+### ONNX export notes
+
+- **BigVGAN conditioned snakebeta**: the `Activation1dWithCondition` module passes a
+  `cond` tensor through `alias_free_torch` upsample/downsample layers. These are
+  pure Conv1d chains and export cleanly. The `cond` input is the mean speaker
+  embedding broadcast to each activation layer by `SnakeBetaWithCondition`.
+- **Conformer cross-attention**: the ESPnet-style Conformer decoder uses relative
+  positional encoding. This traces successfully at fixed sequence lengths used in
+  the dummy input but uses dynamic axes so it runs on variable-length sequences.
+- **Weight norm removal**: call `generator.backend.remove_weight_norm()` before
+  `torch.onnx.export`. Tracing through `weight_norm` wrappers introduces
+  spurious Mul/Div pairs; removing it produces a cleaner graph.
+
+### INT8 quantization
+
+The vocoder and frontend both quantize well (see QUANTS.md for measured WER).
+The WavLM speaker encoder degrades similarly to other WavLM exports in this
+collection.

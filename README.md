@@ -84,6 +84,7 @@ All engines ship with `pip install voiceclonnx` — no per-engine extras needed.
 | `bicodec` | 16 kHz | [TigreGotico/voiceclonnx-bicodec](https://huggingface.co/TigreGotico/voiceclonnx-bicodec) | CC BY-NC-SA 4.0 |
 | `quickvc` | 16 kHz | [TigreGotico/voiceclonnx-quickvc](https://huggingface.co/TigreGotico/voiceclonnx-quickvc) | MIT |
 | `triaan` | 16 kHz | [TigreGotico/voiceclonnx-triaan-vc](https://huggingface.co/TigreGotico/voiceclonnx-triaan-vc) | MIT |
+| `vec2wav` | 24 kHz | [TigreGotico/voiceclonnx-vec2wav](https://huggingface.co/TigreGotico/voiceclonnx-vec2wav) | GPL-3.0 (weights) |
 
 ### bicodec
 

@@ -38,6 +38,7 @@ no external-data sidecars).
 | `rvc` | 38% | 69% | 739.4 | 193.9 | 74% | ⚠ int8 degraded (69% vs fp32 38%) |
 | `speechtokenizer` | 4% | — | 411.6 | 157.7 | 62% | fp32 only |
 | `triaan` | 4% | 8% | 294.0 | 84.1 | 71% | ✅ int8 recommended |
+| `vec2wav` | — | — | — | — | — | pending E2E run |
 
 ## Notes
 
@@ -45,4 +46,6 @@ no external-data sidecars).
   (ContentVec-768 + RMVPE); the per-voice synthesizer is user-supplied.
 - Shared numpy artifacts (codebooks, mel filterbanks, mel stats) are never
   quantized — they are not ONNX models.
+- **vec2wav**: `vqwav2vec_codebook.npy` is never quantized (numpy array, not ONNX).
+  The row will be filled after the HF push and E2E verification run.
 - Sizes include only ONNX model files from the respective HF repo.
