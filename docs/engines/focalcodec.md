@@ -32,7 +32,7 @@ Models are downloaded from HF Hub on first use (~659 MB fp32 or ~358 MB int8 com
 
 | Key | Type | Default | Description |
 |---|---|---|---|
-| `quantized` | `bool` | `False` | Use INT8 quantized ONNX models. Reduces total footprint to ~358 MB; slightly lower quality. |
+| `quantized` | `bool` | `False` | Use INT8 quantized ONNX models. Reduces total footprint to ~358 MB. **int8 not recommended: WER 31% vs fp32 15% in benchmark** — use fp32 for production. See [QUANTS.md](../QUANTS.md) for full comparison. |
 | `k` | `int` | `4` | Number of nearest neighbours to average in the cosine matching step. |
 
 ---

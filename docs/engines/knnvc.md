@@ -30,7 +30,7 @@ Models are downloaded from HF Hub on first use (~500 MB fp32 or ~123 MB int8).
 
 | Key | Type | Default | Description |
 |---|---|---|---|
-| `quantized` | `bool` | `False` | Use INT8 quantized ONNX models. Reduces memory to ~123 MB total; slightly lower quality. |
+| `quantized` | `bool` | `False` | Use INT8 quantized ONNX models. Reduces memory to ~123 MB total; slight quality cost. See [QUANTS.md](../QUANTS.md) for the measured WER comparison. |
 | `k` | `int` | `4` | Number of nearest neighbours to average in the matching step. Higher values smooth the conversion; lower values preserve more source characteristics. |
 
 ---

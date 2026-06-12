@@ -37,7 +37,7 @@ fmin=0, fmax=8000, log-compressed; the adapter uses the first 20 bins.
 
 | Parameter | Default | Description |
 |---|---|---|
-| `quantized` | `False` | Use INT8 quantized models |
+| `quantized` | `False` | Use INT8 quantized ONNX models. Reduces footprint from ~156 MB to ~69 MB; slight quality cost. See [QUANTS.md](../QUANTS.md) for the measured WER comparison. |
 
 ## Parity results (fp32 torch vs ORT, 1 s dummy input)
 

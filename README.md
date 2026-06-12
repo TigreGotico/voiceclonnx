@@ -156,6 +156,25 @@ python -m conversion.convert_rvc_model myvoice.pth myvoice.onnx
 
 ---
 
+## Quantized models
+
+All engines except `chatterbox` support `quantized=True`, which loads the
+`*_q8.onnx` INT8 variants — 45–75% smaller on disk and faster on CPU:
+
+```python
+cloner = VoiceCloner(engine="knnvc", quantized=True)
+out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
+```
+
+See [docs/QUANTS.md](docs/QUANTS.md) for the full fp32 vs INT8 WER and size
+comparison across all engines, including which are recommended in INT8 mode.
+
+**chatterbox** is fp32-only: `onnx-community/chatterbox-onnx` does not publish
+INT8 variants. `quantized=True` is accepted for API uniformity but silently
+ignored.
+
+---
+
 ## Adding an engine
 
 1. Subclass `VoiceClonerBase` from `vconnx.engines.base`.
@@ -170,6 +189,7 @@ See [docs/api.md](docs/api.md) for the full API reference.
 ## Documentation
 
 - [docs/index.md](docs/index.md) — overview, install matrix, engine table
+- [docs/QUANTS.md](docs/QUANTS.md) — fp32 vs INT8 WER and size comparison across all engines
 - [docs/api.md](docs/api.md) — VoiceCloner facade, VoiceClonerBase, registry
 - [docs/engines/chatterbox.md](docs/engines/chatterbox.md) — config keys, troubleshooting
 - [docs/engines/freevc.md](docs/engines/freevc.md) — config keys, model sizes, WavLM note, troubleshooting

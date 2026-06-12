@@ -230,9 +230,12 @@ class SpeechTokenizerAdapter(VoiceClonerBase):
     Parameters
     ----------
     quantized:
-        Use INT8 quantized ONNX models (default ``False`` — fp32 for
-        better quality; ``True`` for faster CPU inference when INT8
-        models are available on the HF repo).
+        Accepted for API uniformity but **not supported** — the INT8
+        exports in TigreGotico/vconnx-speechtokenizer use a different
+        interface (codes-in/waveform-out) that is incompatible with the
+        continuous-feature pipeline this adapter implements.  Passing
+        ``quantized=True`` raises ``NotImplementedError``.
+        See demo/QUANTS.md for the full int8 status.
     content_layers:
         Number of leading RVQ layers used as content proxy (default 1).
         The paper reports RVQ-1 as the semantic layer; raising this to 2
@@ -250,6 +253,13 @@ class SpeechTokenizerAdapter(VoiceClonerBase):
         **cfg,
     ):
         super().__init__(**cfg)
+        if quantized:
+            raise NotImplementedError(
+                "speechtokenizer quantized=True is not supported: the INT8 exports "
+                "in TigreGotico/vconnx-speechtokenizer use a codes-in/waveform-out "
+                "interface incompatible with the continuous-feature pipeline. "
+                "Use quantized=False (fp32) instead."
+            )
         self._quantized = quantized
         self._content_layers = content_layers
         self._enc_sess = None
