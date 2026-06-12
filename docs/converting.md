@@ -678,3 +678,104 @@ The adapter uses the empirically verified recipe.
 | `mimi_encoder_q8.onnx` (INT8) | 162.4 MB (−40.7%) |
 | `mimi_decoder.onnx` (fp32) | 217.6 MB |
 | `mimi_decoder_q8.onnx` (INT8) | 132.6 MB (−39.1%) |
+
+---
+
+## Engine: bicodec (SparkTTS BiCodec)
+
+### Architecture
+
+BiCodec factorizes speech into two complementary token streams:
+
+- **Semantic tokens** (content): Wav2Vec2-XLSR-53 (hidden layers 11, 14, 16
+  averaged, 1024-dim) → convolutional encoder → FactorizedVQ → (1, T) int64.
+- **Global tokens** (speaker): 128-bin Slaney mel spectrogram → ECAPA-TDNN +
+  Perceiver resampler → FSQ → (1, 1, 32) int32 (fixed-length, 32 tokens per
+  utterance regardless of duration).
+
+Voice conversion: `source_semantic_tokens + reference_global_tokens → decoder → waveform`.
+No auto-regressive LM; single forward pass per chunk.
+
+### aten::stft workaround
+
+`torchaudio.transforms.MelSpectrogram` uses `aten::stft`, which is not
+supported in ONNX opset 14.  Rather than bumping to opset 17 (which risks
+compatibility issues with other components), the mel spectrogram is computed in
+pure numpy at inference time:
+
+- `mel_filterbank.npy` (128×513 float32) — librosa Slaney mel filterbank, saved
+  at export time.
+- `mel_config.json` — STFT parameters (n_fft=1024, win_length=640,
+  hop_length=320, fmin=10 Hz, num_mels=128).
+
+The adapter implements reflect-padded STFT + filterbank matrix multiply in
+numpy (≤5e-3 max abs vs torchaudio; verified at export time).
+
+### Wav2Vec2 tracing fix
+
+`transformers` (≥4.44) introduced `create_bidirectional_mask` in
+`modeling_wav2vec2.py`.  During ONNX tracing, `sdpa_mask` receives a scalar
+as `q_length` and crashes with `IndexError: too many indices for tensor`.
+
+Fix: patch at import time before tracing:
+
+```python
+import transformers.models.wav2vec2.modeling_wav2vec2 as w2v_mod
+w2v_mod.create_bidirectional_mask = lambda *a, **kw: None
+```
+
+Apply this in the export script (or bicodec_export_run.py helper) before any
+transformers imports.
+
+### Export recipe
+
+```bash
+# Install conversion deps
+pip install -e ".[convert]"
+pip install einx sparktts  # or clone SparkAudio/Spark-TTS and add to PYTHONPATH
+
+# Apply the tracing patch and export
+python -u conversion/export_bicodec.py --output-dir /path/to/out
+```
+
+Or use the provided helper:
+
+```bash
+export PYTHONPATH=/path/to/Spark-TTS:$PYTHONPATH
+python -u bicodec_export_run.py
+```
+
+The script downloads `SparkAudio/Spark-TTS-0.5B` via HF Hub (LLM weights
+skipped with `ignore_patterns=["LLM/*"]`), exports five components, runs
+parity checks, quantizes to INT8, writes `config.json`/`provenance.json`, and
+optionally pushes to `TigreGotico/vconnx-bicodec`.
+
+### Parity results
+
+| Component | Metric | Value | Threshold | Result |
+|---|---|---|---|---|
+| wav2vec2_encoder | max_abs | 6.71e-4 | ≤5e-3 | PASS |
+| semantic_encoder | exact int match | True | exact | PASS |
+| global_encoder | exact int match | True | exact | PASS |
+| mel numpy vs torchaudio | max_abs | ≤5e-3 | ≤5e-3 | PASS |
+| decoder | max_abs | ≤1e-3 | ≤1e-3 | PASS |
+
+### Model sizes
+
+| File | Size | Variant |
+|---|---|---|
+| `wav2vec2_encoder.onnx` | ~819 MB | fp32 |
+| `wav2vec2_encoder_q8.onnx` | ~205 MB | INT8 (~75% reduction) |
+| `semantic_encoder.onnx` | ~116 MB | fp32 |
+| `semantic_encoder_q8.onnx` | ~34 MB | INT8 (~71% reduction) |
+| `global_encoder.onnx` | ~22 MB | fp32 |
+| `global_encoder_q8.onnx` | ~6 MB | INT8 (~73% reduction) |
+| `mel_filterbank.npy` | ~256 KB | numpy |
+| `mel_config.json` | ~1 KB | JSON |
+
+### License
+
+Upstream weights: **CC BY-NC-SA 4.0** (SparkAudio/Spark-TTS-0.5B).
+Upstream code: Apache-2.0.
+The `TigreGotico/vconnx-bicodec` HF repo states the license plainly on the
+model card.  Non-commercial use only.
