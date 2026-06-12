@@ -14,6 +14,8 @@ against the known source text (gate: WER ≤ 40%).
 | [`outputs/freevc__sonia.wav`](outputs/freevc__sonia.wav) | 12% | ✅ | the quick brown fox jumps in the lazy dog. Voice conversion changes who was making, but no |
 | [`outputs/knnvc__aria.wav`](outputs/knnvc__aria.wav) | 12% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes was sticky, but not  |
 | [`outputs/knnvc__sonia.wav`](outputs/knnvc__sonia.wav) | 15% | ✅ | The quick brown fights jumps over the lazy dart. Voice conversion changes so is speedy, bu |
+| [`outputs/mimi__aria.wav`](outputs/mimi__aria.wav) | 0% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
+| [`outputs/mimi__sonia.wav`](outputs/mimi__sonia.wav) | 0% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/openvoice__aria.wav`](outputs/openvoice__aria.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/openvoice__sonia.wav`](outputs/openvoice__sonia.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/rvc__woman1.wav`](outputs/rvc__woman1.wav) | 38% | ✅ | The quick round five jumps on the lazy dog. Moiscan Christian changes with speaking, but n |

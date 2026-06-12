@@ -37,11 +37,15 @@ engines ship alongside this package and are auto-imported here.
     RVC: ContentVec + RMVPE F0 + VITS synthesizer. Any-to-ONE.
     reference_voice = path to an RVC .onnx model. MIT.
 
-``"speechtokenizer"``:
+    24 kHz, 12.5 Hz frame rate, 32 code streams. CC BY 4.0.
+    Apache-2.0.
+    Mimi: Kyutai RVQ codec VC — stream-0 (WavLM-semantic) from source,
     SpeechTokenizer: hierarchical RVQ-8 codec — RVQ-1 (HuBERT-distilled)
     carries content, RVQ-2..8 carry timbre.  VC: source RVQ-1 tokens +
     reference RVQ-2..8 tokens → decode.  Zero-shot any-to-any VC at 16 kHz.
-    Apache-2.0.
+    streams 1–31 (acoustic/timbre) from reference (pure numpy stream swap).
+``"mimi"``:
+``"speechtokenizer"``:
 
 ``"triaan"``:
     TriAAN-VC: CPC encoder + Triple Adaptive Attention Normalization decoder
@@ -74,6 +78,7 @@ import vconnx.engines.freevc  # noqa: F401
 import vconnx.engines.knnvc  # noqa: F401
 import vconnx.engines.openvoice  # noqa: F401
 import vconnx.engines.rvc  # noqa: F401
+import vconnx.engines.mimi  # noqa: F401
 import vconnx.engines.speechtokenizer  # noqa: F401
 import vconnx.engines.triaan  # noqa: F401
 

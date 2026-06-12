@@ -612,6 +612,59 @@ The decoder operates on the token embedding lookup internally.
 | decoder.onnx | max abs Δ | 1.53e-08 | PASS |
 | decoder.onnx | mean abs Δ | 2.89e-09 | PASS |
 
+## Appendix: Mimi export notes
+
+### transformers 5.5.0 tracing bugs
+
+Four patches are required to export `transformers.MimiModel` with the legacy
+TorchScript exporter.  All patches are applied at export time only; the vconnx
+runtime never imports transformers.
+
+**1. `sdpa_mask` IndexError** — `create_sliding_window_causal_mask` passes a
+0-d Tensor as `q_length`; `sdpa_mask` then tries `q_length.shape[0]`
+(IndexError).  Fix: extract `int(q_length.item())` when a 0-d Tensor is seen.
+
+**2. `find_packed_sequence_indices` + `torch.diff`** — this helper uses
+`torch.diff(prepend=…)` which the TorchScript exporter cannot lower to an ONNX
+node (`aten::diff` unsupported at opset 14/18).  Fix: patch to return `None`
+(single-sequence — correct for inference).
+
+**3. `MimiEuclideanCodebook.quantize` + `torch.cdist`** — `torch.cdist` with
+dynamic row sizes cannot be traced.  Fix: replace with manual
+`‖h‖² + ‖e‖² − 2h·eᵀ` (numerically equivalent, fully traceable).
+
+**4. Sliding-window causal attention mask** — the transformer computes a
+`(B, 1, T, T)` mask during each forward call.  The TorchScript tracer bakes
+this as a constant of the dummy-input's T, causing a broadcast error for any
+other input length.  Fix: replace `MimiAttention.forward` with full
+bidirectional attention (no mask).  This is correct for offline/batch VC where
+the entire sequence is available.
+
+### VC stream-swap recipe — empirical correction
+
+The Mimi paper describes stream 0 as WavLM-distilled content tokens.  Empirical
+testing shows the opposite behaviour for this codec in the VC setting: streams
+1–31 carry the phoneme sequence (content), and stream 0 carries higher-level
+prosodic/speaker style.
+
+| Recipe | WER vs source text |
+|---|---|
+| stream 0 = source, 1-31 = reference | 88% (reference text transcribed) |
+| stream 0 = reference, 1-31 = source | **0%** (source text preserved) ✅ |
+
+The adapter uses the empirically verified recipe.
+
+### Parity results
+
+| Component | max\_abs Δ | mean\_abs Δ | Input length | Verdict |
+|---|---|---|---|---|
+| Encoder (int64 codes) | exact match | — | 1 s | PASS |
+| Encoder (int64 codes) | exact match | — | 3 s | PASS |
+| Encoder (int64 codes) | exact match | — | 5.6 s | PASS |
+| Decoder waveform | 5.4e-6 | 3.4e-7 | 1 s | PASS |
+| Decoder waveform | 4.3e-6 | 3.3e-7 | 3 s | PASS |
+| Decoder waveform | 3.5e-6 | 3.2e-7 | 5.6 s | PASS |
+
 ### Model sizes
 
 | File | Size |
@@ -620,3 +673,8 @@ The decoder operates on the token embedding lookup internally.
 | `encoder_q8.onnx` (INT8) | 80.0 MB (−74.9 %) |
 | `decoder.onnx` (fp32) | 166.3 MB |
 | `decoder_q8.onnx` (INT8) | 70.4 MB (−57.7 %) |
+
+| `mimi_encoder.onnx` (fp32) | 274.0 MB |
+| `mimi_encoder_q8.onnx` (INT8) | 162.4 MB (−40.7%) |
+| `mimi_decoder.onnx` (fp32) | 217.6 MB |
+| `mimi_decoder_q8.onnx` (INT8) | 132.6 MB (−39.1%) |
