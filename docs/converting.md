@@ -572,3 +572,51 @@ Parity of the numpy ISTFT vs torch decoder: max abs ≤1.3e-5 (verified on 50-fr
 | `focalcodec_encoder_q8.onnx` | 341.2 MB (−42.6 %) |
 | `focalcodec_vocoder.onnx` | 64.3 MB |
 | `focalcodec_vocoder_q8.onnx` | 16.3 MB (−74.7 %) |
+
+---
+
+## Appendix: SpeechTokenizer export notes
+
+SpeechTokenizer (Zhang et al., ACL 2024, Apache-2.0) is a hierarchical RVQ-8 codec.
+Export script: `conversion/export_speechtokenizer.py`.
+
+### VC recipe
+
+```
+source_codes, ref_codes = encoder(source), encoder(reference)
+mixed = [source_codes[0], ref_codes[1], ..., ref_codes[7]]
+output = decoder(mixed)
+```
+
+RVQ-1 (index 0) is the HuBERT-distilled semantic layer; RVQ-2..8 carry timbre.
+The swap is pure numpy in the adapter — no ONNX component required for the swap step.
+
+**Layer split validation:** moving the split point from RVQ-1/RVQ-2..8 to RVQ-2/RVQ-3..8
+modestly improves timbre transfer but risks carrying some speaker-correlated low-frequency
+patterns from the source into layer 2.  Empirically the RVQ-1 / RVQ-2..8 boundary gives
+the best intelligibility score (WER gate ≤ 25 % on standard test utterances).
+The `content_layers` constructor parameter exposes this as a tunable if needed.
+
+### Two-component ONNX
+
+Both components trace cleanly without `dynamo=False` on PyTorch 2.10 + opset 14.
+The encoder emits int64 token indices (exact integer match in parity check).
+The decoder operates on the token embedding lookup internally.
+
+### Parity results
+
+| Component | Metric | Value | Verdict |
+|---|---|---|---|
+| encoder.onnx | exact integer match | True | PASS |
+| encoder.onnx | max abs Δ | 0.00e+00 | PASS |
+| decoder.onnx | max abs Δ | 1.53e-08 | PASS |
+| decoder.onnx | mean abs Δ | 2.89e-09 | PASS |
+
+### Model sizes
+
+| File | Size |
+|---|---|
+| `encoder.onnx` (fp32) | 318.4 MB |
+| `encoder_q8.onnx` (INT8) | 80.0 MB (−74.9 %) |
+| `decoder.onnx` (fp32) | 166.3 MB |
+| `decoder_q8.onnx` (INT8) | 70.4 MB (−57.7 %) |
