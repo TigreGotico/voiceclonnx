@@ -35,7 +35,7 @@ reference voices).
 
 | Parameter | Default | Description |
 |---|---|---|
-| `quantized` | `False` | Use INT8 quantized models |
+| `quantized` | `False` | Use INT8 quantized ONNX models. Reduces footprint from ~515 MB to ~309 MB; slight quality cost. See [QUANTS.md](../QUANTS.md) for the measured WER comparison. |
 
 ## Model artifacts
 

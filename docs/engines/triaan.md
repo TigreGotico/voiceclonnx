@@ -27,7 +27,7 @@ The returned `output_wav` is also 16 000 Hz mono float32.
 |---|---|---|
 | `model_dir` | `None` (auto-download) | Local path to the engine directory with all six `.onnx` files |
 | `hf_repo_id` | `TigreGotico/vconnx-triaan-vc` | Hugging Face repository to download from |
-| `use_quantized` | `False` | Use INT8 quantized models (smaller, slightly lower quality) |
+| `quantized` | `False` | Use INT8 quantized ONNX models. Reduces total footprint to ~84 MB; slight quality cost. See [QUANTS.md](../QUANTS.md) for the measured WER comparison. |
 
 ## Architecture
 

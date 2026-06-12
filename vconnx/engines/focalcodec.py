@@ -218,8 +218,10 @@ class FocalCodecAdapter(VoiceClonerBase):
     Parameters
     ----------
     quantized:
-        Use INT8 quantized ONNX models (default ``False`` — fp32 for
-        better quality; ``True`` for faster CPU inference).
+        Use INT8 quantized ONNX models (default ``False``).
+        **Not recommended for production** — INT8 degrades WER significantly
+        (benchmark: 31% int8 vs 15% fp32).  Prefer fp32.
+        See demo/QUANTS.md for the full comparison.
     k:
         Number of nearest neighbours for the kNN matching step (default 4).
     **cfg:

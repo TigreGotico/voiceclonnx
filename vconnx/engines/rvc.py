@@ -267,6 +267,8 @@ class RVCAdapter(VoiceClonerBase):
         ``reference_voice`` is ``None``.  Set in config or at construction.
     quantized:
         If ``True``, use INT8 quantized ContentVec / RMVPE base models.
+        **Not recommended for production** — INT8 degrades WER significantly
+        (benchmark: 69% int8 vs 38% fp32).  See demo/QUANTS.md.
     sample_rate:
         Override the output sample rate (Hz).  RVC v2 models typically output
         40000 Hz (40k) or 48000 Hz (48k).  The adapter reads this from the

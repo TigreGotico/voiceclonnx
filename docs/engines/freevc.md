@@ -38,7 +38,7 @@ Models are downloaded from HF Hub on first use (~1.2 GB fp32 or ~342 MB int8).
 
 | Key | Type | Default | Description |
 |---|---|---|---|
-| `quantized` | `bool` | `False` | Use INT8 quantized ONNX models. Reduces memory from ~1.3 GB to ~342 MB total; slightly lower quality. |
+| `quantized` | `bool` | `False` | Use INT8 quantized ONNX models. Reduces memory from ~1.4 GB to ~359 MB total. **int8 not recommended: WER 62% vs fp32 12% in benchmark** — use fp32 for production. See [QUANTS.md](../QUANTS.md) for full comparison. |
 
 ---
 

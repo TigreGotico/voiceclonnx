@@ -32,7 +32,7 @@ Models are downloaded from HF Hub on first use.
 
 | Key | Type | Default | Description |
 |---|---|---|---|
-| `quantized` | `bool` | `False` | Use INT8 quantized ONNX models. Lower memory and faster on CPU; slight quality trade-off. |
+| `quantized` | `bool` | `False` | Use INT8 quantized ONNX models. Reduces footprint from ~131 MB to ~43 MB; slight quality cost. See [QUANTS.md](../QUANTS.md) for the measured WER comparison. |
 | `gl_iters` | `int` | `32` | Griffin-Lim iterations for vocoding. More iterations improve quality at the cost of latency. 16 is faster; 64 is higher quality. |
 
 ---

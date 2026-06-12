@@ -46,16 +46,30 @@ print(cloner.sample_rate)   # 24000
 
 All engines are included in the base `pip install vconnx`.
 
-| Alias | Sample rate | HF model repo | Notes |
-|---|---|---|---|
-| `chatterbox` | 24 kHz | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | AR codec-LM; VC path only |
-| `facodec` | 16 kHz | [TigreGotico/vconnx-facodec](https://huggingface.co/TigreGotico/vconnx-facodec) | Factorised VQ; timbre-swap VC (NaturalSpeech 3) |
-| `focalcodec` | 16 kHz | [TigreGotico/vconnx-focalcodec](https://huggingface.co/TigreGotico/vconnx-focalcodec) | WavLM + cosine kNN + Vocos ISTFT |
-| `freevc` | 16 kHz | [TigreGotico/vconnx-freevc](https://huggingface.co/TigreGotico/vconnx-freevc) | WavLM + GE2E + VITS decoder |
-| `knnvc` | 16 kHz | [TigreGotico/vconnx-knn-vc](https://huggingface.co/TigreGotico/vconnx-knn-vc) | WavLM + L2-kNN + HiFi-GAN |
-| `openvoice` | 22 kHz | [TigreGotico/vconnx-openvoice-v2](https://huggingface.co/TigreGotico/vconnx-openvoice-v2) | Tone-color transfer |
-| `rvc` | 40/48 kHz | [TigreGotico/vconnx-rvc](https://huggingface.co/TigreGotico/vconnx-rvc) | Any-to-ONE; voice baked into model |
-| `triaan` | 16 kHz | [TigreGotico/vconnx-triaan-vc](https://huggingface.co/TigreGotico/vconnx-triaan-vc) | CPC + TriAAN decoder + PWG |
+| Alias | Sample rate | HF model repo | INT8 | Notes |
+|---|---|---|---|---|
+| `chatterbox` | 24 kHz | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | fp32 only | AR codec-LM; VC path only |
+| `facodec` | 16 kHz | [TigreGotico/vconnx-facodec](https://huggingface.co/TigreGotico/vconnx-facodec) | ✅ | Factorised VQ; timbre-swap VC (NaturalSpeech 3) |
+| `focalcodec` | 16 kHz | [TigreGotico/vconnx-focalcodec](https://huggingface.co/TigreGotico/vconnx-focalcodec) | ✅ | WavLM + cosine kNN + Vocos ISTFT |
+| `freevc` | 16 kHz | [TigreGotico/vconnx-freevc](https://huggingface.co/TigreGotico/vconnx-freevc) | ✅ | WavLM + GE2E + VITS decoder |
+| `knnvc` | 16 kHz | [TigreGotico/vconnx-knn-vc](https://huggingface.co/TigreGotico/vconnx-knn-vc) | ✅ | WavLM + L2-kNN + HiFi-GAN |
+| `mimi` | 24 kHz | [TigreGotico/vconnx-mimi](https://huggingface.co/TigreGotico/vconnx-mimi) | ✅ | Moshi codec; encoder-decoder token swap |
+| `openvoice` | 22 kHz | [TigreGotico/vconnx-openvoice-v2](https://huggingface.co/TigreGotico/vconnx-openvoice-v2) | ✅ | Tone-color transfer |
+| `bicodec` | 16 kHz | [TigreGotico/vconnx-bicodec](https://huggingface.co/TigreGotico/vconnx-bicodec) | ✅ | Semantic + global token factorization (SparkTTS) |
+| `rvc` | 40/48 kHz | [TigreGotico/vconnx-rvc](https://huggingface.co/TigreGotico/vconnx-rvc) | ✅ (base models) | Any-to-ONE; voice baked into model |
+| `speechtokenizer` | 16 kHz | [TigreGotico/vconnx-speechtokenizer](https://huggingface.co/TigreGotico/vconnx-speechtokenizer) | ✅ | RVQ token swap VC |
+| `triaan` | 16 kHz | [TigreGotico/vconnx-triaan-vc](https://huggingface.co/TigreGotico/vconnx-triaan-vc) | ✅ | CPC + TriAAN decoder + PWG |
+
+### Quantized models
+
+Every engine accepts `quantized: bool = False`. When `True`, the adapter loads
+the `*_q8.onnx` INT8 variants, which are 45–75% smaller on disk and faster on
+CPU at a small quality cost. See [QUANTS.md](QUANTS.md) for the fp32 vs INT8
+WER and size comparison across all engines.
+
+**Exception**: `chatterbox` is fp32-only — `onnx-community/chatterbox-onnx`
+does not publish INT8 variants. The `quantized=True` flag is accepted (uniform
+API) but ignored.
 
 ---
 

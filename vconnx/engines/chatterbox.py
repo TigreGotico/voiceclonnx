@@ -98,6 +98,11 @@ class ChatterboxAdapter(VoiceClonerBase):
 
     Parameters
     ----------
+    quantized:
+        Accepted for API uniformity with other engines but **ignored** —
+        ``onnx-community/chatterbox-onnx`` does not publish INT8 variants of
+        the ``speech_encoder`` or ``conditional_decoder`` used for VC.
+        Chatterbox is fp32-only until upstream ships q8 exports.
     exaggeration:
         Voice-exaggeration scalar (default ``0.6``).  Stored for API
         compatibility; the conditional decoder does not expose this as a
@@ -108,13 +113,17 @@ class ChatterboxAdapter(VoiceClonerBase):
     """
 
     _sample_rate = _CHATTERBOX_SR
+    #: INT8 variants are not available in onnx-community/chatterbox-onnx.
+    fp32_only: bool = True
 
     def __init__(
         self,
+        quantized: bool = False,
         exaggeration: float = 0.6,
         **cfg,
     ):
         super().__init__(**cfg)
+        self._quantized = quantized  # accepted but unused; fp32-only engine
         self._exaggeration = exaggeration
         self._speech_enc_sess = None
         self._cond_dec_sess = None

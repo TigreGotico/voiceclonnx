@@ -284,8 +284,10 @@ class FreeVCAdapter(VoiceClonerBase):
     Parameters
     ----------
     quantized:
-        Use INT8 quantized ONNX models (default ``False`` — fp32 for
-        better quality; use ``True`` for faster / lower-memory inference).
+        Use INT8 quantized ONNX models (default ``False``).
+        **Not recommended for production** — INT8 degrades WER significantly
+        (benchmark: 62% int8 vs 12% fp32).  Prefer fp32.
+        See demo/QUANTS.md for the full comparison.
     **cfg:
         Additional keyword arguments stored but not used.
     """

@@ -22,7 +22,15 @@ No per-engine extras required. ONNX models are downloaded on first use from
 
 | Key | Type | Default | Description |
 |---|---|---|---|
+| `quantized` | `bool` | `False` | Accepted for API uniformity but **ignored** — no INT8 variants exist in `onnx-community/chatterbox-onnx`. Chatterbox is fp32-only. |
 | `exaggeration` | `float` | `0.6` | Voice exaggeration factor. Higher values produce a more pronounced voice style; `0.5` is a neutral starting point. |
+
+### INT8 availability
+
+Chatterbox is **fp32-only**. The `onnx-community/chatterbox-onnx` repository
+does not publish INT8 variants of `speech_encoder.onnx` or
+`conditional_decoder.onnx`. Passing `quantized=True` is silently ignored —
+fp32 files are always loaded. See [QUANTS.md](../QUANTS.md) for context.
 
 ---
 
@@ -33,14 +41,14 @@ No per-engine extras required. ONNX models are downloaded on first use from
 ```python
 from vconnx import VoiceCloner
 
-# Default (quantized=True, exaggeration=0.6)
+# Default (fp32, exaggeration=0.6)
 cloner = VoiceCloner(engine="chatterbox")
 out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
 print(cloner.sample_rate)   # 24000
 
-# Full-precision with neutral exaggeration
-cloner = VoiceCloner(engine="chatterbox", quantized=False, exaggeration=0.5)
-out = cloner.clone_voice("source.wav", "reference.wav", "out_fp32.wav")
+# quantized=True accepted but has no effect (fp32-only engine)
+cloner = VoiceCloner(engine="chatterbox", quantized=True, exaggeration=0.5)
+out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
 ```
 
 ### CLI

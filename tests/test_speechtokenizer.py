@@ -376,13 +376,15 @@ def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
 
 
 def test_adapter_quantized_flag_stored():
-    """quantized flag is stored and accessible."""
+    """quantized=False is stored; quantized=True raises NotImplementedError (incompatible q8 export)."""
+    import pytest
     from vconnx.engines.speechtokenizer import SpeechTokenizerAdapter
 
-    a = SpeechTokenizerAdapter(quantized=True)
-    assert a._quantized is True
     b = SpeechTokenizerAdapter(quantized=False)
     assert b._quantized is False
+
+    with pytest.raises(NotImplementedError):
+        SpeechTokenizerAdapter(quantized=True)
 
 
 def test_adapter_content_layers_parameter():

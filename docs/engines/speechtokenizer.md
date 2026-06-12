@@ -68,7 +68,7 @@ out = cloner.clone_voice("source.wav", "reference.wav", "converted.wav")
 
 | Parameter | Default | Description |
 |---|---|---|
-| `quantized` | `False` | Use INT8 quantized models for faster CPU inference |
+| `quantized` | `False` | **Not supported** — raises `NotImplementedError`. The INT8 exports in `TigreGotico/vconnx-speechtokenizer` use a different interface incompatible with this adapter's pipeline. Always use fp32. |
 | `content_layers` | `1` | Number of leading RVQ layers treated as content (default 1 = RVQ-1 only) |
 
 ## CPU performance

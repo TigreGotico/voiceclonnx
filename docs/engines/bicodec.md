@@ -43,7 +43,7 @@ Models are downloaded from HF Hub on first use (~1.5 GB fp32 combined, ~1 GB INT
 
 | Key | Type | Default | Description |
 |---|---|---|---|
-| `quantized` | `bool` | `False` | Use INT8 quantized ONNX models. Reduces memory footprint by ~40%. |
+| `quantized` | `bool` | `False` | Use INT8 quantized ONNX models. Reduces footprint from ~1.4 GB to ~419 MB; slight quality cost. See [QUANTS.md](../QUANTS.md) for the measured WER comparison. |
 | `chunk_samples` | `int` | `32000` | Wav2Vec2 chunking window in samples (2 s at 16 kHz). Set to `0` to disable chunking (full audio in one pass; may degrade on long sequences). |
 
 ---
