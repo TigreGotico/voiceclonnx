@@ -13,3 +13,7 @@ build/
 *.wav
 !tests/fixtures/
 .env
+
+# bundled engine-comparison demos are deliberately committed
+!demo/*.wav
+!demo/outputs/*.wav
