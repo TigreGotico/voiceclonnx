@@ -678,3 +678,104 @@ The adapter uses the empirically verified recipe.
 | `mimi_encoder_q8.onnx` (INT8) | 162.4 MB (−40.7%) |
 | `mimi_decoder.onnx` (fp32) | 217.6 MB |
 | `mimi_decoder_q8.onnx` (INT8) | 132.6 MB (−39.1%) |
+
+---
+
+## Appendix: FACodec export notes
+
+FACodec (NaturalSpeech 3, Amphion / Microsoft Research, ICML 2024) disentangles
+speech into four subspaces: content, prosody, timbre, acoustic detail.  Voice
+conversion swaps the timbre embedding only — no per-speaker training required.
+
+### License verification
+
+The HF repo `amphion/naturalspeech3_facodec` carries `license: apache-2.0` in
+its YAML front-matter (verified via HuggingFace Hub API).  The Amphion GitHub
+repository (`open-mmlab/Amphion`) is Apache-2.0 at repository level; per-module
+headers additionally carry MIT.  ONNX artifacts are published under Apache-2.0
+with provenance stated on the model card.
+
+### Four-component split
+
+The V2 VC path requires four ONNX components:
+
+| File | I/O | Description |
+|---|---|---|
+| `facodec_encoder.onnx` | wav(1,1,N) → enc_feats(1,256,T) | Convolutional encoder (hop=200) |
+| `facodec_timbre.onnx` | enc_feats(1,256,T) → spk_embs(1,256) | 4-layer Transformer → mean-pool |
+| `facodec_quantize.onnx` | (enc_feats,mel_20) → vq_ids(6,1,T) | Hierarchical VQ-6 |
+| `facodec_decoder.onnx` | (vq_ids,spk_embs) → wav(1,1,N) | vq2emb + AdaIN + conv decoder |
+
+### Prosody mel in numpy
+
+`FACodecEncoderV2.get_prosody_feature(wav)` returns the first 20 mel bins
+of a standard log-mel spectrogram (n_fft=1024, hop=200, win=800, n_mels=80,
+sr=16000).  This is implemented in pure numpy in the adapter via
+`_compute_prosody_mel` — no ONNX component needed.
+
+### Amphion clone
+
+The export script performs a sparse-checkout of `models/codec/ns3_codec` from
+the Amphion GitHub repository to load the upstream model classes, then loads
+the V2 checkpoint from HF Hub.  The `einops` package is required.
+
+### Export quirks
+
+1. **alias_free_torch UpSample1d/LowPassFilter1d** — both modules call
+   `self.filter.expand(C, -1, -1)` where C is read from the runtime input shape.
+   The TorchScript exporter cannot export convolutions whose kernel shape depends
+   on a dynamic dimension.  Fix: instrument the modules with a capturing wrapper,
+   run one dummy forward to record C, then pre-expand the filter as a static buffer
+   and replace `forward` with a version using the buffer.
+
+2. **nn.MultiheadAttention dynamic T** — `nn.MultiheadAttention` with
+   `batch_first=True` internally reshapes `(B, T, H)` to `(B*n_heads, T, head_dim)`
+   using the TorchScript tracer, which bakes T from the dummy input.  Fix: replace
+   each `nn.MultiheadAttention` with a `DynamicMHA` that uses
+   `F.scaled_dot_product_attention` directly — accepting fully dynamic shapes.
+   Both `timbre_encoder` and `melspec_encoder` in the decoder are affected.
+
+3. **Prosody mel T vs encoder T** — the STFT-based mel spectrogram (computed in
+   numpy in the adapter) and the convolutional encoder produce slightly different
+   frame counts for the same audio length.  The adapter trims or pads `mel_20` to
+   match the encoder output T before passing to the quantize component.
+
+### Parity results (fp32 torch vs ORT)
+
+| Component | max_abs Δ | mean_abs Δ | Verdict |
+|---|---|---|---|
+| facodec_encoder | 1.62e-05 | 2.36e-06 | PASS |
+| facodec_timbre | 1.43e-06 | 6.40e-08 | PASS |
+| facodec_quantize | exact int64 match | — | PASS |
+| facodec_decoder | 7.50e-09 | 1.46e-09 | PASS |
+
+### Model sizes
+
+| File | Size |
+|---|---|
+| `facodec_encoder.onnx` (fp32) | 16.5 MB |
+| `facodec_encoder_q8.onnx` (INT8) | 4.7 MB (−71.5%) |
+| `facodec_timbre.onnx` (fp32) | 33.0 MB |
+| `facodec_timbre_q8.onnx` (INT8) | 12.1 MB (−63.3%) |
+| `facodec_quantize.onnx` (fp32) | 33.4 MB |
+| `facodec_quantize_q8.onnx` (INT8) | 12.5 MB (−62.6%) |
+| `facodec_decoder.onnx` (fp32) | 66.2 MB |
+| `facodec_decoder_q8.onnx` (INT8) | 36.8 MB (−44.4%) |
+
+### Intelligibility gate (WER ≤ 25%)
+
+| Reference voice | WER | Verdict |
+|---|---|---|
+| en-US-AriaNeural | 0% | PASS |
+| en-GB-SoniaNeural | 0% | PASS |
+
+### VC recipe
+
+```
+vq_post_emb_src = decoder_v2.vq2emb(vq_ids_src, use_residual=False)
+wav_out = decoder_v2.inference(vq_post_emb_src, spk_embs_ref)
+```
+
+Source prosody and content codes (VQ-1..3) are preserved; the reference
+timbre embedding is injected via AdaIN-style conditioning in the decoder.
+Residual codes are excluded (`use_residual=False`) to maximise timbre transfer.

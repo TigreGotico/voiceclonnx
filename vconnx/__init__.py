@@ -81,6 +81,7 @@ import vconnx.engines.rvc  # noqa: F401
 import vconnx.engines.mimi  # noqa: F401
 import vconnx.engines.speechtokenizer  # noqa: F401
 import vconnx.engines.triaan  # noqa: F401
+import vconnx.engines.facodec  # noqa: F401
 
 __all__ = [
     "VoiceCloner",
