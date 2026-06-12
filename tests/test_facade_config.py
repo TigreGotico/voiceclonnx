@@ -9,8 +9,8 @@ from __future__ import annotations
 
 import pytest
 
-from vconnx import VoiceCloner
-from vconnx.engines.base import ENGINE_REGISTRY, EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx import VoiceCloner
+from voiceclonnx.engines.base import ENGINE_REGISTRY, EngineEntry, VoiceClonerBase, register_engine
 
 
 # ---------------------------------------------------------------------------

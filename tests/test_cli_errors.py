@@ -16,8 +16,8 @@ from unittest.mock import patch
 
 import pytest
 
-from vconnx.__main__ import main
-from vconnx.engines.base import ENGINE_REGISTRY, EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.__main__ import main
+from voiceclonnx.engines.base import ENGINE_REGISTRY, EngineEntry, VoiceClonerBase, register_engine
 
 
 # ---------------------------------------------------------------------------
@@ -55,22 +55,22 @@ def minimal_engine():
 
 
 def test_help_exits_zero():
-    with patch("sys.argv", ["vconnx", "--help"]):
+    with patch("sys.argv", ["voiceclonnx", "--help"]):
         with pytest.raises(SystemExit) as exc_info:
             main()
     assert exc_info.value.code == 0
 
 
 def test_help_output_contains_progname(capsys):
-    with patch("sys.argv", ["vconnx", "--help"]):
+    with patch("sys.argv", ["voiceclonnx", "--help"]):
         with pytest.raises(SystemExit):
             main()
     captured = capsys.readouterr()
-    assert "vconnx" in (captured.out + captured.err)
+    assert "voiceclonnx" in (captured.out + captured.err)
 
 
 def test_clone_help_exits_zero(capsys):
-    with patch("sys.argv", ["vconnx", "clone", "--help"]):
+    with patch("sys.argv", ["voiceclonnx", "clone", "--help"]):
         with pytest.raises(SystemExit) as exc_info:
             main()
     assert exc_info.value.code == 0
@@ -90,7 +90,7 @@ def test_clone_unknown_engine_raises(tmp_path):
     out = tmp_path / "o.wav"
 
     with patch("sys.argv", [
-        "vconnx", "clone",
+        "voiceclonnx", "clone",
         "--engine", "no_such_engine_xyz",
         "--audio", str(src),
         "--voice", str(ref),
@@ -111,7 +111,7 @@ def test_clone_missing_audio_arg(tmp_path):
     ref.write_bytes(b"\x00" * 44)
 
     with patch("sys.argv", [
-        "vconnx", "clone",
+        "voiceclonnx", "clone",
         "--engine", "_cli_err_mock",
         "--voice", str(ref),
         "--out", str(tmp_path / "out.wav"),
@@ -127,7 +127,7 @@ def test_clone_missing_voice_arg(tmp_path):
     src.write_bytes(b"\x00" * 44)
 
     with patch("sys.argv", [
-        "vconnx", "clone",
+        "voiceclonnx", "clone",
         "--engine", "_cli_err_mock",
         "--audio", str(src),
         "--out", str(tmp_path / "out.wav"),
@@ -145,7 +145,7 @@ def test_clone_missing_out_arg(tmp_path):
     ref.write_bytes(b"\x00" * 44)
 
     with patch("sys.argv", [
-        "vconnx", "clone",
+        "voiceclonnx", "clone",
         "--engine", "_cli_err_mock",
         "--audio", str(src),
         "--voice", str(ref),
@@ -156,8 +156,8 @@ def test_clone_missing_out_arg(tmp_path):
 
 
 def test_no_subcommand_exits_nonzero():
-    """Calling 'vconnx' with no subcommand must exit non-zero."""
-    with patch("sys.argv", ["vconnx"]):
+    """Calling 'voiceclonnx' with no subcommand must exit non-zero."""
+    with patch("sys.argv", ["voiceclonnx"]):
         with pytest.raises(SystemExit) as exc_info:
             main()
     assert exc_info.value.code != 0
@@ -170,12 +170,12 @@ def test_no_subcommand_exits_nonzero():
 
 def test_list_empty_registry(capsys, monkeypatch):
     """When no engines are registered, list prints a placeholder."""
-    import vconnx.engines.base as base_mod
+    import voiceclonnx.engines.base as base_mod
 
     saved = dict(base_mod.ENGINE_REGISTRY)
     base_mod.ENGINE_REGISTRY.clear()
     try:
-        with patch("sys.argv", ["vconnx", "list"]):
+        with patch("sys.argv", ["voiceclonnx", "list"]):
             main()
     finally:
         base_mod.ENGINE_REGISTRY.update(saved)
@@ -190,14 +190,14 @@ def test_list_empty_registry(capsys, monkeypatch):
 
 
 def test_list_shows_registered_engine(capsys, minimal_engine):
-    with patch("sys.argv", ["vconnx", "list"]):
+    with patch("sys.argv", ["voiceclonnx", "list"]):
         main()
     captured = capsys.readouterr()
     assert "_cli_err_mock" in captured.out
 
 
 def test_list_shows_description(capsys, minimal_engine):
-    with patch("sys.argv", ["vconnx", "list"]):
+    with patch("sys.argv", ["voiceclonnx", "list"]):
         main()
     captured = capsys.readouterr()
     assert "error-path mock" in captured.out

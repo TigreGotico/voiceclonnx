@@ -1,11 +1,11 @@
 # API reference
 
-## `vconnx.VoiceCloner`
+## `voiceclonnx.VoiceCloner`
 
 The public facade. All engines are accessed through this class.
 
 ```python
-from vconnx import VoiceCloner
+from voiceclonnx import VoiceCloner
 ```
 
 ### Constructor
@@ -57,12 +57,12 @@ Returns the path to the written output file (same as `out_path`).
 
 ---
 
-## `vconnx.engines.base.VoiceClonerBase`
+## `voiceclonnx.engines.base.VoiceClonerBase`
 
 Abstract base class for per-engine adapters. Subclass this to add a new engine.
 
 ```python
-from vconnx.engines.base import VoiceClonerBase
+from voiceclonnx.engines.base import VoiceClonerBase
 ```
 
 ### Class attribute
@@ -98,12 +98,12 @@ Returns `self._sample_rate`.
 
 ---
 
-## `vconnx.engines.base.EngineEntry`
+## `voiceclonnx.engines.base.EngineEntry`
 
 Frozen-style dataclass describing one registered engine.
 
 ```python
-from vconnx.engines.base import EngineEntry
+from voiceclonnx.engines.base import EngineEntry
 ```
 
 | Field | Type | Description |
@@ -111,7 +111,7 @@ from vconnx.engines.base import EngineEntry
 | `alias` | `str` | Registry key (e.g. `"chatterbox"`) |
 | `adapter_class` | `Type[VoiceClonerBase]` | The adapter class |
 | `description` | `str` | Human-readable one-line description |
-| `extras` | `str` | pip extras key (e.g. `"chatterbox"` → `pip install vconnx[chatterbox]`) |
+| `extras` | `str` | pip extras key (e.g. `"chatterbox"` → `pip install voiceclonnx[chatterbox]`) |
 | `onnx_native` | `bool` | `True` for all built-in engines |
 
 ---
@@ -119,7 +119,7 @@ from vconnx.engines.base import EngineEntry
 ## Registry functions
 
 ```python
-from vconnx.engines.base import ENGINE_REGISTRY, register_engine, get_engine
+from voiceclonnx.engines.base import ENGINE_REGISTRY, register_engine, get_engine
 ```
 
 ### `ENGINE_REGISTRY`
@@ -149,7 +149,7 @@ known aliases when `alias` is not found.
 ## Adding a custom engine
 
 ```python
-from vconnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
 
 class MyAdapter(VoiceClonerBase):
     _sample_rate = 16000
@@ -179,4 +179,4 @@ register_engine(EngineEntry(
 ```
 
 Then expose `my-engine` in `pyproject.toml` under `[project.optional-dependencies]`
-and auto-import the module in `vconnx/__init__.py`.
+and auto-import the module in `voiceclonnx/__init__.py`.

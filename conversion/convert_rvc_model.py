@@ -1,8 +1,8 @@
-"""Convert a community RVC voice model (.pth) to ONNX for use with vconnx.
+"""Convert a community RVC voice model (.pth) to ONNX for use with voiceclonnx.
 
 RVC voice models are trained per-target-speaker and distributed as ``.pth``
 checkpoint files.  This helper exports the ``net_g`` synthesizer from any
-such checkpoint to a self-contained ``.onnx`` file that the vconnx RVC
+such checkpoint to a self-contained ``.onnx`` file that the voiceclonnx RVC
 adapter can load directly.
 
 Usage::
@@ -17,9 +17,9 @@ Supported checkpoint formats:
   - RVC v1 / v2 (40k / 48k) — auto-detected from checkpoint metadata.
 
 The generated .onnx file includes ``sample_rate`` in its model metadata so
-the vconnx adapter can read the correct output sample rate automatically.
+the voiceclonnx adapter can read the correct output sample rate automatically.
 
-Requires: ``pip install vconnx[convert]`` (torch, onnx, onnxruntime)
+Requires: ``pip install voiceclonnx[convert]`` (torch, onnx, onnxruntime)
 """
 
 from __future__ import annotations
@@ -290,7 +290,7 @@ def convert_rvc_model(pth_path: str, onnx_path: str, parity_report_path: Optiona
 
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
-        description="Convert an RVC voice model (.pth) to ONNX for vconnx."
+        description="Convert an RVC voice model (.pth) to ONNX for voiceclonnx."
     )
     p.add_argument("pth_path", help="Input .pth checkpoint file.")
     p.add_argument("onnx_path", help="Output .onnx file path.")

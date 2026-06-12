@@ -274,7 +274,7 @@ def export_knnvc(output_dir: str, cache_dir: Optional[str] = None) -> Path:
     layout = OutputLayout.for_engine("knn-vc", base_dir=output_dir)
     layout.makedirs()
 
-    _cache = Path(cache_dir) if cache_dir else Path.home() / ".cache" / "vconnx" / "knnvc"
+    _cache = Path(cache_dir) if cache_dir else Path.home() / ".cache" / "voiceclonnx" / "knnvc"
     _cache.mkdir(parents=True, exist_ok=True)
 
     # ------------------------------------------------------------------

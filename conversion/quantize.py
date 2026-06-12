@@ -1,4 +1,4 @@
-"""INT8 dynamic quantization pass for vconnx ONNX models.
+"""INT8 dynamic quantization pass for voiceclonnx ONNX models.
 
 Applies ``onnxruntime.quantization.quantize_dynamic`` to produce a ``_q8.onnx``
 variant alongside the original full-precision file, then prints a size and
@@ -156,7 +156,7 @@ def _bench(onnx_path: str, inputs: Dict[str, np.ndarray], runs: int) -> float:
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Dynamic INT8 quantization for vconnx ONNX models.")
+    p = argparse.ArgumentParser(description="Dynamic INT8 quantization for voiceclonnx ONNX models.")
     p.add_argument("input", help="Path to the source .onnx file.")
     p.add_argument("--output", default=None, help="Destination path (default: <stem>_q8.onnx).")
     p.add_argument(

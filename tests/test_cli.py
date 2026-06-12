@@ -1,10 +1,10 @@
-"""Tests for the vconnx CLI."""
+"""Tests for the voiceclonnx CLI."""
 
 import os
 import pytest
 from unittest.mock import patch, MagicMock
-from vconnx.__main__ import main
-from vconnx.engines.base import ENGINE_REGISTRY, EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.__main__ import main
+from voiceclonnx.engines.base import ENGINE_REGISTRY, EngineEntry, VoiceClonerBase, register_engine
 
 
 class MockAdapter(VoiceClonerBase):
@@ -39,7 +39,7 @@ def test_cli_clone(tmp_path, capsys):
     ref.write_bytes(b"\x00" * 44)
 
     with patch("sys.argv", [
-        "vconnx", "clone",
+        "voiceclonnx", "clone",
         "--engine", "_mock",
         "--audio", str(src),
         "--voice", str(ref),
@@ -53,7 +53,7 @@ def test_cli_clone(tmp_path, capsys):
 
 
 def test_cli_list(capsys):
-    with patch("sys.argv", ["vconnx", "list"]):
+    with patch("sys.argv", ["voiceclonnx", "list"]):
         main()
     captured = capsys.readouterr()
     assert "_mock" in captured.out
@@ -62,7 +62,7 @@ def test_cli_list(capsys):
 def test_cli_no_tts_subcommand():
     """The 'tts' subcommand must not exist."""
     import argparse
-    with patch("sys.argv", ["vconnx", "tts", "--text", "hello", "--voice", "x.wav", "--out", "o.wav"]):
+    with patch("sys.argv", ["voiceclonnx", "tts", "--text", "hello", "--voice", "x.wav", "--out", "o.wav"]):
         with pytest.raises(SystemExit) as exc_info:
             main()
         assert exc_info.value.code != 0

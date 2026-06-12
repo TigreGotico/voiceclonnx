@@ -1,12 +1,12 @@
-# vconnx
+# voiceclonnx
 
-![PyPI](https://img.shields.io/pypi/v/vconnx)
-![Python](https://img.shields.io/pypi/pyversions/vconnx)
-![License](https://img.shields.io/pypi/l/vconnx)
+![PyPI](https://img.shields.io/pypi/v/voiceclonnx)
+![Python](https://img.shields.io/pypi/pyversions/voiceclonnx)
+![License](https://img.shields.io/pypi/l/voiceclonnx)
 
 Pure-ONNX multi-engine voice-cloning library — no PyTorch at runtime.
 
-**Audio-to-audio only.** vconnx converts the voice in an existing speech file to
+**Audio-to-audio only.** voiceclonnx converts the voice in an existing speech file to
 sound like a reference speaker. Text-driven synthesis (text → cloned audio) is a
 TTS-engine concern and is explicitly out of scope.
 
@@ -15,7 +15,7 @@ TTS-engine concern and is explicitly out of scope.
 ## Install
 
 ```bash
-pip install vconnx
+pip install voiceclonnx
 ```
 
 That single command installs **every engine** — no per-engine extras required.
@@ -25,8 +25,8 @@ ONNX models are downloaded on first use from Hugging Face Hub.
 For model conversion / export tooling only:
 
 ```bash
-pip install "vconnx[convert]"   # torch, onnx, transformers, librosa (conversion only)
-pip install "vconnx[test]"      # pytest, faster-whisper, edge-tts (testing)
+pip install "voiceclonnx[convert]"   # torch, onnx, transformers, librosa (conversion only)
+pip install "voiceclonnx[test]"      # pytest, faster-whisper, edge-tts (testing)
 ```
 
 ---
@@ -34,7 +34,7 @@ pip install "vconnx[test]"      # pytest, faster-whisper, edge-tts (testing)
 ## Quick start
 
 ```python
-from vconnx import VoiceCloner
+from voiceclonnx import VoiceCloner
 
 cloner = VoiceCloner(engine="chatterbox")
 out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
@@ -47,13 +47,13 @@ print(cloner.sample_rate)   # 24000
 
 ```bash
 # Convert a WAV file
-vconnx clone --engine chatterbox \
+voiceclonnx clone --engine chatterbox \
              --audio source.wav \
              --voice reference.wav \
              --out converted.wav
 
 # With optional engine flags
-vconnx clone --engine chatterbox \
+voiceclonnx clone --engine chatterbox \
              --audio source.wav \
              --voice reference.wav \
              --out converted.wav \
@@ -61,28 +61,28 @@ vconnx clone --engine chatterbox \
              --max-new-tokens 1024
 
 # List registered engines
-vconnx list
+voiceclonnx list
 ```
 
 ---
 
 ## Engine matrix
 
-All engines ship with `pip install vconnx` — no per-engine extras needed.
+All engines ship with `pip install voiceclonnx` — no per-engine extras needed.
 
 | Alias | Sample rate | Model repo | License |
 |---|---|---|---|
 | `chatterbox` | 24 kHz | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | Apache-2.0 |
-| `facodec` | 16 kHz | [TigreGotico/vconnx-facodec](https://huggingface.co/TigreGotico/vconnx-facodec) | Apache-2.0 |
-| `focalcodec` | 16 kHz | [TigreGotico/vconnx-focalcodec](https://huggingface.co/TigreGotico/vconnx-focalcodec) | Apache-2.0 |
-| `freevc` | 16 kHz | [TigreGotico/vconnx-freevc](https://huggingface.co/TigreGotico/vconnx-freevc) | MIT |
-| `knnvc` | 16 kHz | [TigreGotico/vconnx-knn-vc](https://huggingface.co/TigreGotico/vconnx-knn-vc) | MIT |
-| `mimi` | 24 kHz | [TigreGotico/vconnx-mimi](https://huggingface.co/TigreGotico/vconnx-mimi) | CC BY 4.0 |
-| `openvoice` | 22 kHz | [TigreGotico/vconnx-openvoice-v2](https://huggingface.co/TigreGotico/vconnx-openvoice-v2) | MIT |
-| `rvc` | 40/48 kHz | [TigreGotico/vconnx-rvc](https://huggingface.co/TigreGotico/vconnx-rvc) | MIT |
-| `speechtokenizer` | 16 kHz | [TigreGotico/vconnx-speechtokenizer](https://huggingface.co/TigreGotico/vconnx-speechtokenizer) | Apache-2.0 |
-| `bicodec` | 16 kHz | [TigreGotico/vconnx-bicodec](https://huggingface.co/TigreGotico/vconnx-bicodec) | CC BY-NC-SA 4.0 |
-| `triaan` | 16 kHz | [TigreGotico/vconnx-triaan-vc](https://huggingface.co/TigreGotico/vconnx-triaan-vc) | MIT |
+| `facodec` | 16 kHz | [TigreGotico/voiceclonnx-facodec](https://huggingface.co/TigreGotico/voiceclonnx-facodec) | Apache-2.0 |
+| `focalcodec` | 16 kHz | [TigreGotico/voiceclonnx-focalcodec](https://huggingface.co/TigreGotico/voiceclonnx-focalcodec) | Apache-2.0 |
+| `freevc` | 16 kHz | [TigreGotico/voiceclonnx-freevc](https://huggingface.co/TigreGotico/voiceclonnx-freevc) | MIT |
+| `knnvc` | 16 kHz | [TigreGotico/voiceclonnx-knn-vc](https://huggingface.co/TigreGotico/voiceclonnx-knn-vc) | MIT |
+| `mimi` | 24 kHz | [TigreGotico/voiceclonnx-mimi](https://huggingface.co/TigreGotico/voiceclonnx-mimi) | CC BY 4.0 |
+| `openvoice` | 22 kHz | [TigreGotico/voiceclonnx-openvoice-v2](https://huggingface.co/TigreGotico/voiceclonnx-openvoice-v2) | MIT |
+| `rvc` | 40/48 kHz | [TigreGotico/voiceclonnx-rvc](https://huggingface.co/TigreGotico/voiceclonnx-rvc) | MIT |
+| `speechtokenizer` | 16 kHz | [TigreGotico/voiceclonnx-speechtokenizer](https://huggingface.co/TigreGotico/voiceclonnx-speechtokenizer) | Apache-2.0 |
+| `bicodec` | 16 kHz | [TigreGotico/voiceclonnx-bicodec](https://huggingface.co/TigreGotico/voiceclonnx-bicodec) | CC BY-NC-SA 4.0 |
+| `triaan` | 16 kHz | [TigreGotico/voiceclonnx-triaan-vc](https://huggingface.co/TigreGotico/voiceclonnx-triaan-vc) | MIT |
 
 ### bicodec
 
@@ -101,14 +101,14 @@ global tokens → decoder → waveform.  No auto-regressive LM, single forward
 pass per segment.
 
 ```python
-from vconnx import VoiceCloner
+from voiceclonnx import VoiceCloner
 
 cloner = VoiceCloner(engine="bicodec")
 out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
 print(cloner.sample_rate)   # 16000
 ```
 
-ONNX artifacts: [`TigreGotico/vconnx-bicodec`](https://huggingface.co/TigreGotico/vconnx-bicodec)
+ONNX artifacts: [`TigreGotico/voiceclonnx-bicodec`](https://huggingface.co/TigreGotico/voiceclonnx-bicodec)
 (public, **CC BY-NC-SA 4.0 — non-commercial use only**).
 
 See [docs/engines/bicodec.md](docs/engines/bicodec.md) for config keys,
@@ -131,7 +131,7 @@ The target speaker identity is encoded in the model weights.  Use
 ``default_model`` in the constructor to set a fallback.
 
 ```python
-from vconnx import VoiceCloner
+from voiceclonnx import VoiceCloner
 
 # reference_voice = path to RVC .onnx voice model, NOT audio
 cloner = VoiceCloner(engine="rvc")
@@ -140,13 +140,13 @@ print(cloner.sample_rate)   # 40000 (v2 40k) or 48000 (v2 48k)
 ```
 
 ```bash
-vconnx clone --engine rvc \
+voiceclonnx clone --engine rvc \
              --audio source.wav \
              --voice /path/to/myvoice.onnx \
              --out converted.wav
 ```
 
-Base ONNX artifacts (ContentVec + RMVPE): [`TigreGotico/vconnx-rvc`](https://huggingface.co/TigreGotico/vconnx-rvc) (public, MIT).
+Base ONNX artifacts (ContentVec + RMVPE): [`TigreGotico/voiceclonnx-rvc`](https://huggingface.co/TigreGotico/voiceclonnx-rvc) (public, MIT).
 
 Convert a community ``.pth`` voice model to ONNX:
 
@@ -177,10 +177,10 @@ ignored.
 
 ## Adding an engine
 
-1. Subclass `VoiceClonerBase` from `vconnx.engines.base`.
+1. Subclass `VoiceClonerBase` from `voiceclonnx.engines.base`.
 2. Implement `clone_voice(audio, reference_voice, out_path) -> str`.
 3. Call `register_engine(EngineEntry(alias=..., adapter_class=...))`.
-4. Add the auto-import to `vconnx/__init__.py`.
+4. Add the auto-import to `voiceclonnx/__init__.py`.
 
 See [docs/api.md](docs/api.md) for the full API reference.
 

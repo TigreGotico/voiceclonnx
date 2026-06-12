@@ -2,7 +2,7 @@
 """Regenerate the bundled engine-comparison demos.
 
 Synthesizes a fixed source utterance and reference voices with edge-tts,
-then runs every registered vconnx engine on the same (source, reference)
+then runs every registered voiceclonnx engine on the same (source, reference)
 pairs, writing ``outputs/<engine>__<reference>.wav``.  The wav files are
 committed so listeners can compare engines without running any code.
 
@@ -68,8 +68,8 @@ def main() -> int:
                     help="engine aliases to run (default: all registered)")
     args = ap.parse_args()
 
-    from vconnx import VoiceCloner
-    from vconnx.engines.base import ENGINE_REGISTRY
+    from voiceclonnx import VoiceCloner
+    from voiceclonnx.engines.base import ENGINE_REGISTRY
 
     engines = args.engines or sorted(ENGINE_REGISTRY)
     OUT_DIR.mkdir(exist_ok=True)

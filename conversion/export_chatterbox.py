@@ -1,8 +1,8 @@
-"""Chatterbox VC ONNX quantization script for vconnx.
+"""Chatterbox VC ONNX quantization script for voiceclonnx.
 
 Downloads fp32 ONNX artifacts from ``onnx-community/chatterbox-onnx`` (Apache-2.0),
 applies INT8 dynamic quantization, and uploads all four files to
-``TigreGotico/vconnx-chatterbox``.
+``TigreGotico/voiceclonnx-chatterbox``.
 
 No PyTorch dependency — this is a pure quantization pass (onnx + onnxruntime only).
 The fp32 models are re-hosted verbatim from the upstream onnx-community repo.
@@ -232,10 +232,10 @@ def _push(output_dir: str, dst_repo: str, commit_msg: str) -> None:
 
 
 def main(argv=None) -> int:
-    p = argparse.ArgumentParser(description="Chatterbox VC quantization for vconnx.")
-    p.add_argument("--output-dir", default="/tmp/vconnx-chatterbox", help="Local staging dir.")
+    p = argparse.ArgumentParser(description="Chatterbox VC quantization for voiceclonnx.")
+    p.add_argument("--output-dir", default="/tmp/voiceclonnx-chatterbox", help="Local staging dir.")
     p.add_argument("--no-push", action="store_true", help="Skip HF Hub upload.")
-    p.add_argument("--dst-repo", default="TigreGotico/vconnx-chatterbox")
+    p.add_argument("--dst-repo", default="TigreGotico/voiceclonnx-chatterbox")
     args = p.parse_args(argv)
 
     out = Path(args.output_dir)

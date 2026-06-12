@@ -1,4 +1,4 @@
-"""FocalCodec adapter for vconnx.
+"""FocalCodec adapter for voiceclonnx.
 
 FocalCodec (Della Libera et al., NeurIPS 2025) is a single-codebook binary
 speech codec using focal modulation networks.  At inference, voice conversion
@@ -18,14 +18,14 @@ FocalCodec) and decoder (Vocos ISTFT vocoder):
 
 Runtime requirements: ``onnxruntime``, ``numpy``, ``soundfile``.
 
-Requires: ``pip install vconnx``
+Requires: ``pip install voiceclonnx``
   -> onnxruntime, numpy, soundfile, huggingface_hub
 
 References
 ----------
 - https://github.com/lucadellalib/focalcodec
 - https://arxiv.org/abs/2502.04465
-- https://huggingface.co/TigreGotico/vconnx-focalcodec
+- https://huggingface.co/TigreGotico/voiceclonnx-focalcodec
 """
 
 from __future__ import annotations
@@ -36,13 +36,13 @@ from typing import Optional, Union
 
 import numpy as np
 
-from vconnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
 
 # FocalCodec operates at 16 kHz; Vocos hop=320 → 50 Hz feature rate
 _FC_SR = 16000
 
 # HF repo housing the exported ONNX artifacts
-_HF_REPO_ID = "TigreGotico/vconnx-focalcodec"
+_HF_REPO_ID = "TigreGotico/voiceclonnx-focalcodec"
 
 # Paths within the HF repo
 _ENC_FP32 = "focalcodec_encoder.onnx"
@@ -255,7 +255,7 @@ class FocalCodecAdapter(VoiceClonerBase):
         except ImportError as exc:
             raise ImportError(
                 "onnxruntime is required for engine='focalcodec'. "
-                "Install it with: pip install vconnx[focalcodec]"
+                "Install it with: pip install voiceclonnx[focalcodec]"
             ) from exc
 
         try:
@@ -357,7 +357,7 @@ register_engine(
         description=(
             "FocalCodec: WavLM encoder + kNN cosine matching (pure numpy) + "
             "Vocos ISTFT decoder.  Zero-shot any-to-any VC at 16 kHz. "
-            "ONNX artifacts from TigreGotico/vconnx-focalcodec. "
+            "ONNX artifacts from TigreGotico/voiceclonnx-focalcodec. "
             "(Della Libera et al., NeurIPS 2025, Apache-2.0)"
         ),
         extras="",

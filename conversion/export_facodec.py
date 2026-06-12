@@ -33,7 +33,7 @@ Usage::
     python -m conversion.export_facodec --output-dir /tmp/facodec-out [--no-push]
 
 Requires: ``torch``, ``onnx``, ``onnxruntime``, ``librosa``, ``huggingface_hub``,
-``einops``. Never imported at vconnx runtime.
+``einops``. Never imported at voiceclonnx runtime.
 """
 
 from __future__ import annotations
@@ -102,7 +102,7 @@ def _get_amphion_models(
 
     # Store Amphion in HOME to avoid filling /tmp (it's ~100 MB with sparse checkout)
     import os as _os
-    amphion_dir = Path(_os.path.expanduser("~/.cache/vconnx_amphion"))
+    amphion_dir = Path(_os.path.expanduser("~/.cache/voiceclonnx_amphion"))
     if not (amphion_dir / "models").exists():
         print(f"[facodec] Cloning Amphion → {amphion_dir} …", flush=True)
         amphion_dir.parent.mkdir(parents=True, exist_ok=True)

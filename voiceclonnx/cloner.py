@@ -1,8 +1,8 @@
-"""VoiceCloner — the public facade for vconnx.
+"""VoiceCloner — the public facade for voiceclonnx.
 
 All engines are accessed through this class.  Internally it delegates to
-the per-engine :class:`~vconnx.engines.base.VoiceClonerBase` adapter
-resolved from :data:`~vconnx.engines.base.ENGINE_REGISTRY`.
+the per-engine :class:`~voiceclonnx.engines.base.VoiceClonerBase` adapter
+resolved from :data:`~voiceclonnx.engines.base.ENGINE_REGISTRY`.
 """
 
 from __future__ import annotations
@@ -10,7 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Optional
 
-from vconnx.engines.base import VoiceClonerBase, get_engine
+from voiceclonnx.engines.base import VoiceClonerBase, get_engine
 
 DEFAULT_ENGINE = "chatterbox"
 

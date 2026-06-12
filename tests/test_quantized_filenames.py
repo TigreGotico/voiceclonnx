@@ -63,7 +63,7 @@ def _with_patches(fn):
 
 
 def _bicodec_filenames(quantized: bool) -> list[str]:
-    from vconnx.engines.bicodec import BiCodecAdapter
+    from voiceclonnx.engines.bicodec import BiCodecAdapter
 
     def run():
         a = BiCodecAdapter(quantized=quantized)
@@ -117,7 +117,7 @@ class TestBicodecFilenames:
 class TestFacodecFilenames:
     @staticmethod
     def _filenames(quantized: bool) -> list[str]:
-        from vconnx.engines.facodec import FACodecAdapter
+        from voiceclonnx.engines.facodec import FACodecAdapter
         return _simple_filenames(FACodecAdapter)(quantized)
 
     def test_fp32_uses_no_q8(self):
@@ -136,7 +136,7 @@ class TestFacodecFilenames:
 class TestFocalcodecFilenames:
     @staticmethod
     def _filenames(quantized: bool) -> list[str]:
-        from vconnx.engines.focalcodec import FocalCodecAdapter
+        from voiceclonnx.engines.focalcodec import FocalCodecAdapter
         return _simple_filenames(FocalCodecAdapter)(quantized)
 
     def test_fp32_uses_no_q8(self):
@@ -155,7 +155,7 @@ class TestFocalcodecFilenames:
 class TestFreevcFilenames:
     @staticmethod
     def _filenames(quantized: bool) -> list[str]:
-        from vconnx.engines.freevc import FreeVCAdapter
+        from voiceclonnx.engines.freevc import FreeVCAdapter
         return _simple_filenames(FreeVCAdapter)(quantized)
 
     def test_fp32_uses_no_q8(self):
@@ -176,7 +176,7 @@ class TestFreevcFilenames:
 class TestKnnvcFilenames:
     @staticmethod
     def _filenames(quantized: bool) -> list[str]:
-        from vconnx.engines.knnvc import KNNVCAdapter
+        from voiceclonnx.engines.knnvc import KNNVCAdapter
         return _simple_filenames(KNNVCAdapter)(quantized)
 
     def test_fp32_uses_no_q8(self):
@@ -195,7 +195,7 @@ class TestKnnvcFilenames:
 class TestMimiFilenames:
     @staticmethod
     def _filenames(quantized: bool) -> list[str]:
-        from vconnx.engines.mimi import MimiAdapter
+        from voiceclonnx.engines.mimi import MimiAdapter
         return _simple_filenames(MimiAdapter)(quantized)
 
     def test_fp32_uses_no_q8(self):
@@ -214,7 +214,7 @@ class TestMimiFilenames:
 class TestOpenvoiceFilenames:
     @staticmethod
     def _filenames(quantized: bool) -> list[str]:
-        from vconnx.engines.openvoice import OpenVoiceV2Adapter
+        from voiceclonnx.engines.openvoice import OpenVoiceV2Adapter
         return _simple_filenames(OpenVoiceV2Adapter)(quantized)
 
     def test_fp32_uses_no_q8(self):
@@ -233,7 +233,7 @@ class TestOpenvoiceFilenames:
 class TestRvcFilenames:
     @staticmethod
     def _filenames(quantized: bool) -> list[str]:
-        from vconnx.engines.rvc import RVCAdapter
+        from voiceclonnx.engines.rvc import RVCAdapter
         return _simple_filenames(RVCAdapter, "_ensure_base_models")(quantized)
 
     def test_fp32_uses_no_q8(self):
@@ -258,7 +258,7 @@ class TestRvcFilenames:
 class TestSpeechtokenizerFilenames:
     @staticmethod
     def _filenames(quantized: bool) -> list[str]:
-        from vconnx.engines.speechtokenizer import SpeechTokenizerAdapter
+        from voiceclonnx.engines.speechtokenizer import SpeechTokenizerAdapter
         return _simple_filenames(SpeechTokenizerAdapter)(quantized)
 
     def test_fp32_uses_no_q8(self):
@@ -268,7 +268,7 @@ class TestSpeechtokenizerFilenames:
 
     def test_int8_raises_not_implemented(self):
         """speechtokenizer INT8 export has incompatible interface — must raise NotImplementedError."""
-        from vconnx.engines.speechtokenizer import SpeechTokenizerAdapter
+        from voiceclonnx.engines.speechtokenizer import SpeechTokenizerAdapter
 
         with pytest.raises(NotImplementedError, match="quantized=True is not supported"):
             SpeechTokenizerAdapter(quantized=True)
@@ -282,7 +282,7 @@ class TestSpeechtokenizerFilenames:
 class TestTriaanFilenames:
     @staticmethod
     def _filenames(quantized: bool) -> list[str]:
-        from vconnx.engines.triaan import TriAANVCAdapter
+        from voiceclonnx.engines.triaan import TriAANVCAdapter
         return _simple_filenames(TriAANVCAdapter)(quantized)
 
     def test_fp32_uses_no_q8(self):
@@ -297,14 +297,14 @@ class TestTriaanFilenames:
 
 
 # ---------------------------------------------------------------------------
-# Tests: chatterbox — quantized=True loads _q8 files from TigreGotico/vconnx-chatterbox
+# Tests: chatterbox — quantized=True loads _q8 files from TigreGotico/voiceclonnx-chatterbox
 # ---------------------------------------------------------------------------
 
 
 class TestChatterboxFilenames:
     @staticmethod
     def _filenames(quantized: bool) -> list[str]:
-        from vconnx.engines.chatterbox import ChatterboxAdapter
+        from voiceclonnx.engines.chatterbox import ChatterboxAdapter
         return _simple_filenames(ChatterboxAdapter)(quantized)
 
     def test_fp32_no_q8_files(self):
@@ -339,7 +339,7 @@ class TestChatterboxFilenames:
         )
 
     def test_quantized_attr_stored(self):
-        from vconnx.engines.chatterbox import ChatterboxAdapter
+        from voiceclonnx.engines.chatterbox import ChatterboxAdapter
 
         a = ChatterboxAdapter(quantized=True)
         assert a._quantized is True

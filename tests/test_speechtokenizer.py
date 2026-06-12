@@ -1,4 +1,4 @@
-"""Tests for the SpeechTokenizer adapter — vconnx/engines/speechtokenizer.py.
+"""Tests for the SpeechTokenizer adapter — voiceclonnx/engines/speechtokenizer.py.
 
 Structure
 ---------
@@ -44,16 +44,16 @@ def _make_wav(path: str, duration_s: float = 1.0, sr: int = 16000) -> str:
 
 
 def test_speechtokenizer_registered():
-    """speechtokenizer engine must appear in ENGINE_REGISTRY after importing vconnx."""
-    import vconnx.engines.speechtokenizer  # noqa: F401
-    from vconnx.engines.base import ENGINE_REGISTRY
+    """speechtokenizer engine must appear in ENGINE_REGISTRY after importing voiceclonnx."""
+    import voiceclonnx.engines.speechtokenizer  # noqa: F401
+    from voiceclonnx.engines.base import ENGINE_REGISTRY
 
     assert "speechtokenizer" in ENGINE_REGISTRY
 
 
 def test_speechtokenizer_entry_metadata():
-    import vconnx.engines.speechtokenizer  # noqa: F401
-    from vconnx.engines.base import get_engine
+    import voiceclonnx.engines.speechtokenizer  # noqa: F401
+    from voiceclonnx.engines.base import get_engine
 
     entry = get_engine("speechtokenizer")
     assert entry.alias == "speechtokenizer"
@@ -63,7 +63,7 @@ def test_speechtokenizer_entry_metadata():
 
 
 def test_speechtokenizer_sample_rate():
-    from vconnx.engines.speechtokenizer import SpeechTokenizerAdapter
+    from voiceclonnx.engines.speechtokenizer import SpeechTokenizerAdapter
 
     adapter = SpeechTokenizerAdapter()
     assert adapter.sample_rate == 16000
@@ -76,7 +76,7 @@ def test_speechtokenizer_sample_rate():
 
 def test_swap_rvq_keeps_source_content_layer():
     """Content layer (index 0) must equal the source codes after swap."""
-    from vconnx.engines.speechtokenizer import _swap_rvq_tokens
+    from voiceclonnx.engines.speechtokenizer import _swap_rvq_tokens
 
     rng = np.random.default_rng(0)
     Q, T = 8, 50
@@ -89,7 +89,7 @@ def test_swap_rvq_keeps_source_content_layer():
 
 def test_swap_rvq_timbre_layers_from_ref_same_length():
     """Timbre layers (1-7) must equal reference codes when lengths match."""
-    from vconnx.engines.speechtokenizer import _swap_rvq_tokens
+    from voiceclonnx.engines.speechtokenizer import _swap_rvq_tokens
 
     rng = np.random.default_rng(1)
     Q, T = 8, 50
@@ -103,7 +103,7 @@ def test_swap_rvq_timbre_layers_from_ref_same_length():
 
 def test_swap_rvq_output_shape():
     """Output shape must always equal source shape (Q, T_src)."""
-    from vconnx.engines.speechtokenizer import _swap_rvq_tokens
+    from voiceclonnx.engines.speechtokenizer import _swap_rvq_tokens
 
     rng = np.random.default_rng(2)
     for T_src, T_ref in [(50, 50), (30, 80), (100, 40)]:
@@ -115,7 +115,7 @@ def test_swap_rvq_output_shape():
 
 def test_swap_rvq_longer_ref_truncated():
     """When reference is longer than source, it must be truncated to source length."""
-    from vconnx.engines.speechtokenizer import _swap_rvq_tokens
+    from voiceclonnx.engines.speechtokenizer import _swap_rvq_tokens
 
     rng = np.random.default_rng(3)
     src = rng.integers(0, 512, (8, 30), dtype=np.int64)
@@ -129,7 +129,7 @@ def test_swap_rvq_longer_ref_truncated():
 
 def test_swap_rvq_shorter_ref_tiled():
     """When reference is shorter than source, it must be tiled to cover source length."""
-    from vconnx.engines.speechtokenizer import _swap_rvq_tokens
+    from voiceclonnx.engines.speechtokenizer import _swap_rvq_tokens
 
     rng = np.random.default_rng(4)
     T_src, T_ref = 100, 30
@@ -145,7 +145,7 @@ def test_swap_rvq_shorter_ref_tiled():
 
 def test_swap_rvq_content_layers_two():
     """content_layers=2 keeps layers 0 and 1 from source."""
-    from vconnx.engines.speechtokenizer import _swap_rvq_tokens
+    from voiceclonnx.engines.speechtokenizer import _swap_rvq_tokens
 
     rng = np.random.default_rng(5)
     Q, T = 8, 40
@@ -161,7 +161,7 @@ def test_swap_rvq_content_layers_two():
 
 def test_swap_rvq_dtype_preserved():
     """Output dtype must be int64."""
-    from vconnx.engines.speechtokenizer import _swap_rvq_tokens
+    from voiceclonnx.engines.speechtokenizer import _swap_rvq_tokens
 
     rng = np.random.default_rng(6)
     src = rng.integers(0, 512, (8, 50), dtype=np.int64)
@@ -172,7 +172,7 @@ def test_swap_rvq_dtype_preserved():
 
 def test_swap_rvq_deterministic():
     """Token swap is deterministic."""
-    from vconnx.engines.speechtokenizer import _swap_rvq_tokens
+    from voiceclonnx.engines.speechtokenizer import _swap_rvq_tokens
 
     rng = np.random.default_rng(7)
     src = rng.integers(0, 512, (8, 60), dtype=np.int64)
@@ -190,7 +190,7 @@ def test_swap_rvq_deterministic():
 
 def test_rvq_encode_output_shape():
     """RVQ encode output is (Q, T)."""
-    from vconnx.engines.speechtokenizer import _rvq_encode
+    from voiceclonnx.engines.speechtokenizer import _rvq_encode
 
     rng = np.random.default_rng(10)
     Q, CB, D, T = 8, 64, 32, 50
@@ -203,7 +203,7 @@ def test_rvq_encode_output_shape():
 
 def test_rvq_encode_indices_in_range():
     """All indices must be in [0, codebook_size)."""
-    from vconnx.engines.speechtokenizer import _rvq_encode
+    from voiceclonnx.engines.speechtokenizer import _rvq_encode
 
     rng = np.random.default_rng(11)
     CB = 128
@@ -216,7 +216,7 @@ def test_rvq_encode_indices_in_range():
 
 def test_rvq_decode_output_shape():
     """RVQ decode output is (1, D, T)."""
-    from vconnx.engines.speechtokenizer import _rvq_decode
+    from voiceclonnx.engines.speechtokenizer import _rvq_decode
 
     rng = np.random.default_rng(12)
     Q, CB, D, T = 8, 64, 32, 50
@@ -229,7 +229,7 @@ def test_rvq_decode_output_shape():
 
 def test_rvq_encode_decode_residual_decreases():
     """Each successive RVQ layer should reduce reconstruction error."""
-    from vconnx.engines.speechtokenizer import _rvq_encode, _rvq_decode
+    from voiceclonnx.engines.speechtokenizer import _rvq_encode, _rvq_decode
 
     rng = np.random.default_rng(13)
     Q, CB, D, T = 4, 256, 32, 20
@@ -252,7 +252,7 @@ def test_rvq_encode_decode_residual_decreases():
 
 def test_rvq_encode_decode_reconstruct_from_codebook():
     """With dense, well-spread codebooks, layer-1 alone partially reconstructs the input."""
-    from vconnx.engines.speechtokenizer import _rvq_encode, _rvq_decode
+    from voiceclonnx.engines.speechtokenizer import _rvq_encode, _rvq_decode
 
     rng = np.random.default_rng(14)
     Q, CB, D, T = 4, 256, 16, 20
@@ -307,7 +307,7 @@ def _make_mock_codebooks(Q: int = 8, CB: int = 64, D: int = 1024) -> np.ndarray:
 
 def test_adapter_clone_voice_mock(tmp_path):
     """Adapter pipeline completes with mocked ORT sessions."""
-    from vconnx.engines.speechtokenizer import SpeechTokenizerAdapter
+    from voiceclonnx.engines.speechtokenizer import SpeechTokenizerAdapter
 
     src_wav = _make_wav(str(tmp_path / "src.wav"), duration_s=1.0)
     ref_wav = _make_wav(str(tmp_path / "ref.wav"), duration_s=2.0)
@@ -330,7 +330,7 @@ def test_adapter_clone_voice_mock(tmp_path):
 
 def test_adapter_output_is_16khz(tmp_path):
     """Output WAV must be 16 kHz regardless of input sample rate."""
-    from vconnx.engines.speechtokenizer import SpeechTokenizerAdapter
+    from voiceclonnx.engines.speechtokenizer import SpeechTokenizerAdapter
 
     src_path = str(tmp_path / "src44.wav")
     n = 44100
@@ -359,7 +359,7 @@ def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
     """Missing onnxruntime raises ImportError with a helpful message."""
     import builtins
 
-    from vconnx.engines.speechtokenizer import SpeechTokenizerAdapter
+    from voiceclonnx.engines.speechtokenizer import SpeechTokenizerAdapter
 
     real_import = builtins.__import__
 
@@ -378,7 +378,7 @@ def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
 def test_adapter_quantized_flag_stored():
     """quantized=False is stored; quantized=True raises NotImplementedError (incompatible q8 export)."""
     import pytest
-    from vconnx.engines.speechtokenizer import SpeechTokenizerAdapter
+    from voiceclonnx.engines.speechtokenizer import SpeechTokenizerAdapter
 
     b = SpeechTokenizerAdapter(quantized=False)
     assert b._quantized is False
@@ -389,7 +389,7 @@ def test_adapter_quantized_flag_stored():
 
 def test_adapter_content_layers_parameter():
     """content_layers parameter is stored."""
-    from vconnx.engines.speechtokenizer import SpeechTokenizerAdapter
+    from voiceclonnx.engines.speechtokenizer import SpeechTokenizerAdapter
 
     adapter = SpeechTokenizerAdapter(content_layers=2)
     assert adapter._content_layers == 2
@@ -397,7 +397,7 @@ def test_adapter_content_layers_parameter():
 
 def test_adapter_pipeline_uses_swap(tmp_path):
     """Verify that the adapter performs the expected RVQ swap during clone_voice."""
-    from vconnx.engines.speechtokenizer import (
+    from voiceclonnx.engines.speechtokenizer import (
         SpeechTokenizerAdapter,
         _rvq_encode,
         _rvq_decode,
@@ -451,11 +451,11 @@ def test_adapter_pipeline_uses_swap(tmp_path):
 # 5. E2E test — real models, real audio (skip if not opted in)
 # ---------------------------------------------------------------------------
 
-_SKIP_E2E = not os.environ.get("VCONNX_E2E", "")
+_SKIP_E2E = not os.environ.get("VOICECLONNX_E2E", "")
 
 _E2E_REASON = (
     "E2E speechtokenizer test downloads ~400MB of public ONNX models; "
-    "set VCONNX_E2E=1 to run."
+    "set VOICECLONNX_E2E=1 to run."
 )
 
 
@@ -485,7 +485,7 @@ def test_e2e_speechtokenizer_clone_edge_tts_voices(tmp_path):
     except ImportError:
         pytest.skip("faster-whisper not installed")
 
-    from vconnx.engines.speechtokenizer import SpeechTokenizerAdapter
+    from voiceclonnx.engines.speechtokenizer import SpeechTokenizerAdapter
 
     SOURCE_TEXT = (
         "The quick brown fox jumps over the lazy dog. "

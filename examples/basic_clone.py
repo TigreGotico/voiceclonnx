@@ -5,7 +5,7 @@ voice conversion, and prints a one-line summary.
 
 Requirements::
 
-    pip install vconnx edge-tts
+    pip install voiceclonnx edge-tts
 
 Run::
 
@@ -13,9 +13,9 @@ Run::
 
 Output (actual run 2026-06-11)::
 
-    Source   : /tmp/vconnx_demo/source.wav  (sr=16000, samples=55680)
-    Reference: /tmp/vconnx_demo/reference.wav  (sr=16000, samples=63744)
-    Converted: /tmp/vconnx_demo/source_converted.wav
+    Source   : /tmp/voiceclonnx_demo/source.wav  (sr=16000, samples=55680)
+    Reference: /tmp/voiceclonnx_demo/reference.wav  (sr=16000, samples=63744)
+    Converted: /tmp/voiceclonnx_demo/source_converted.wav
     Engine sample rate: 16000 Hz
     Done.
 """
@@ -102,7 +102,7 @@ def _wav_info(path: Path) -> str:
 
 
 def main() -> None:
-    demo_dir = Path(tempfile.gettempdir()) / "vconnx_demo"
+    demo_dir = Path(tempfile.gettempdir()) / "voiceclonnx_demo"
     demo_dir.mkdir(exist_ok=True)
 
     src_path = demo_dir / "source.wav"
@@ -127,7 +127,7 @@ def main() -> None:
     print(f"Reference: {ref_path}  ({_wav_info(ref_path)})")
 
     # Run voice conversion
-    from vconnx import VoiceCloner
+    from voiceclonnx import VoiceCloner
 
     cloner = VoiceCloner(engine="knnvc")
     out = cloner.clone_voice(str(src_path), str(ref_path))

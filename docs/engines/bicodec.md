@@ -21,7 +21,7 @@ Architecture:
 
 Voice-conversion step: `source_semantic_tokens + reference_global_tokens → decoder → waveform`.
 
-ONNX artifacts: [TigreGotico/vconnx-bicodec](https://huggingface.co/TigreGotico/vconnx-bicodec)
+ONNX artifacts: [TigreGotico/voiceclonnx-bicodec](https://huggingface.co/TigreGotico/voiceclonnx-bicodec)
 (public, **CC BY-NC-SA 4.0 weights — non-commercial use only**; code Apache-2.0).
 
 Output sample rate: **16 kHz**.
@@ -31,7 +31,7 @@ Output sample rate: **16 kHz**.
 ## Install
 
 ```bash
-pip install vconnx
+pip install voiceclonnx
 ```
 
 Dependencies: `onnxruntime`, `numpy`, `soundfile`, `huggingface_hub`.
@@ -88,7 +88,7 @@ filterbank.
 ### Python
 
 ```python
-from vconnx import VoiceCloner
+from voiceclonnx import VoiceCloner
 
 # Default (fp32)
 cloner = VoiceCloner(engine="bicodec")
@@ -106,9 +106,9 @@ cloner = VoiceCloner(engine="bicodec", chunk_samples=16000)
 ### CLI
 
 ```bash
-pip install vconnx
+pip install voiceclonnx
 
-vconnx clone --engine bicodec \
+voiceclonnx clone --engine bicodec \
              --audio source.wav \
              --voice reference.wav \
              --out out.wav
@@ -118,7 +118,7 @@ vconnx clone --engine bicodec \
 
 ## License note
 
-ONNX artifacts in `TigreGotico/vconnx-bicodec` are derived from
+ONNX artifacts in `TigreGotico/voiceclonnx-bicodec` are derived from
 `SparkAudio/Spark-TTS-0.5B` weights, which are released under
 **CC BY-NC-SA 4.0**.  Non-commercial use only.  Attribution required.
 See the model card on Hugging Face for the full license text.
@@ -136,7 +136,7 @@ See the model card on Hugging Face for the full license text.
 ## Troubleshooting
 
 **`ImportError: onnxruntime is required`**
-Install with: `pip install vconnx`.
+Install with: `pip install voiceclonnx`.
 
 **Output sounds noisy or robotic**
 Ensure source and reference clips are clean mono audio at or near 16 kHz.  The

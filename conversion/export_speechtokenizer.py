@@ -10,7 +10,7 @@ Voice-conversion ONNX components
 - ``decoder.onnx``  : codes (8, 1, T) int64        → waveform (1, 1, N) float32
 
 The token swap (source RVQ-1 + reference RVQ-2..8 → decode) is pure numpy
-inside the vconnx adapter and is not exported.
+inside the voiceclonnx adapter and is not exported.
 
 Upstream
 --------
@@ -368,10 +368,10 @@ def export_speechtokenizer(output_dir: str, no_push: bool = False) -> None:
         push_engine(
             engine_dir=str(layout.engine_dir),
             engine_name="speechtokenizer",
-            hf_repo_id="TigreGotico/vconnx-speechtokenizer",
+            hf_repo_id="TigreGotico/voiceclonnx-speechtokenizer",
             commit_message="export: add speechtokenizer ONNX artifacts",
         )
-        print("[export] pushed to TigreGotico/vconnx-speechtokenizer")
+        print("[export] pushed to TigreGotico/voiceclonnx-speechtokenizer")
     else:
         print("[export] --no-push: skipping HF upload")
 

@@ -1,4 +1,4 @@
-"""Tests for the FreeVC adapter — vconnx/engines/freevc.py.
+"""Tests for the FreeVC adapter — voiceclonnx/engines/freevc.py.
 
 Structure
 ---------
@@ -45,16 +45,16 @@ def _make_wav(path: str, duration_s: float = 1.0, sr: int = 16000) -> str:
 
 
 def test_freevc_registered():
-    """freevc engine must appear in ENGINE_REGISTRY after importing vconnx."""
-    import vconnx.engines.freevc  # noqa: F401 — trigger registration
-    from vconnx.engines.base import ENGINE_REGISTRY
+    """freevc engine must appear in ENGINE_REGISTRY after importing voiceclonnx."""
+    import voiceclonnx.engines.freevc  # noqa: F401 — trigger registration
+    from voiceclonnx.engines.base import ENGINE_REGISTRY
 
     assert "freevc" in ENGINE_REGISTRY
 
 
 def test_freevc_entry_metadata():
-    import vconnx.engines.freevc  # noqa: F401
-    from vconnx.engines.base import get_engine
+    import voiceclonnx.engines.freevc  # noqa: F401
+    from voiceclonnx.engines.base import get_engine
 
     entry = get_engine("freevc")
     assert entry.alias == "freevc"
@@ -64,14 +64,14 @@ def test_freevc_entry_metadata():
 
 
 def test_freevc_sample_rate():
-    from vconnx.engines.freevc import FreeVCAdapter
+    from voiceclonnx.engines.freevc import FreeVCAdapter
 
     adapter = FreeVCAdapter()
     assert adapter.sample_rate == 16000
 
 
 def test_freevc_quantized_flag():
-    from vconnx.engines.freevc import FreeVCAdapter
+    from voiceclonnx.engines.freevc import FreeVCAdapter
 
     a = FreeVCAdapter(quantized=True)
     assert a._quantized is True
@@ -87,7 +87,7 @@ def test_freevc_quantized_flag():
 def test_log_mel_shape():
     """Log-mel output shape should be (n_frames, 40)."""
     pass  # no longer requires librosa; pure numpy
-    from vconnx.engines.freevc import _compute_log_mel
+    from voiceclonnx.engines.freevc import _compute_log_mel
 
     sr = 16000
     audio = np.zeros(sr, dtype=np.float32)  # 1 second silence
@@ -101,7 +101,7 @@ def test_log_mel_shape():
 def test_log_mel_nonzero_for_signal():
     """Non-silent audio should produce non-uniform mel values."""
     pass  # no longer requires librosa; pure numpy
-    from vconnx.engines.freevc import _compute_log_mel
+    from voiceclonnx.engines.freevc import _compute_log_mel
 
     sr = 16000
     t = np.linspace(0, 1.0, sr, endpoint=False)
@@ -151,7 +151,7 @@ class _MockDecoderSession:
 def test_adapter_clone_voice_mock(tmp_path):
     """Adapter pipeline completes with mocked ORT sessions."""
     pass  # no longer requires librosa; pure numpy
-    from vconnx.engines.freevc import FreeVCAdapter
+    from voiceclonnx.engines.freevc import FreeVCAdapter
 
     src_wav = _make_wav(str(tmp_path / "src.wav"), duration_s=1.0)
     ref_wav = _make_wav(str(tmp_path / "ref.wav"), duration_s=2.0)
@@ -175,7 +175,7 @@ def test_adapter_clone_voice_mock(tmp_path):
 def test_adapter_output_is_16khz(tmp_path):
     """Output WAV must be 16 kHz regardless of input sample rate."""
     pass  # no longer requires librosa; pure numpy
-    from vconnx.engines.freevc import FreeVCAdapter
+    from voiceclonnx.engines.freevc import FreeVCAdapter
 
     src_path = str(tmp_path / "src44.wav")
     n = 44100
@@ -202,7 +202,7 @@ def test_adapter_output_is_16khz(tmp_path):
 def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
     """Missing onnxruntime raises ImportError with a helpful message."""
     import builtins
-    from vconnx.engines.freevc import FreeVCAdapter
+    from voiceclonnx.engines.freevc import FreeVCAdapter
 
     real_import = builtins.__import__
 
@@ -221,7 +221,7 @@ def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
 def test_decode_input_shapes(tmp_path):
     """Decoder receives correct tensor shapes: c=(1,1024,T), g=(1,256)."""
     pass  # no longer requires librosa; pure numpy
-    from vconnx.engines.freevc import FreeVCAdapter
+    from voiceclonnx.engines.freevc import FreeVCAdapter
 
     captured = {}
 
@@ -252,12 +252,12 @@ def test_decode_input_shapes(tmp_path):
 
 
 # ---------------------------------------------------------------------------
-# 4. E2E test — real model, real audio (opt-in via VCONNX_E2E=1)
+# 4. E2E test — real model, real audio (opt-in via VOICECLONNX_E2E=1)
 # ---------------------------------------------------------------------------
 
-_SKIP_E2E = not os.environ.get("VCONNX_E2E", "")
+_SKIP_E2E = not os.environ.get("VOICECLONNX_E2E", "")
 _E2E_REASON = (
-    "E2E freevc test downloads >1 GB of public models; set VCONNX_E2E=1 to run."
+    "E2E freevc test downloads >1 GB of public models; set VOICECLONNX_E2E=1 to run."
 )
 
 
@@ -279,7 +279,7 @@ def test_e2e_freevc_clone_edge_tts_voices(tmp_path):
     except ImportError:
         pytest.skip("edge-tts not installed")
 
-    from vconnx.engines.freevc import FreeVCAdapter
+    from voiceclonnx.engines.freevc import FreeVCAdapter
 
     async def _synth(text: str, voice: str, out: str):
         communicate = edge_tts.Communicate(text, voice)

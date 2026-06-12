@@ -1,4 +1,4 @@
-"""OpenVoice v2 tone-color converter adapter for vconnx.
+"""OpenVoice v2 tone-color converter adapter for voiceclonnx.
 
 OpenVoice v2 (myshell-ai/OpenVoice, MIT license) is a zero-shot voice-cloning
 library.  The **tone-color converter** sub-component is a standalone
@@ -26,7 +26,7 @@ Preprocessing (pure numpy, matches upstream ``spectrogram_torch``):
 
 All neural components run via onnxruntime.  The STFT is pure numpy.
 
-Requires: ``pip install vconnx``
+Requires: ``pip install voiceclonnx``
   -> onnxruntime, numpy, soundfile, huggingface_hub
 
 References
@@ -43,13 +43,13 @@ from typing import Optional
 
 import numpy as np
 
-from vconnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
 
 # OpenVoice v2 operates at 22050 Hz
 _OV2_SR = 22050
 
 # HF repo housing the exported ONNX artifacts
-_HF_REPO_ID = "TigreGotico/vconnx-openvoice-v2"
+_HF_REPO_ID = "TigreGotico/voiceclonnx-openvoice-v2"
 
 # Paths within the HF repo
 _REF_ENC_FP32 = "tone_ref_encoder.onnx"
@@ -188,7 +188,7 @@ class OpenVoiceV2Adapter(VoiceClonerBase):
         except ImportError as exc:
             raise ImportError(
                 "onnxruntime is required for engine='openvoice'. "
-                "Install it with: pip install vconnx[openvoice]"
+                "Install it with: pip install voiceclonnx[openvoice]"
             ) from exc
 
         try:
@@ -311,7 +311,7 @@ register_engine(
             "OpenVoice v2 tone-color converter: reference encoder (linear spec -> "
             "256-dim tone-color embedding) + VITS-style flow with HiFi-GAN vocoder. "
             "Zero-shot any-to-any VC at 22050 Hz. "
-            "ONNX artifacts from TigreGotico/vconnx-openvoice-v2. "
+            "ONNX artifacts from TigreGotico/voiceclonnx-openvoice-v2. "
             "(myshell-ai/OpenVoice, MIT license)"
         ),
         extras="",

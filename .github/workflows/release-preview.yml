@@ -9,5 +9,5 @@ jobs:
   release_preview:
     uses: OpenVoiceOS/gh-automations/.github/workflows/release-preview.yml@dev
     with:
-      package_name: 'vconnx'
-      version_file: 'vconnx/version.py'
+      package_name: 'voiceclonnx'
+      version_file: 'voiceclonnx/version.py'

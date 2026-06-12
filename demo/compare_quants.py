@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""fp32 vs INT8 quality/size comparison across all quantized-capable vconnx engines.
+"""fp32 vs INT8 quality/size comparison across all quantized-capable voiceclonnx engines.
 
 Runs each INT8-capable engine in both fp32 and INT8 modes on the demo source
 and reference audio clips, transcribes the outputs with faster-whisper, and
@@ -166,7 +166,7 @@ def main() -> int:
     rows: list[dict] = []
     skipped: list[str] = []
 
-    from vconnx import VoiceCloner
+    from voiceclonnx import VoiceCloner
 
     for engine in engines:
         # Determine reference: audio or RVC model

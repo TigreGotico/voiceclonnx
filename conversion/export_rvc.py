@@ -356,7 +356,7 @@ def export_rvc(output_dir: str, cache_dir: Optional[str] = None) -> Path:
     layout = OutputLayout.for_engine("rvc", base_dir=output_dir)
     layout.makedirs()
 
-    _cache = Path(cache_dir) if cache_dir else Path.home() / ".cache" / "vconnx" / "rvc"
+    _cache = Path(cache_dir) if cache_dir else Path.home() / ".cache" / "voiceclonnx" / "rvc"
     _cache.mkdir(parents=True, exist_ok=True)
 
     # ------------------------------------------------------------------

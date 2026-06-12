@@ -1,4 +1,4 @@
-"""FACodec (NaturalSpeech 3) adapter for vconnx.
+"""FACodec (NaturalSpeech 3) adapter for voiceclonnx.
 
 FACodec (Amphion / Microsoft Research, ICML 2024) disentangles speech waveforms
 into factorised subspaces — content, prosody, timbre, acoustic detail — and
@@ -34,7 +34,7 @@ References
 - https://huggingface.co/amphion/naturalspeech3_facodec
 - https://github.com/open-mmlab/Amphion
 - https://arxiv.org/abs/2403.03100
-- https://huggingface.co/TigreGotico/vconnx-facodec
+- https://huggingface.co/TigreGotico/voiceclonnx-facodec
 """
 
 from __future__ import annotations
@@ -44,7 +44,7 @@ from pathlib import Path
 
 import numpy as np
 
-from vconnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
 
 # FACodec operates at 16 kHz, hop=200 samples
 _FA_SR = 16000
@@ -56,7 +56,7 @@ _FA_FMIN = 0.0
 _FA_FMAX = 8000.0
 
 # HF repo housing the exported ONNX artifacts
-_HF_REPO_ID = "TigreGotico/vconnx-facodec"
+_HF_REPO_ID = "TigreGotico/voiceclonnx-facodec"
 
 _ENC_FP32 = "facodec_encoder.onnx"
 _ENC_INT8 = "facodec_encoder_q8.onnx"
@@ -236,7 +236,7 @@ class FACodecAdapter(VoiceClonerBase):
         except ImportError as exc:
             raise ImportError(
                 "onnxruntime is required for engine='facodec'. "
-                "Install it with: pip install vconnx"
+                "Install it with: pip install voiceclonnx"
             ) from exc
 
         try:
@@ -378,7 +378,7 @@ register_engine(
             "FACodec (NaturalSpeech 3): factorised codec VC — convolutional encoder, "
             "disentangled VQ (prosody/content/timbre/acoustic), "
             "zero-shot timbre-swap via TransformerEncoder timbre extractor + AdaIN decoder. "
-            "16 kHz. ONNX artifacts from TigreGotico/vconnx-facodec. "
+            "16 kHz. ONNX artifacts from TigreGotico/voiceclonnx-facodec. "
             "(Ju et al., ICML 2024, Apache-2.0 weights)"
         ),
         extras="",

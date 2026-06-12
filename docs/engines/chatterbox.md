@@ -1,6 +1,6 @@
 # Engine: chatterbox
 
-Chatterbox AR codec-LM (Resemble AI) — the default vconnx engine.
+Chatterbox AR codec-LM (Resemble AI) — the default voiceclonnx engine.
 
 ONNX export via [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx).
 Voice conversion runs at **24 kHz**.
@@ -10,7 +10,7 @@ Voice conversion runs at **24 kHz**.
 ## Install
 
 ```bash
-pip install vconnx
+pip install voiceclonnx
 ```
 
 No per-engine extras required. ONNX models are downloaded on first use from
@@ -39,7 +39,7 @@ fp32 files are always loaded. See [QUANTS.md](../QUANTS.md) for context.
 ### Python
 
 ```python
-from vconnx import VoiceCloner
+from voiceclonnx import VoiceCloner
 
 # Default (fp32, exaggeration=0.6)
 cloner = VoiceCloner(engine="chatterbox")
@@ -54,13 +54,13 @@ out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
 ### CLI
 
 ```bash
-vconnx clone --engine chatterbox \
+voiceclonnx clone --engine chatterbox \
              --audio source.wav \
              --voice reference.wav \
              --out out.wav
 
 # With optional flags
-vconnx clone --engine chatterbox \
+voiceclonnx clone --engine chatterbox \
              --audio source.wav \
              --voice reference.wav \
              --out out.wav \

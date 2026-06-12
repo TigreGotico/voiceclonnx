@@ -1,4 +1,4 @@
-"""CLI entry point: ``vconnx``."""
+"""CLI entry point: ``voiceclonnx``."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ import sys
 
 
 def _cmd_clone(args: argparse.Namespace) -> None:
-    from vconnx import VoiceCloner
+    from voiceclonnx import VoiceCloner
 
     extra = {}
     if args.exaggeration is not None:
@@ -21,7 +21,7 @@ def _cmd_clone(args: argparse.Namespace) -> None:
 
 
 def _cmd_list(args: argparse.Namespace) -> None:
-    from vconnx.engines.base import ENGINE_REGISTRY
+    from voiceclonnx.engines.base import ENGINE_REGISTRY
 
     if not ENGINE_REGISTRY:
         print("(no engines registered)")
@@ -30,13 +30,13 @@ def _cmd_list(args: argparse.Namespace) -> None:
         print(f"{alias}")
         print(f"  {entry.description}")
         if entry.extras:
-            print(f"  Install : pip install vconnx[{entry.extras}]")
+            print(f"  Install : pip install voiceclonnx[{entry.extras}]")
         print()
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        prog="vconnx",
+        prog="voiceclonnx",
         description="Pure-ONNX multi-engine voice-cloning CLI (audio-to-audio)",
     )
     sub = parser.add_subparsers(dest="cmd", required=True)

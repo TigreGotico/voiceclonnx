@@ -9,7 +9,7 @@ Architecture:
 
 All neural components run via onnxruntime. The kNN step is pure numpy — no ONNX at matching time. Fully non-autoregressive and CPU-friendly.
 
-ONNX artifacts: [TigreGotico/vconnx-knn-vc](https://huggingface.co/TigreGotico/vconnx-knn-vc) (MIT license).
+ONNX artifacts: [TigreGotico/voiceclonnx-knn-vc](https://huggingface.co/TigreGotico/voiceclonnx-knn-vc) (MIT license).
 
 Output sample rate: **16 kHz**.
 
@@ -18,7 +18,7 @@ Output sample rate: **16 kHz**.
 ## Install
 
 ```bash
-pip install vconnx
+pip install voiceclonnx
 ```
 
 Dependencies pulled in: `onnxruntime`, `numpy`, `soundfile`.
@@ -51,7 +51,7 @@ Models are downloaded from HF Hub on first use (~500 MB fp32 or ~123 MB int8).
 ### Python
 
 ```python
-from vconnx import VoiceCloner
+from voiceclonnx import VoiceCloner
 
 # Default (fp32, k=4)
 cloner = VoiceCloner(engine="knnvc")
@@ -69,9 +69,9 @@ cloner = VoiceCloner(engine="knnvc", k=8)
 ### CLI
 
 ```bash
-pip install vconnx
+pip install voiceclonnx
 
-vconnx clone --engine knnvc \
+voiceclonnx clone --engine knnvc \
              --audio source.wav \
              --voice reference.wav \
              --out out.wav
@@ -89,10 +89,10 @@ vconnx clone --engine knnvc \
 ## Troubleshooting
 
 **`ImportError: onnxruntime is required`**
-Install the extras group: `pip install vconnx`.
+Install the extras group: `pip install voiceclonnx`.
 
 **`ImportError: soundfile`**
-Same fix: `pip install vconnx` pulls soundfile.
+Same fix: `pip install voiceclonnx` pulls soundfile.
 
 **Output sounds noisy or garbled**
 The conversion quality depends on having a reference clip that is clean and close to

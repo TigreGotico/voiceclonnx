@@ -75,7 +75,7 @@ def test_basic_clone_smoke(tmp_path, monkeypatch):
         sys.path.insert(0, str(examples_dir))
 
     # 2. Pre-write the WAV files so _synth_wav is never called for real
-    demo_dir = tmp_path / "vconnx_demo"
+    demo_dir = tmp_path / "voiceclonnx_demo"
     demo_dir.mkdir()
     src = demo_dir / "source.wav"
     ref = demo_dir / "reference.wav"
@@ -102,10 +102,10 @@ def test_basic_clone_smoke(tmp_path, monkeypatch):
     monkeypatch.setattr(tempfile, "gettempdir", lambda: str(tmp_path))
 
     # 6. Patch VoiceCloner to use _SmokeKNNVCAdapter
-    import vconnx as vconnx_mod
-    from vconnx.engines.base import ENGINE_REGISTRY, EngineEntry, register_engine
+    import voiceclonnx as voiceclonnx_mod
+    from voiceclonnx.engines.base import ENGINE_REGISTRY, EngineEntry, register_engine
 
-    original_get_engine = vconnx_mod.get_engine
+    original_get_engine = voiceclonnx_mod.get_engine
 
     class _SmokeCloner:
         def __init__(self, engine="knnvc", **cfg):
@@ -123,11 +123,11 @@ def test_basic_clone_smoke(tmp_path, monkeypatch):
         def clone_voice(self, audio, reference_voice, out_path=None):
             return self._adapter.clone_voice(audio, reference_voice, out_path)
 
-    # Patch VoiceCloner at the vconnx module level (it's imported inside main())
-    import vconnx
-    import vconnx.cloner
-    monkeypatch.setattr(vconnx, "VoiceCloner", _SmokeCloner)
-    monkeypatch.setattr(vconnx.cloner, "VoiceCloner", _SmokeCloner)
+    # Patch VoiceCloner at the voiceclonnx module level (it's imported inside main())
+    import voiceclonnx
+    import voiceclonnx.cloner
+    monkeypatch.setattr(voiceclonnx, "VoiceCloner", _SmokeCloner)
+    monkeypatch.setattr(voiceclonnx.cloner, "VoiceCloner", _SmokeCloner)
 
     # 7. Run and capture output
     import io
@@ -175,17 +175,17 @@ def test_basic_clone_output_file_exists(tmp_path, monkeypatch):
         def clone_voice(self, audio, reference_voice, out_path=None):
             return self._adapter.clone_voice(audio, reference_voice, out_path)
 
-    import vconnx
-    import vconnx.cloner
-    monkeypatch.setattr(vconnx, "VoiceCloner", _SmokeCloner)
-    monkeypatch.setattr(vconnx.cloner, "VoiceCloner", _SmokeCloner)
+    import voiceclonnx
+    import voiceclonnx.cloner
+    monkeypatch.setattr(voiceclonnx, "VoiceCloner", _SmokeCloner)
+    monkeypatch.setattr(voiceclonnx.cloner, "VoiceCloner", _SmokeCloner)
 
     import io
     monkeypatch.setattr(sys, "stdout", io.StringIO())
 
     mod.main()
 
-    converted = tmp_path / "vconnx_demo" / "source_converted.wav"
+    converted = tmp_path / "voiceclonnx_demo" / "source_converted.wav"
     assert converted.exists(), f"Expected {converted} to exist"
 
     with wave.open(str(converted), "rb") as wf:

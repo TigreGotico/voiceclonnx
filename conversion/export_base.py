@@ -1,7 +1,7 @@
 """Shared helpers for exporting PyTorch voice-conversion models to ONNX.
 
 This module is **dev-time only** — it requires ``torch`` and ``onnx``.
-Neither is a runtime dependency of ``vconnx``.
+Neither is a runtime dependency of ``voiceclonnx``.
 
 Typical usage
 -------------
@@ -254,7 +254,7 @@ def export_model(
 
 
 def _git_sha(repo_path: Optional[str] = None) -> str:
-    """Return the current HEAD SHA of *repo_path* (or the vconnx repo)."""
+    """Return the current HEAD SHA of *repo_path* (or the voiceclonnx repo)."""
     try:
         cmd = ["git", "rev-parse", "HEAD"]
         if repo_path:

@@ -6,8 +6,8 @@ Gate: int8 flagged ⚠ when WER > 25% **and** > 15 points worse than fp32.
 
 ## chatterbox
 
-INT8 variants are produced by the vconnx export pipeline and hosted at
-`TigreGotico/vconnx-chatterbox`.  `quantized=True` loads
+INT8 variants are produced by the voiceclonnx export pipeline and hosted at
+`TigreGotico/voiceclonnx-chatterbox`.  `quantized=True` loads
 `speech_encoder_q8.onnx` + `conditional_decoder_q8.onnx` (self-contained,
 no external-data sidecars).
 

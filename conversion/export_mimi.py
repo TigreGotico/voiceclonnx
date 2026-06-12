@@ -36,11 +36,11 @@ Usage
 -----
 ::
 
-    pip install "vconnx[convert]"
+    pip install "voiceclonnx[convert]"
     python -m conversion.export_mimi --output-dir /tmp/mimi-out [--no-push]
 
 Requires: ``torch``, ``onnx``, ``onnxruntime``, ``transformers>=4.48``,
-``huggingface_hub``.  Never imported at vconnx runtime.
+``huggingface_hub``.  Never imported at voiceclonnx runtime.
 """
 
 from __future__ import annotations
@@ -149,7 +149,7 @@ class _NoMaskMimiAttention(_mimi_mod.MimiAttention):
 from transformers import MimiModel  # noqa: E402 — must import AFTER patches
 
 # ---------------------------------------------------------------------------
-# vconnx conversion helpers
+# voiceclonnx conversion helpers
 # ---------------------------------------------------------------------------
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -338,7 +338,7 @@ def export(output_dir: str, no_push: bool = False) -> None:
     )
 
     if not no_push:
-        print("[mimi] Pushing to TigreGotico/vconnx-mimi…")
+        print("[mimi] Pushing to TigreGotico/voiceclonnx-mimi…")
         from conversion.push_models import push
         push(str(layout.engine_dir), engine="mimi")
 
@@ -351,7 +351,7 @@ def export(output_dir: str, no_push: bool = False) -> None:
 
 
 def _parse() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="Export Mimi (Kyutai) to ONNX for vconnx.")
+    p = argparse.ArgumentParser(description="Export Mimi (Kyutai) to ONNX for voiceclonnx.")
     p.add_argument("--output-dir", default="/tmp/mimi-out", help="Staging directory.")
     p.add_argument("--no-push", action="store_true", help="Skip HF upload.")
     return p.parse_args()

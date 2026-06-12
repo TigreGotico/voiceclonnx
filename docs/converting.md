@@ -4,11 +4,11 @@ This guide walks an engine-issue implementer through the full pipeline:
 **export → parity → quantize → push → adapter**.
 
 All toolchain scripts live under `conversion/` and require the
-`vconnx[convert]` extras group (PyTorch, onnxruntime, transformers, librosa,
-huggingface_hub, etc.).  They are never imported by the vconnx runtime.
+`voiceclonnx[convert]` extras group (PyTorch, onnxruntime, transformers, librosa,
+huggingface_hub, etc.).  They are never imported by the voiceclonnx runtime.
 
 > **Dependency note:** `torch`, `librosa`, `transformers`, and `onnx` are
-> conversion/export-only dependencies.  The inference runtime (`pip install vconnx`)
+> conversion/export-only dependencies.  The inference runtime (`pip install voiceclonnx`)
 > requires only `onnxruntime`, `numpy`, `soundfile`, and `huggingface_hub`.
 
 ---
@@ -142,7 +142,7 @@ optional latency figures if you pass `benchmark_inputs`.
 
 ## 4. Push to HF
 
-Upload the finished engine directory to its public per-engine repo `TigreGotico/vconnx-<engine>` (auto-created and added to the vconnx HF collection):
+Upload the finished engine directory to its public per-engine repo `TigreGotico/voiceclonnx-<engine>` (auto-created and added to the voiceclonnx HF collection):
 
 ```bash
 # Dry-run first — prints files without uploading
@@ -162,13 +162,13 @@ them automatically.
 
 ---
 
-## 5. Write the vconnx adapter
+## 5. Write the voiceclonnx adapter
 
-Once the ONNX files are on HF, create `vconnx/engines/<engine>.py`:
+Once the ONNX files are on HF, create `voiceclonnx/engines/<engine>.py`:
 
-1. Subclass `VoiceClonerBase` from `vconnx.engines.base`.
+1. Subclass `VoiceClonerBase` from `voiceclonnx.engines.base`.
 2. In `__init__`, download the models via `huggingface_hub.hf_hub_download`
-   (or `snapshot_download`) using the per-engine repo `TigreGotico/vconnx-<engine>` and the
+   (or `snapshot_download`) using the per-engine repo `TigreGotico/voiceclonnx-<engine>` and the
    subdirectory.
 3. Load ONNX sessions with `onnxruntime.InferenceSession`.
 4. Implement `clone_voice(audio, reference_voice, out_path)`.
@@ -190,7 +190,7 @@ The adapter must have **zero torch dependency** — onnxruntime and numpy only.
     parity_report.json   ← parity check results
 ```
 
-This mirrors the layout of the public per-engine repo `TigreGotico/vconnx-<engine>` on HF Hub.
+This mirrors the layout of the public per-engine repo `TigreGotico/voiceclonnx-<engine>` on HF Hub.
 
 ---
 
@@ -198,10 +198,10 @@ This mirrors the layout of the public per-engine repo `TigreGotico/vconnx-<engin
 
 Each supported engine has a dedicated GitHub issue with engine-specific notes:
 
-- [#12 openvoice-v2](https://github.com/TigreGotico/vconnx/issues/12)
-- [#13 knn-vc](https://github.com/TigreGotico/vconnx/issues/13)
-- [#14 rvc](https://github.com/TigreGotico/vconnx/issues/14)
-- [#15 freevc](https://github.com/TigreGotico/vconnx/issues/15)
+- [#12 openvoice-v2](https://github.com/TigreGotico/voiceclonnx/issues/12)
+- [#13 knn-vc](https://github.com/TigreGotico/voiceclonnx/issues/13)
+- [#14 rvc](https://github.com/TigreGotico/voiceclonnx/issues/14)
+- [#15 freevc](https://github.com/TigreGotico/voiceclonnx/issues/15)
 
 Follow the contract in this guide; the per-engine issue records any deviations
 (e.g. custom opset, extra quantization exclusions, multi-component manifests).
@@ -286,7 +286,7 @@ via `conversion/convert_rvc_model.py`.
 ### Any-to-ONE semantics
 
 RVC is **any-to-ONE**: the target speaker is baked into the voice model at training
-time.  The vconnx adapter's ``reference_voice`` parameter accepts the **path to an
+time.  The voiceclonnx adapter's ``reference_voice`` parameter accepts the **path to an
 RVC ``.onnx`` model** or a Hugging Face repo ID — never a reference audio file.
 This is documented in the adapter docstring and README.  Config key: ``default_model``.
 
@@ -357,14 +357,14 @@ can detect 40k vs 48k models automatically.
 
 ## Weight-license policy: publish with the license stated
 
-vconnx publishes every ONNX export to its public `TigreGotico/vconnx-<engine>`
+voiceclonnx publishes every ONNX export to its public `TigreGotico/voiceclonnx-<engine>`
 HF repo. The upstream weight license travels with the artifacts — `license`
 tag and restrictions stated plainly on the model card, upstream LICENSE file
 and PROVENANCE.md alongside. Whether a given license (NC, research-only,
 Llama-style, …) fits a use case is the downstream user's decision, not a
 publishing gate.
 
-The one constraint that DOES bind vconnx itself is code licensing: GPL or
+The one constraint that DOES bind voiceclonnx itself is code licensing: GPL or
 Llama-style upstream **code** is never vendored into this MIT repo — those
 engines' conversion scripts drive the upstream repo as an external checkout.
 
@@ -430,7 +430,7 @@ when given sequences longer than ~2–3 seconds as ONNX models.  Individual
 parity tests used short dummy inputs (≤2 s); the demo source is 10.7 s, which
 exposed the degradation.
 
-The fix is in `vconnx/engines/freevc.py` (`clone_voice`): source audio is now
+The fix is in `voiceclonnx/engines/freevc.py` (`clone_voice`): source audio is now
 processed in overlapping 2-second chunks (0.25 s crossfade) through the full
 WavLM→decoder pipeline, and the waveform segments are blended back together.
 This reduces demo WER from 81% to 12% on both reference voices.
@@ -489,7 +489,7 @@ ParallelWaveGAN vocoder then re-normalizes with its own VCTK training stats
 The adapter must apply this denormalization between the TriAAN and PWG steps.
 Omitting it passes doubly-normalized mel to the vocoder → the signal is in the
 wrong range → noise output even though parity tests pass.  `mel_stats.npy` is
-bundled in the HF repo (`TigreGotico/vconnx-triaan-vc`) and loaded by the adapter.
+bundled in the HF repo (`TigreGotico/voiceclonnx-triaan-vc`) and loaded by the adapter.
 
 **dynamo=False** — PyTorch 2.9+ defaults to the new dynamo-based ONNX exporter,
 which raises `ValueError: Found conflicts between user-specified ranges and
@@ -617,7 +617,7 @@ The decoder operates on the token embedding lookup internally.
 ### transformers 5.5.0 tracing bugs
 
 Four patches are required to export `transformers.MimiModel` with the legacy
-TorchScript exporter.  All patches are applied at export time only; the vconnx
+TorchScript exporter.  All patches are applied at export time only; the voiceclonnx
 runtime never imports transformers.
 
 **1. `sdpa_mask` IndexError** — `create_sliding_window_causal_mask` passes a
@@ -847,7 +847,7 @@ python -u bicodec_export_run.py
 The script downloads `SparkAudio/Spark-TTS-0.5B` via HF Hub (LLM weights
 skipped with `ignore_patterns=["LLM/*"]`), exports five components, runs
 parity checks, quantizes to INT8, writes `config.json`/`provenance.json`, and
-optionally pushes to `TigreGotico/vconnx-bicodec`.
+optionally pushes to `TigreGotico/voiceclonnx-bicodec`.
 
 ### Parity results
 
@@ -876,7 +876,7 @@ optionally pushes to `TigreGotico/vconnx-bicodec`.
 
 Upstream weights: **CC BY-NC-SA 4.0** (SparkAudio/Spark-TTS-0.5B).
 Upstream code: Apache-2.0.
-The `TigreGotico/vconnx-bicodec` HF repo states the license plainly on the
+The `TigreGotico/voiceclonnx-bicodec` HF repo states the license plainly on the
 model card.  Non-commercial use only.
 
 ---
@@ -928,7 +928,7 @@ them); the 40 subgraph nodes are left at fp32.
 
 ### WER results
 
-Measured with `faster-whisper base.en` on the vconnx reference demo clip
+Measured with `faster-whisper base.en` on the voiceclonnx reference demo clip
 (10.7 s, `source.wav` → `reference_aria.wav`):
 
 | Variant | WER | Total size (MB) |

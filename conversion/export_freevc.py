@@ -594,7 +594,7 @@ def export_freevc(output_dir: str, cache_dir: Optional[str] = None) -> Path:
     layout = OutputLayout.for_engine("freevc", base_dir=output_dir)
     layout.makedirs()
 
-    _cache = Path(cache_dir) if cache_dir else Path.home() / ".cache" / "vconnx" / "freevc"
+    _cache = Path(cache_dir) if cache_dir else Path.home() / ".cache" / "voiceclonnx" / "freevc"
     _cache.mkdir(parents=True, exist_ok=True)
 
     # ------------------------------------------------------------------
@@ -811,7 +811,7 @@ def export_freevc(output_dir: str, cache_dir: Optional[str] = None) -> Path:
             "wavlm_note": (
                 "FreeVC uses extract_features()[0] which is the full transformer "
                 "final output — NOT layer-6 as in kNN-VC. wavlm_freevc.onnx "
-                "CANNOT be shared with TigreGotico/vconnx-knn-vc."
+                "CANNOT be shared with TigreGotico/voiceclonnx-knn-vc."
             ),
             "freevc_checkpoint": FREEVC_CHECKPOINT_URL,
             "speaker_encoder_checkpoint": SPEAKER_ENCODER_URL,

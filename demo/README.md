@@ -50,7 +50,7 @@ the table doubles as a transcript index. Regenerate with
 ## Regenerating
 
 ```bash
-pip install "vconnx[knnvc,chatterbox]" edge-tts
+pip install "voiceclonnx[knnvc,chatterbox]" edge-tts
 python demo/generate_demos.py            # all registered engines
 python demo/generate_demos.py --engines knnvc
 ```

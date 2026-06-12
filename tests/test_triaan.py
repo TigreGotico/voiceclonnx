@@ -1,11 +1,11 @@
-"""Tests for the TriAAN-VC adapter — vconnx/engines/triaan.py.
+"""Tests for the TriAAN-VC adapter — voiceclonnx/engines/triaan.py.
 
 Structure
 ---------
 - Registry wiring (no model loading)
 - F0 extraction math on synthetic signals (real numpy DSP)
 - Mock-session contract tests (full pipeline with stubbed ORT)
-- VCONNX_E2E-gated real conversion test
+- VOICECLONNX_E2E-gated real conversion test
 """
 
 from __future__ import annotations
@@ -74,7 +74,7 @@ class _MockPWGSess:
 
 def _make_mock_adapter(**kwargs):
     """Return a TriAANVCAdapter with all sessions and mel_stats stubbed out."""
-    from vconnx.engines.triaan import TriAANVCAdapter
+    from voiceclonnx.engines.triaan import TriAANVCAdapter
 
     adapter = TriAANVCAdapter(**kwargs)
     adapter._cpc_sess = _MockCPCSess()
@@ -92,16 +92,16 @@ def _make_mock_adapter(**kwargs):
 
 
 def test_triaan_registered():
-    """triaan engine must appear in ENGINE_REGISTRY after importing vconnx."""
-    import vconnx.engines.triaan  # noqa: F401 — trigger registration
-    from vconnx.engines.base import ENGINE_REGISTRY
+    """triaan engine must appear in ENGINE_REGISTRY after importing voiceclonnx."""
+    import voiceclonnx.engines.triaan  # noqa: F401 — trigger registration
+    from voiceclonnx.engines.base import ENGINE_REGISTRY
 
     assert "triaan" in ENGINE_REGISTRY
 
 
 def test_triaan_entry_metadata():
-    import vconnx.engines.triaan  # noqa: F401
-    from vconnx.engines.base import get_engine
+    import voiceclonnx.engines.triaan  # noqa: F401
+    from voiceclonnx.engines.base import get_engine
 
     entry = get_engine("triaan")
     assert entry.alias == "triaan"
@@ -111,14 +111,14 @@ def test_triaan_entry_metadata():
 
 
 def test_triaan_sample_rate():
-    from vconnx.engines.triaan import TriAANVCAdapter
+    from voiceclonnx.engines.triaan import TriAANVCAdapter
 
     adapter = TriAANVCAdapter()
     assert adapter.sample_rate == 16000
 
 
 def test_triaan_quantized_flag():
-    from vconnx.engines.triaan import TriAANVCAdapter
+    from voiceclonnx.engines.triaan import TriAANVCAdapter
 
     a = TriAANVCAdapter(quantized=True)
     assert a._quantized is True
@@ -133,7 +133,7 @@ def test_triaan_quantized_flag():
 
 def test_lf0_extraction_sine_is_voiced():
     """A clean sine tone should produce mostly voiced (non-zero) frames."""
-    from vconnx.engines.triaan import _extract_log_f0
+    from voiceclonnx.engines.triaan import _extract_log_f0
 
     sr = 16000
     t = np.linspace(0, 1.0, sr, endpoint=False)
@@ -150,7 +150,7 @@ def test_lf0_extraction_sine_is_voiced():
 
 def test_lf0_extraction_silence_is_unvoiced():
     """Silence produces all-zero lf0."""
-    from vconnx.engines.triaan import _extract_log_f0
+    from voiceclonnx.engines.triaan import _extract_log_f0
 
     audio = np.zeros(16000, dtype=np.float32)
     lf0 = _extract_log_f0(audio, sr=16000, hop_length=160)
@@ -159,7 +159,7 @@ def test_lf0_extraction_silence_is_unvoiced():
 
 
 def test_lf0_output_shape():
-    from vconnx.engines.triaan import _extract_log_f0
+    from voiceclonnx.engines.triaan import _extract_log_f0
 
     audio = np.random.randn(16000).astype(np.float32) * 0.1
     lf0 = _extract_log_f0(audio, sr=16000, hop_length=160)
@@ -168,7 +168,7 @@ def test_lf0_output_shape():
 
 
 def test_lf0_deterministic():
-    from vconnx.engines.triaan import _extract_log_f0
+    from voiceclonnx.engines.triaan import _extract_log_f0
 
     audio = np.sin(2 * np.pi * 150 * np.linspace(0, 1, 16000)).astype(np.float32)
     assert np.array_equal(
@@ -202,7 +202,7 @@ def test_adapter_clone_voice_mock(tmp_path):
 
 def test_adapter_output_is_16khz(tmp_path):
     """Output WAV must be 16 kHz regardless of input sample rate."""
-    from vconnx.engines.triaan import TriAANVCAdapter
+    from voiceclonnx.engines.triaan import TriAANVCAdapter
 
     # Write a 44100 Hz source
     src_path = str(tmp_path / "src44.wav")
@@ -228,7 +228,7 @@ def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
     """Missing onnxruntime raises ImportError with a helpful message."""
     import builtins
 
-    from vconnx.engines.triaan import TriAANVCAdapter
+    from voiceclonnx.engines.triaan import TriAANVCAdapter
 
     real_import = builtins.__import__
 
@@ -247,7 +247,7 @@ def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
 def test_adapter_lf0_alignment(tmp_path):
     """lf0 length is aligned to CPC frame count — pipeline does not crash on
     mismatch between acoustic F0 frame count and CPC frame count."""
-    from vconnx.engines.triaan import TriAANVCAdapter
+    from voiceclonnx.engines.triaan import TriAANVCAdapter
 
     # Use a short clip; alignment handles truncation/padding
     src = _make_wav(str(tmp_path / "src.wav"), duration_s=0.5)
@@ -264,7 +264,7 @@ def test_adapter_lf0_alignment(tmp_path):
 def test_adapter_stereo_source_mixed_down(tmp_path):
     """Stereo source is mixed to mono before processing."""
     import soundfile as sf
-    from vconnx.engines.triaan import TriAANVCAdapter
+    from voiceclonnx.engines.triaan import TriAANVCAdapter
 
     # Write stereo WAV
     src_path = str(tmp_path / "stereo.wav")
@@ -281,12 +281,12 @@ def test_adapter_stereo_source_mixed_down(tmp_path):
 
 
 # ---------------------------------------------------------------------------
-# 4. E2E test — real models (opt-in, gated on VCONNX_E2E)
+# 4. E2E test — real models (opt-in, gated on VOICECLONNX_E2E)
 # ---------------------------------------------------------------------------
 
-_SKIP_E2E = not os.environ.get("VCONNX_E2E", "")
+_SKIP_E2E = not os.environ.get("VOICECLONNX_E2E", "")
 _E2E_REASON = (
-    "E2E triaan test downloads ~XXX MB of public models; set VCONNX_E2E=1 to run."
+    "E2E triaan test downloads ~XXX MB of public models; set VOICECLONNX_E2E=1 to run."
 )
 
 
@@ -294,7 +294,7 @@ _E2E_REASON = (
 def test_e2e_triaan_clone_edge_tts_voices(tmp_path):
     """Real end-to-end: CPC encoder + TriAAN decoder + PWG vocoder.
 
-    Downloads models from TigreGotico/vconnx-triaan-vc (public HF repo).
+    Downloads models from TigreGotico/voiceclonnx-triaan-vc (public HF repo).
     Validates:
     - Output is a valid 16-bit 16 kHz WAV.
     - Duration is in a reasonable range (0.5 s – 10 s).
@@ -308,7 +308,7 @@ def test_e2e_triaan_clone_edge_tts_voices(tmp_path):
     except ImportError:
         pytest.skip("edge-tts not installed")
 
-    from vconnx.engines.triaan import TriAANVCAdapter
+    from voiceclonnx.engines.triaan import TriAANVCAdapter
 
     async def _synth(text: str, voice: str, out: str):
         await edge_tts.Communicate(text, voice).save(out)

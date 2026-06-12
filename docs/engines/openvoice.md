@@ -11,7 +11,7 @@ Preprocessing is pure numpy and matches upstream `spectrogram_torch` (513-bin li
 All neural components run via onnxruntime. Mel extraction and Griffin-Lim vocoder are
 pure numpy — no torch at inference.
 
-ONNX artifacts: [TigreGotico/vconnx-openvoice-v2](https://huggingface.co/TigreGotico/vconnx-openvoice-v2) (MIT license).
+ONNX artifacts: [TigreGotico/voiceclonnx-openvoice-v2](https://huggingface.co/TigreGotico/voiceclonnx-openvoice-v2) (MIT license).
 
 Output sample rate: **22050 Hz**.
 
@@ -20,7 +20,7 @@ Output sample rate: **22050 Hz**.
 ## Install
 
 ```bash
-pip install vconnx
+pip install voiceclonnx
 ```
 
 Dependencies pulled in: `onnxruntime`, `numpy`, `soundfile`.
@@ -57,7 +57,7 @@ The following parameters match the OpenVoice v2 training configuration and are f
 ### Python
 
 ```python
-from vconnx import VoiceCloner
+from voiceclonnx import VoiceCloner
 
 # Default (fp32, 32 Griffin-Lim iterations)
 cloner = VoiceCloner(engine="openvoice")
@@ -72,9 +72,9 @@ out = cloner.clone_voice("source.wav", "reference.wav", "out_hq.wav")
 ### CLI
 
 ```bash
-pip install vconnx
+pip install voiceclonnx
 
-vconnx clone --engine openvoice \
+voiceclonnx clone --engine openvoice \
              --audio source.wav \
              --voice reference.wav \
              --out out.wav
@@ -92,7 +92,7 @@ vconnx clone --engine openvoice \
 ## Troubleshooting
 
 **`ImportError: onnxruntime is required`**
-Install the extras group: `pip install vconnx`.
+Install the extras group: `pip install voiceclonnx`.
 
 **Output sounds muffled or phasey**
 This is a known limitation of the Griffin-Lim vocoder. Increase `gl_iters` (e.g. 64)

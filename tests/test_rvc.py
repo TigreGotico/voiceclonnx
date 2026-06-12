@@ -1,4 +1,4 @@
-"""Tests for the RVC adapter — vconnx/engines/rvc.py.
+"""Tests for the RVC adapter — voiceclonnx/engines/rvc.py.
 
 Structure
 ---------
@@ -6,7 +6,7 @@ Structure
 - Pure-numpy pitch utilities (real computation)
 - Pure-numpy mel preprocessing (real computation)
 - Mock-session contract tests (full adapter pipeline with stubbed ORT)
-- VCONNX_E2E-gated tokenless e2e: edge-tts source through the RVC default model
+- VOICECLONNX_E2E-gated tokenless e2e: edge-tts source through the RVC default model
 """
 
 from __future__ import annotations
@@ -44,15 +44,15 @@ def _make_wav(path: str, duration_s: float = 1.0, sr: int = 16000) -> str:
 
 
 def test_rvc_registered():
-    import vconnx.engines.rvc  # noqa: F401
-    from vconnx.engines.base import ENGINE_REGISTRY
+    import voiceclonnx.engines.rvc  # noqa: F401
+    from voiceclonnx.engines.base import ENGINE_REGISTRY
 
     assert "rvc" in ENGINE_REGISTRY
 
 
 def test_rvc_entry_metadata():
-    import vconnx.engines.rvc  # noqa: F401
-    from vconnx.engines.base import get_engine
+    import voiceclonnx.engines.rvc  # noqa: F401
+    from voiceclonnx.engines.base import get_engine
 
     entry = get_engine("rvc")
     assert entry.alias == "rvc"
@@ -62,14 +62,14 @@ def test_rvc_entry_metadata():
 
 
 def test_rvc_default_sample_rate():
-    from vconnx.engines.rvc import RVCAdapter
+    from voiceclonnx.engines.rvc import RVCAdapter
 
     adapter = RVCAdapter()
     assert adapter.sample_rate == 40000
 
 
 def test_rvc_custom_sample_rate():
-    from vconnx.engines.rvc import RVCAdapter
+    from voiceclonnx.engines.rvc import RVCAdapter
 
     adapter = RVCAdapter(sample_rate=48000)
     assert adapter.sample_rate == 48000
@@ -81,7 +81,7 @@ def test_rvc_custom_sample_rate():
 
 
 def test_rmvpe_decode_voiced():
-    from vconnx.engines.rvc import _rmvpe_decode
+    from voiceclonnx.engines.rvc import _rmvpe_decode
 
     # Soft-argmax: _rmvpe_decode computes (raw * bins).sum() * 20 cents.
     # For a spike at bin 100 with prob 0.9, the weighted-mean cents =
@@ -99,7 +99,7 @@ def test_rmvpe_decode_voiced():
 
 
 def test_rmvpe_decode_unvoiced():
-    from vconnx.engines.rvc import _rmvpe_decode
+    from voiceclonnx.engines.rvc import _rmvpe_decode
 
     # Low-confidence frame → should be unvoiced (0)
     raw = np.zeros((5, 360), dtype=np.float32)
@@ -110,7 +110,7 @@ def test_rmvpe_decode_unvoiced():
 
 
 def test_interpolate_f0_fills_gaps():
-    from vconnx.engines.rvc import _interpolate_f0
+    from voiceclonnx.engines.rvc import _interpolate_f0
 
     # F0 with a gap in the middle
     f0 = np.array([100.0, 110.0, 0.0, 0.0, 130.0, 140.0], dtype=np.float32)
@@ -122,7 +122,7 @@ def test_interpolate_f0_fills_gaps():
 
 
 def test_interpolate_f0_all_voiced():
-    from vconnx.engines.rvc import _interpolate_f0
+    from voiceclonnx.engines.rvc import _interpolate_f0
 
     f0 = np.array([100.0, 200.0, 300.0], dtype=np.float32)
     out = _interpolate_f0(f0)
@@ -130,7 +130,7 @@ def test_interpolate_f0_all_voiced():
 
 
 def test_interpolate_f0_all_unvoiced():
-    from vconnx.engines.rvc import _interpolate_f0
+    from voiceclonnx.engines.rvc import _interpolate_f0
 
     f0 = np.zeros(10, dtype=np.float32)
     out = _interpolate_f0(f0)
@@ -138,7 +138,7 @@ def test_interpolate_f0_all_unvoiced():
 
 
 def test_f0_to_coarse_voiced():
-    from vconnx.engines.rvc import RVCAdapter
+    from voiceclonnx.engines.rvc import RVCAdapter
 
     # A440 Hz should map to a non-zero coarse index
     f0 = np.array([440.0, 0.0, 880.0], dtype=np.float32)
@@ -150,7 +150,7 @@ def test_f0_to_coarse_voiced():
 
 
 def test_f0_to_coarse_range():
-    from vconnx.engines.rvc import RVCAdapter
+    from voiceclonnx.engines.rvc import RVCAdapter
 
     f0 = np.linspace(50, 1100, 100).astype(np.float32)
     coarse = RVCAdapter._f0_to_coarse(f0)
@@ -164,7 +164,7 @@ def test_f0_to_coarse_range():
 
 
 def test_stft_mag_shape():
-    from vconnx.engines.rvc import _stft_mag
+    from voiceclonnx.engines.rvc import _stft_mag
 
     audio = np.random.default_rng(0).random(16000).astype(np.float32)
     mag = _stft_mag(audio, n_fft=1024, hop=160, win=1024)
@@ -175,7 +175,7 @@ def test_stft_mag_shape():
 
 
 def test_mel_filterbank_shape():
-    from vconnx.engines.rvc import _mel_filterbank
+    from voiceclonnx.engines.rvc import _mel_filterbank
 
     fb = _mel_filterbank(1024, 128, 16000, 30.0, 8000.0)
     assert fb.shape == (128, 513)
@@ -184,7 +184,7 @@ def test_mel_filterbank_shape():
 
 
 def test_audio_to_rmvpe_mel_shape():
-    from vconnx.engines.rvc import _audio_to_rmvpe_mel
+    from voiceclonnx.engines.rvc import _audio_to_rmvpe_mel
 
     audio = np.random.default_rng(1).random(16000).astype(np.float32)
     mel = _audio_to_rmvpe_mel(audio, sr=16000)
@@ -196,7 +196,7 @@ def test_audio_to_rmvpe_mel_shape():
 
 
 def test_resample_f0_length():
-    from vconnx.engines.rvc import _resample_f0
+    from voiceclonnx.engines.rvc import _resample_f0
 
     f0 = np.ones(200, dtype=np.float32) * 220.0
     out = _resample_f0(f0, src_hop=160, tgt_hop=320, tgt_len=100)
@@ -261,7 +261,7 @@ class _MockNetGSession:
 
 def test_adapter_clone_voice_mock(tmp_path):
     """Adapter pipeline completes end-to-end with mocked ORT sessions."""
-    from vconnx.engines.rvc import RVCAdapter
+    from voiceclonnx.engines.rvc import RVCAdapter
 
     src_wav = _make_wav(str(tmp_path / "src.wav"), duration_s=1.0)
     out_wav = str(tmp_path / "out.wav")
@@ -287,7 +287,7 @@ def test_adapter_clone_voice_mock(tmp_path):
 
 def test_adapter_uses_default_model_when_reference_none(tmp_path):
     """default_model is used when reference_voice is None."""
-    from vconnx.engines.rvc import RVCAdapter
+    from voiceclonnx.engines.rvc import RVCAdapter
 
     src_wav = _make_wav(str(tmp_path / "src.wav"))
     out_wav = str(tmp_path / "out.wav")
@@ -307,7 +307,7 @@ def test_adapter_uses_default_model_when_reference_none(tmp_path):
 
 def test_adapter_raises_without_model_reference(tmp_path):
     """Raises ValueError when reference_voice is None and no default_model."""
-    from vconnx.engines.rvc import RVCAdapter
+    from voiceclonnx.engines.rvc import RVCAdapter
 
     src_wav = _make_wav(str(tmp_path / "src.wav"))
     out_wav = str(tmp_path / "out.wav")
@@ -326,7 +326,7 @@ def test_adapter_f0_pitch_shift_direct():
     Test directly via _extract_f0 with a mocked RMVPE session to avoid
     frame-count mismatches from the full pipeline mock.
     """
-    from vconnx.engines.rvc import RVCAdapter, _rmvpe_decode
+    from voiceclonnx.engines.rvc import RVCAdapter, _rmvpe_decode
 
     # Build a synthetic F0 trace: 50 voiced frames at 220 Hz, 10 unvoiced
     base_f0 = np.array([220.0] * 50 + [0.0] * 10, dtype=np.float32)
@@ -344,7 +344,7 @@ def test_adapter_f0_pitch_shift_direct():
 
 def test_adapter_f0_pitch_shift(tmp_path):
     """f0_up_key flag is stored and used."""
-    from vconnx.engines.rvc import RVCAdapter
+    from voiceclonnx.engines.rvc import RVCAdapter
 
     adapter = RVCAdapter(f0_up_key=6)
     assert adapter._f0_up_key == 6
@@ -356,7 +356,7 @@ def test_adapter_f0_pitch_shift(tmp_path):
 def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
     """Missing onnxruntime raises ImportError with a helpful message."""
     import builtins
-    from vconnx.engines.rvc import RVCAdapter
+    from voiceclonnx.engines.rvc import RVCAdapter
 
     real_import = builtins.__import__
 
@@ -374,7 +374,7 @@ def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
 
 def test_adapter_quantized_flag(tmp_path):
     """quantized flag is stored and propagates correctly."""
-    from vconnx.engines.rvc import RVCAdapter
+    from voiceclonnx.engines.rvc import RVCAdapter
 
     a = RVCAdapter(quantized=True)
     assert a._quantized is True
@@ -385,7 +385,7 @@ def test_adapter_quantized_flag(tmp_path):
 
 def test_adapter_speaker_id():
     """speaker_id is stored correctly."""
-    from vconnx.engines.rvc import RVCAdapter
+    from voiceclonnx.engines.rvc import RVCAdapter
 
     adapter = RVCAdapter(speaker_id=3)
     assert adapter._speaker_id == 3
@@ -393,7 +393,7 @@ def test_adapter_speaker_id():
 
 def test_adapter_net_g_not_reloaded_for_same_model(tmp_path):
     """net_g session is not reloaded if the same model_ref is used twice."""
-    from vconnx.engines.rvc import RVCAdapter
+    from voiceclonnx.engines.rvc import RVCAdapter
 
     model_onnx = str(tmp_path / "voice.onnx")
     Path(model_onnx).write_bytes(b"")
@@ -412,13 +412,13 @@ def test_adapter_net_g_not_reloaded_for_same_model(tmp_path):
 
 
 # ---------------------------------------------------------------------------
-# 5. E2E test — real models, real audio (VCONNX_E2E-gated)
+# 5. E2E test — real models, real audio (VOICECLONNX_E2E-gated)
 # ---------------------------------------------------------------------------
 
-_SKIP_E2E = not os.environ.get("VCONNX_E2E", "")
+_SKIP_E2E = not os.environ.get("VOICECLONNX_E2E", "")
 _E2E_REASON = (
     "E2E rvc test downloads base models (~200MB) and requires a default RVC voice "
-    "model.  Set VCONNX_E2E=1 and RVC_VOICE_MODEL=<path-or-hf-id> to run."
+    "model.  Set VOICECLONNX_E2E=1 and RVC_VOICE_MODEL=<path-or-hf-id> to run."
 )
 
 
@@ -445,7 +445,7 @@ def test_e2e_rvc_clone_edge_tts(tmp_path):
         pytest.skip("edge-tts not installed")
 
     import onnxruntime as ort
-    from vconnx.engines.rvc import RVCAdapter
+    from voiceclonnx.engines.rvc import RVCAdapter
 
     # Default: use a specific 768-dim voice from ozada/onnx_rvc.
     # The repo contains both 256-dim (e.g. beyonce.onnx) and 768-dim models

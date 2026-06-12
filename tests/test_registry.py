@@ -1,7 +1,7 @@
 """Tests for the engine registry and base adapter."""
 
 import pytest
-from vconnx.engines.base import (
+from voiceclonnx.engines.base import (
     ENGINE_REGISTRY,
     EngineEntry,
     VoiceClonerBase,
@@ -12,12 +12,12 @@ from vconnx.engines.base import (
 
 def test_registry_has_chatterbox():
     """Chatterbox engine must be registered on import."""
-    import vconnx  # triggers auto-import of adapters  # noqa: F401
+    import voiceclonnx  # triggers auto-import of adapters  # noqa: F401
     assert "chatterbox" in ENGINE_REGISTRY
 
 
 def test_get_engine_returns_entry():
-    import vconnx  # noqa: F401
+    import voiceclonnx  # noqa: F401
     entry = get_engine("chatterbox")
     assert entry.alias == "chatterbox"
     assert entry.onnx_native is True

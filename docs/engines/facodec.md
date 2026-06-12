@@ -77,7 +77,7 @@ fmin=0, fmax=8000, log-compressed; the adapter uses the first 20 bins.
 | `facodec_quantize.onnx` | (enc_feats,mel_20) → vq_ids(6,1,T) | Hierarchical VQ (6 codebooks) |
 | `facodec_decoder.onnx` | (vq_ids,spk_embs) → wav(1,1,N) | vq2emb + AdaIN + conv decoder |
 
-HF repo: [TigreGotico/vconnx-facodec](https://huggingface.co/TigreGotico/vconnx-facodec)
+HF repo: [TigreGotico/voiceclonnx-facodec](https://huggingface.co/TigreGotico/voiceclonnx-facodec)
 
 ## License
 
