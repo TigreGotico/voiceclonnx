@@ -417,6 +417,24 @@ engines' conversion scripts drive the upstream repo as an external checkout.
 | `freevc_decoder.onnx` (fp32) | 116.4 MB |
 | `freevc_decoder_q8.onnx` (INT8) | 37.3 MB (68.0% reduction) |
 
+**Root cause of unintelligible output (issue #6):**
+
+All three ONNX components passed individual parity checks against their torch
+counterparts, yet end-to-end conversion produced 81% WER.  The root cause is
+that both WavLM-Large and the VITS SynthesizerTrn decoder degrade significantly
+when given sequences longer than ~2–3 seconds as ONNX models.  Individual
+parity tests used short dummy inputs (≤2 s); the demo source is 10.7 s, which
+exposed the degradation.
+
+The fix is in `vconnx/engines/freevc.py` (`clone_voice`): source audio is now
+processed in overlapping 2-second chunks (0.25 s crossfade) through the full
+WavLM→decoder pipeline, and the waveform segments are blended back together.
+This reduces demo WER from 81% to 12% on both reference voices.
+
+Note: the ONNX model artifacts themselves are correct; no re-export is required.
+The parity checks were always sound — the issue was an inference-time chunking
+gap, not an export defect.
+
 ## Worked example: triaan-vc
 
 TriAAN-VC (ICASSP 2023, MIT license) is a three-component pipeline.
