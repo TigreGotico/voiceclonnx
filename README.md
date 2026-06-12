@@ -81,7 +81,40 @@ All engines ship with `pip install vconnx` — no per-engine extras needed.
 | `openvoice` | 22 kHz | [TigreGotico/vconnx-openvoice-v2](https://huggingface.co/TigreGotico/vconnx-openvoice-v2) | MIT |
 | `rvc` | 40/48 kHz | [TigreGotico/vconnx-rvc](https://huggingface.co/TigreGotico/vconnx-rvc) | MIT |
 | `speechtokenizer` | 16 kHz | [TigreGotico/vconnx-speechtokenizer](https://huggingface.co/TigreGotico/vconnx-speechtokenizer) | Apache-2.0 |
+| `bicodec` | 16 kHz | [TigreGotico/vconnx-bicodec](https://huggingface.co/TigreGotico/vconnx-bicodec) | CC BY-NC-SA 4.0 |
 | `triaan` | 16 kHz | [TigreGotico/vconnx-triaan-vc](https://huggingface.co/TigreGotico/vconnx-triaan-vc) | MIT |
+
+### bicodec
+
+Zero-shot any-to-any voice conversion via explicit semantic / global token
+factorization (SparkAudio/Spark-TTS, 2025, Apache-2.0 code, CC BY-NC-SA 4.0
+weights).
+
+Architecture:
+- **Semantic tokens** (content): Wav2Vec2-XLSR-53 (hidden layers 11, 14, 16
+  averaged) → convolutional encoder → FactorizedVQ → (1, T) int64
+- **Global tokens** (speaker): mel-spectrogram (128-bin, Slaney) → ECAPA-TDNN
+  + Perceiver resampler → FSQ → (1, 1, 32) int32 (fixed-length per utterance)
+
+Voice conversion is a direct token swap: source semantic tokens + reference
+global tokens → decoder → waveform.  No auto-regressive LM, single forward
+pass per segment.
+
+```python
+from vconnx import VoiceCloner
+
+cloner = VoiceCloner(engine="bicodec")
+out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
+print(cloner.sample_rate)   # 16000
+```
+
+ONNX artifacts: [`TigreGotico/vconnx-bicodec`](https://huggingface.co/TigreGotico/vconnx-bicodec)
+(public, **CC BY-NC-SA 4.0 — non-commercial use only**).
+
+See [docs/engines/bicodec.md](docs/engines/bicodec.md) for config keys,
+parity results, and troubleshooting.
+
+---
 
 ### rvc
 
@@ -141,6 +174,7 @@ See [docs/api.md](docs/api.md) for the full API reference.
 - [docs/engines/chatterbox.md](docs/engines/chatterbox.md) — config keys, troubleshooting
 - [docs/engines/freevc.md](docs/engines/freevc.md) — config keys, model sizes, WavLM note, troubleshooting
 - [docs/engines/knnvc.md](docs/engines/knnvc.md) — config keys, model sizes, troubleshooting
+- [docs/engines/bicodec.md](docs/engines/bicodec.md) — config keys, parity, ONNX sizes, export notes
 - [docs/engines/openvoice.md](docs/engines/openvoice.md) — config keys, mel params, troubleshooting
 - [docs/converting.md](docs/converting.md) — ONNX export / parity / quantize / push toolchain
 

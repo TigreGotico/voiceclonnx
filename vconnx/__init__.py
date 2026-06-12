@@ -47,6 +47,11 @@ engines ship alongside this package and are auto-imported here.
 ``"mimi"``:
 ``"speechtokenizer"``:
 
+``"bicodec"``:
+    BiCodec (SparkTTS): Wav2Vec2-XLSR-53 (layers 11/14/16) → VQ semantic tokens
+    (content) + ECAPA-TDNN + Perceiver + FSQ → 32 global tokens (timbre).
+    VC: swap global tokens from reference, decode. 16 kHz. CC BY-NC-SA 4.0 weights.
+
 ``"triaan"``:
     TriAAN-VC: CPC encoder + Triple Adaptive Attention Normalization decoder
     + ParallelWaveGAN vocoder. Zero-shot any-to-any VC at 16 kHz. MIT.
@@ -81,6 +86,7 @@ import vconnx.engines.rvc  # noqa: F401
 import vconnx.engines.mimi  # noqa: F401
 import vconnx.engines.speechtokenizer  # noqa: F401
 import vconnx.engines.triaan  # noqa: F401
+import vconnx.engines.bicodec  # noqa: F401
 import vconnx.engines.facodec  # noqa: F401
 
 __all__ = [
