@@ -21,6 +21,7 @@ the source utterance spoken in the reference voice, as that engine hears it.
 | chatterbox | [`outputs/chatterbox__aria.wav`](outputs/chatterbox__aria.wav) | [`outputs/chatterbox__sonia.wav`](outputs/chatterbox__sonia.wav) |
 | freevc | [`outputs/freevc__aria.wav`](outputs/freevc__aria.wav) | [`outputs/freevc__sonia.wav`](outputs/freevc__sonia.wav) |
 | knnvc | [`outputs/knnvc__aria.wav`](outputs/knnvc__aria.wav) | [`outputs/knnvc__sonia.wav`](outputs/knnvc__sonia.wav) |
+| facodec | [`outputs/facodec__aria.wav`](outputs/facodec__aria.wav) | [`outputs/facodec__sonia.wav`](outputs/facodec__sonia.wav) |
 | focalcodec | [`outputs/focalcodec__aria.wav`](outputs/focalcodec__aria.wav) | [`outputs/focalcodec__sonia.wav`](outputs/focalcodec__sonia.wav) |
 | speechtokenizer | [`outputs/speechtokenizer__aria.wav`](outputs/speechtokenizer__aria.wav) | [`outputs/speechtokenizer__sonia.wav`](outputs/speechtokenizer__sonia.wav) |
 | mimi | [`outputs/mimi__aria.wav`](outputs/mimi__aria.wav) | [`outputs/mimi__sonia.wav`](outputs/mimi__sonia.wav) |

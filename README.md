@@ -73,6 +73,7 @@ All engines ship with `pip install vconnx` — no per-engine extras needed.
 | Alias | Sample rate | Model repo | License |
 |---|---|---|---|
 | `chatterbox` | 24 kHz | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | Apache-2.0 |
+| `facodec` | 16 kHz | [TigreGotico/vconnx-facodec](https://huggingface.co/TigreGotico/vconnx-facodec) | Apache-2.0 |
 | `focalcodec` | 16 kHz | [TigreGotico/vconnx-focalcodec](https://huggingface.co/TigreGotico/vconnx-focalcodec) | Apache-2.0 |
 | `freevc` | 16 kHz | [TigreGotico/vconnx-freevc](https://huggingface.co/TigreGotico/vconnx-freevc) | MIT |
 | `knnvc` | 16 kHz | [TigreGotico/vconnx-knn-vc](https://huggingface.co/TigreGotico/vconnx-knn-vc) | MIT |

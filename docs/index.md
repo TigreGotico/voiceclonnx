@@ -49,6 +49,7 @@ All engines are included in the base `pip install vconnx`.
 | Alias | Sample rate | HF model repo | Notes |
 |---|---|---|---|
 | `chatterbox` | 24 kHz | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | AR codec-LM; VC path only |
+| `facodec` | 16 kHz | [TigreGotico/vconnx-facodec](https://huggingface.co/TigreGotico/vconnx-facodec) | Factorised VQ; timbre-swap VC (NaturalSpeech 3) |
 | `focalcodec` | 16 kHz | [TigreGotico/vconnx-focalcodec](https://huggingface.co/TigreGotico/vconnx-focalcodec) | WavLM + cosine kNN + Vocos ISTFT |
 | `freevc` | 16 kHz | [TigreGotico/vconnx-freevc](https://huggingface.co/TigreGotico/vconnx-freevc) | WavLM + GE2E + VITS decoder |
 | `knnvc` | 16 kHz | [TigreGotico/vconnx-knn-vc](https://huggingface.co/TigreGotico/vconnx-knn-vc) | WavLM + L2-kNN + HiFi-GAN |
@@ -78,6 +79,7 @@ vconnx list
 - [API reference](api.md) — `VoiceCloner` facade, `VoiceClonerBase`, registry functions
 - [Engine guides](engines/) — per-engine config keys, model sources, CLI examples, troubleshooting
   - [chatterbox](engines/chatterbox.md)
+  - [facodec](engines/facodec.md)
   - [knnvc](engines/knnvc.md)
   - [openvoice](engines/openvoice.md)
 - [Converting models](converting.md) — export / parity / quantize / push toolchain

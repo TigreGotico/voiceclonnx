@@ -8,6 +8,8 @@ against the known source text (gate: WER ≤ 40%).
 | [`source.wav`](source.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/chatterbox__aria.wav`](outputs/chatterbox__aria.wav) | 4% | ✅ | The quit-brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but  |
 | [`outputs/chatterbox__sonia.wav`](outputs/chatterbox__sonia.wav) | 8% | ✅ | The quit-brown fox jumps over the lazy dog. Voice conversion changes who was speaking, but |
+| [`outputs/facodec__aria.wav`](outputs/facodec__aria.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
+| [`outputs/facodec__sonia.wav`](outputs/facodec__sonia.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/focalcodec__aria.wav`](outputs/focalcodec__aria.wav) | 15% | ✅ | The quit-brown fox jumps over the lazy dog. Voice conversion changes always speedy, but no |
 | [`outputs/focalcodec__sonia.wav`](outputs/focalcodec__sonia.wav) | 19% | ✅ | that what brown fox jumps over the lazy dog. Voice conversion changes always speeding, but |
 | [`outputs/freevc__aria.wav`](outputs/freevc__aria.wav) | 12% | ✅ | The quick brown fox jumps and the lazy dog. Voice conversion changes who is f***ing, but n |
