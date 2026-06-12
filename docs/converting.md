@@ -990,6 +990,35 @@ not attempt a merged ONNX graph.
 
 ---
 
+## Appendix: quickvc — ISTFT tracing notes
+
+QuickVC uses a Multistream-iSTFT (MS-iSTFT) generator that calls `torch.istft`
+inside `TorchSTFT.inverse`.  `torch.istft` cannot be traced to ONNX.
+
+**Parameters:** `gen_istft_n_fft=16`, `gen_istft_hop_size=4`, `subbands=4`.
+The ISTFT is tiny (16-point FFT), making a pure-numpy re-implementation both
+simple and exact.
+
+**numpy re-implementation** (`_numpy_ms_istft` in `quickvc.py`):
+- Per-subband center-mode OLA (matching `torch.istft` default `center=True`).
+- Hann window: `np.hanning(n_fft+1)[:-1]` ≡ `torch.hann_window(n_fft)`.
+- Output trim: strip `n_fft//2` from both ends of the raw OLA output.
+- Verified parity: 0.0 max abs error vs `torch.istft` (exactly reproducible).
+
+**MHA reshape constraint:**
+The HuBERT-soft content encoder (`nn.TransformerEncoderLayer` with
+`batch_first=True`) has a `Reshape` node in the ONNX graph that freezes the
+sequence length (T=50) at export time.  `dynamic_axes` for the sequence
+dimension cannot be propagated through the MHA internal reshape.
+
+Mitigation: export with a fixed 1-second dummy (T=50) and chunk audio at the
+adapter level.  Audio of duration N seconds is split into ceil(N) non-overlapping
+1-second windows; features are concatenated before the decoder.
+
+Upstream reference:
+- https://github.com/quickvc/QuickVC-VoiceConversion (MIT)
+- https://github.com/bshall/hubert (MIT, HuBERT-soft checkpoint)
+
 ## Appendix: CosyVoice export notes
 
 ### Non-AR VC path
