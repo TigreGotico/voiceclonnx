@@ -4,8 +4,8 @@ import os
 import pytest
 from unittest.mock import patch, MagicMock
 
-from vconnx import VoiceCloner
-from vconnx.engines.base import ENGINE_REGISTRY, EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx import VoiceCloner
+from voiceclonnx.engines.base import ENGINE_REGISTRY, EngineEntry, VoiceClonerBase, register_engine
 
 
 # ---------------------------------------------------------------------------
@@ -44,7 +44,7 @@ def mock_engine():
 
 def test_voice_cloner_default_engine():
     """VoiceCloner resolves the correct adapter class."""
-    import vconnx  # noqa: F401
+    import voiceclonnx  # noqa: F401
     cloner = VoiceCloner(engine="_mock")
     assert cloner.engine == "_mock"
     assert cloner.sample_rate == 16000

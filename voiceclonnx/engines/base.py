@@ -1,4 +1,4 @@
-"""Base adapter contract and engine registry for vconnx.
+"""Base adapter contract and engine registry for voiceclonnx.
 
 Adding a new engine
 -------------------
@@ -29,7 +29,7 @@ class EngineEntry:
     alias: str
     adapter_class: "Type[VoiceClonerBase]"
     description: str = ""
-    #: pip extras key (e.g. "chatterbox" → ``pip install vconnx[chatterbox]``)
+    #: pip extras key (e.g. "chatterbox" → ``pip install voiceclonnx[chatterbox]``)
     extras: str = ""
     #: ONNX models are available / can be exported — True for all registered engines
     onnx_native: bool = True

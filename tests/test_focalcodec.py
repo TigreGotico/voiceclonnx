@@ -1,4 +1,4 @@
-"""Tests for the FocalCodec adapter — vconnx/engines/focalcodec.py.
+"""Tests for the FocalCodec adapter — voiceclonnx/engines/focalcodec.py.
 
 Structure
 ---------
@@ -46,16 +46,16 @@ def _make_wav(path: str, duration_s: float = 1.0, sr: int = 16000) -> str:
 
 
 def test_focalcodec_registered():
-    """focalcodec engine must appear in ENGINE_REGISTRY after importing vconnx."""
-    import vconnx.engines.focalcodec  # noqa: F401
-    from vconnx.engines.base import ENGINE_REGISTRY
+    """focalcodec engine must appear in ENGINE_REGISTRY after importing voiceclonnx."""
+    import voiceclonnx.engines.focalcodec  # noqa: F401
+    from voiceclonnx.engines.base import ENGINE_REGISTRY
 
     assert "focalcodec" in ENGINE_REGISTRY
 
 
 def test_focalcodec_entry_metadata():
-    import vconnx.engines.focalcodec  # noqa: F401
-    from vconnx.engines.base import get_engine
+    import voiceclonnx.engines.focalcodec  # noqa: F401
+    from voiceclonnx.engines.base import get_engine
 
     entry = get_engine("focalcodec")
     assert entry.alias == "focalcodec"
@@ -65,7 +65,7 @@ def test_focalcodec_entry_metadata():
 
 
 def test_focalcodec_sample_rate():
-    from vconnx.engines.focalcodec import FocalCodecAdapter
+    from voiceclonnx.engines.focalcodec import FocalCodecAdapter
 
     adapter = FocalCodecAdapter()
     assert adapter.sample_rate == 16000
@@ -77,7 +77,7 @@ def test_focalcodec_sample_rate():
 
 
 def test_cosine_knn_output_shape():
-    from vconnx.engines.focalcodec import _cosine_knn_match
+    from voiceclonnx.engines.focalcodec import _cosine_knn_match
 
     rng = np.random.default_rng(0)
     src = rng.random((30, 1024), dtype=np.float32)
@@ -90,7 +90,7 @@ def test_cosine_knn_output_shape():
 
 def test_cosine_knn_exact_copy():
     """When source == reference and k=1, matched output equals the input."""
-    from vconnx.engines.focalcodec import _cosine_knn_match
+    from voiceclonnx.engines.focalcodec import _cosine_knn_match
 
     rng = np.random.default_rng(42)
     feats = rng.random((20, 64), dtype=np.float32)
@@ -101,7 +101,7 @@ def test_cosine_knn_exact_copy():
 
 def test_cosine_knn_k_clipped_to_ref_size():
     """k is silently clipped to len(reference) — must not raise."""
-    from vconnx.engines.focalcodec import _cosine_knn_match
+    from voiceclonnx.engines.focalcodec import _cosine_knn_match
 
     rng = np.random.default_rng(7)
     src = rng.random((10, 16), dtype=np.float32)
@@ -113,7 +113,7 @@ def test_cosine_knn_k_clipped_to_ref_size():
 
 def test_cosine_knn_uses_cosine_not_l2():
     """Verify cosine (not L2) distance by constructing a known-nearest example."""
-    from vconnx.engines.focalcodec import _cosine_knn_match
+    from voiceclonnx.engines.focalcodec import _cosine_knn_match
 
     # ref[0] = [1,0,0] → same direction as src, ref[1] = [0,1,0]
     # L2-nearest to [2,0,0] would be ref[0]; cosine-nearest also ref[0]
@@ -131,7 +131,7 @@ def test_cosine_knn_uses_cosine_not_l2():
 
 def test_cosine_knn_deterministic():
     """kNN matching is deterministic."""
-    from vconnx.engines.focalcodec import _cosine_knn_match
+    from voiceclonnx.engines.focalcodec import _cosine_knn_match
 
     rng = np.random.default_rng(99)
     src = rng.random((40, 256), dtype=np.float32)
@@ -149,7 +149,7 @@ def test_cosine_knn_deterministic():
 
 def test_numpy_istft_output_shape():
     """ISTFT output shape follows OLA formula: (T-1)*hop + win."""
-    from vconnx.engines.focalcodec import _numpy_istft
+    from voiceclonnx.engines.focalcodec import _numpy_istft
 
     T = 50
     n_fft, hop, win = 1024, 320, 1024
@@ -164,7 +164,7 @@ def test_numpy_istft_output_shape():
 def test_numpy_istft_zero_input():
     """Zero STFT coefficients (zero mag after exp=1 clamp not relevant here) ...
     Zero log-mag → mag=1 → non-trivial output, but shape must be correct."""
-    from vconnx.engines.focalcodec import _numpy_istft
+    from voiceclonnx.engines.focalcodec import _numpy_istft
 
     T = 10
     stft = np.zeros((1, T, 1026), dtype=np.float32)
@@ -175,7 +175,7 @@ def test_numpy_istft_zero_input():
 
 def test_numpy_istft_batch_independence():
     """Each batch element is processed independently."""
-    from vconnx.engines.focalcodec import _numpy_istft
+    from voiceclonnx.engines.focalcodec import _numpy_istft
 
     rng = np.random.default_rng(0)
     stft = rng.random((3, 20, 1026), dtype=np.float32)
@@ -216,7 +216,7 @@ class _MockVocoderSession:
 
 def test_adapter_clone_voice_mock(tmp_path):
     """Adapter pipeline completes with mocked ORT sessions."""
-    from vconnx.engines.focalcodec import FocalCodecAdapter
+    from voiceclonnx.engines.focalcodec import FocalCodecAdapter
 
     src_wav = _make_wav(str(tmp_path / "src.wav"), duration_s=1.0)
     ref_wav = _make_wav(str(tmp_path / "ref.wav"), duration_s=2.0)
@@ -238,7 +238,7 @@ def test_adapter_clone_voice_mock(tmp_path):
 
 def test_adapter_output_is_16khz(tmp_path):
     """Output WAV must be 16 kHz regardless of input sample rate."""
-    from vconnx.engines.focalcodec import FocalCodecAdapter
+    from voiceclonnx.engines.focalcodec import FocalCodecAdapter
 
     src_path = str(tmp_path / "src44.wav")
     n = 44100
@@ -266,7 +266,7 @@ def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
     """Missing onnxruntime raises ImportError with a helpful message."""
     import builtins
 
-    from vconnx.engines.focalcodec import FocalCodecAdapter
+    from voiceclonnx.engines.focalcodec import FocalCodecAdapter
 
     real_import = builtins.__import__
 
@@ -284,7 +284,7 @@ def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
 
 def test_adapter_quantized_flag_stored():
     """quantized flag is stored and accessible."""
-    from vconnx.engines.focalcodec import FocalCodecAdapter
+    from voiceclonnx.engines.focalcodec import FocalCodecAdapter
 
     a = FocalCodecAdapter(quantized=True)
     assert a._quantized is True
@@ -294,7 +294,7 @@ def test_adapter_quantized_flag_stored():
 
 def test_adapter_k_parameter():
     """k parameter is stored and passed to kNN matching."""
-    from vconnx.engines.focalcodec import FocalCodecAdapter
+    from voiceclonnx.engines.focalcodec import FocalCodecAdapter
 
     adapter = FocalCodecAdapter(k=8)
     assert adapter._k == 8
@@ -304,11 +304,11 @@ def test_adapter_k_parameter():
 # 5. E2E test — real models, real audio (skip if not opted in)
 # ---------------------------------------------------------------------------
 
-_SKIP_E2E = not os.environ.get("VCONNX_E2E", "")
+_SKIP_E2E = not os.environ.get("VOICECLONNX_E2E", "")
 
 _E2E_REASON = (
     "E2E focalcodec test downloads ~600MB of public models; "
-    "set VCONNX_E2E=1 to run."
+    "set VOICECLONNX_E2E=1 to run."
 )
 
 
@@ -329,7 +329,7 @@ def test_e2e_focalcodec_clone_edge_tts_voices(tmp_path):
     except ImportError:
         pytest.skip("edge-tts not installed")
 
-    from vconnx.engines.focalcodec import FocalCodecAdapter
+    from voiceclonnx.engines.focalcodec import FocalCodecAdapter
 
     async def _synth(text: str, voice: str, out: str):
         communicate = edge_tts.Communicate(text, voice)

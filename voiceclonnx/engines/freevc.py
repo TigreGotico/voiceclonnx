@@ -1,4 +1,4 @@
-"""FreeVC adapter for vconnx.
+"""FreeVC adapter for voiceclonnx.
 
 FreeVC (Qian et al., ICASSP 2023) is a zero-shot any-to-any voice conversion
 system.  At inference it uses:
@@ -13,11 +13,11 @@ system.  At inference it uses:
 
 All components run via onnxruntime.  Zero torch dependency at inference.
 
-ONNX artifacts: ``TigreGotico/vconnx-freevc`` (MIT license).
+ONNX artifacts: ``TigreGotico/voiceclonnx-freevc`` (MIT license).
 
 WavLM artifact note:
   ``wavlm_freevc.onnx`` is a separate export from the kNN-VC
-  ``wavlm_layer6.onnx`` in ``TigreGotico/vconnx-knn-vc``.  They both use
+  ``wavlm_layer6.onnx`` in ``TigreGotico/voiceclonnx-knn-vc``.  They both use
   WavLM-Large but extract different outputs and are NOT interchangeable.
 
 Chunking note:
@@ -26,7 +26,7 @@ Chunking note:
   processes source audio in overlapping chunks (``_CHUNK_SECONDS``) and
   crossfades the waveform segments back together.
 
-Requires: ``pip install vconnx``
+Requires: ``pip install voiceclonnx``
   -> onnxruntime, numpy, soundfile, huggingface_hub
 
 Log-mel note:
@@ -48,7 +48,7 @@ from typing import Optional
 
 import numpy as np
 
-from vconnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
 
 # FreeVC outputs 16 kHz audio
 _FREEVC_SR = 16000
@@ -68,7 +68,7 @@ _CHUNK_SECONDS = 2.0      # maximum chunk length fed to WavLM + decoder
 _OVERLAP_SECONDS = 0.25   # crossfade overlap between adjacent chunks
 
 # HF repo housing the exported ONNX artifacts
-_HF_REPO_ID = "TigreGotico/vconnx-freevc"
+_HF_REPO_ID = "TigreGotico/voiceclonnx-freevc"
 
 # File names within the HF repo
 _WAVLM_FP32 = "wavlm_freevc.onnx"
@@ -318,7 +318,7 @@ class FreeVCAdapter(VoiceClonerBase):
         except ImportError as exc:
             raise ImportError(
                 "onnxruntime is required for engine='freevc'. "
-                "Install it with: pip install vconnx[freevc]"
+                "Install it with: pip install voiceclonnx[freevc]"
             ) from exc
 
         try:
@@ -468,7 +468,7 @@ register_engine(
         description=(
             "FreeVC: WavLM-Large full encoder + GE2E speaker encoder "
             "+ VITS decoder. Zero-shot any-to-any VC at 16 kHz. "
-            "ONNX artifacts from TigreGotico/vconnx-freevc. "
+            "ONNX artifacts from TigreGotico/voiceclonnx-freevc. "
             "(Qian et al., ICASSP 2023, MIT license)"
         ),
         extras="",

@@ -3,7 +3,7 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "vconnx"
+name = "voiceclonnx"
 dynamic = ["version"]
 description = "Pure-ONNX multi-engine voice-cloning library — no torch at runtime"
 license = {text = "Apache-2.0"}
@@ -43,20 +43,20 @@ test = [
 ]
 
 [project.scripts]
-vconnx = "vconnx.__main__:main"
+voiceclonnx = "voiceclonnx.__main__:main"
 
 
 [project.urls]
-Homepage = "https://github.com/TigreGotico/vconnx"
+Homepage = "https://github.com/TigreGotico/voiceclonnx"
 
 [tool.setuptools.dynamic]
-version = {attr = "vconnx.version.__version__"}
+version = {attr = "voiceclonnx.version.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["."]
 
 [tool.setuptools.package-data]
-"vconnx" = ["**/*"]
+"voiceclonnx" = ["**/*"]
 
 [tool.mypy]
 python_version = "3.9"

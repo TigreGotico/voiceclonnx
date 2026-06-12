@@ -1,4 +1,4 @@
-"""Export BiCodec (SparkTTS) components to ONNX for vconnx voice conversion.
+"""Export BiCodec (SparkTTS) components to ONNX for voiceclonnx voice conversion.
 
 BiCodec factorizes speech into two complementary token streams:
 - Semantic tokens: Wav2Vec2-XLSR-53 (layers 11/14/16 avg) → convolutional
@@ -673,10 +673,10 @@ def export_bicodec(output_dir: str, no_push: bool = False) -> None:
         push_engine(
             engine_dir=str(layout.engine_dir),
             engine_name="bicodec",
-            hf_repo_id="TigreGotico/vconnx-bicodec",
+            hf_repo_id="TigreGotico/voiceclonnx-bicodec",
             commit_message="export: add bicodec ONNX artifacts (CC BY-NC-SA 4.0 weights)",
         )
-        print("[export] pushed to TigreGotico/vconnx-bicodec")
+        print("[export] pushed to TigreGotico/voiceclonnx-bicodec")
     else:
         print("[export] --no-push: skipping HF upload")
 

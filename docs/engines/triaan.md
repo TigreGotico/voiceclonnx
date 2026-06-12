@@ -6,13 +6,13 @@ Any-to-any voice conversion using Triple Adaptive Attention Normalization
 ## Install
 
 ```bash
-pip install vconnx
+pip install voiceclonnx
 ```
 
 ## Usage
 
 ```python
-from vconnx import VoiceCloner
+from voiceclonnx import VoiceCloner
 
 vc = VoiceCloner(engine="triaan")
 output_wav = vc.clone_voice(source_wav, target_wav)
@@ -26,7 +26,7 @@ The returned `output_wav` is also 16 000 Hz mono float32.
 | Key | Default | Description |
 |---|---|---|
 | `model_dir` | `None` (auto-download) | Local path to the engine directory with all six `.onnx` files |
-| `hf_repo_id` | `TigreGotico/vconnx-triaan-vc` | Hugging Face repository to download from |
+| `hf_repo_id` | `TigreGotico/voiceclonnx-triaan-vc` | Hugging Face repository to download from |
 | `quantized` | `False` | Use INT8 quantized ONNX models. Reduces total footprint to ~84 MB; slight quality cost. See [QUANTS.md](../QUANTS.md) for the measured WER comparison. |
 
 ## Architecture
@@ -83,11 +83,11 @@ Vocoder derived from [kan-bayashi/ParallelWaveGAN](https://github.com/kan-bayash
 - Original code: <https://github.com/winddori2002/TriAAN-VC>
 - CPC encoder: <https://github.com/facebookresearch/CPC_audio>
 - ParallelWaveGAN: <https://github.com/kan-bayashi/ParallelWaveGAN>
-- ONNX artifacts: <https://huggingface.co/TigreGotico/vconnx-triaan-vc>
+- ONNX artifacts: <https://huggingface.co/TigreGotico/voiceclonnx-triaan-vc>
 
 ## Troubleshooting
 
-**`ImportError: No module named 'soundfile'`** — install extras: `pip install vconnx`.
+**`ImportError: No module named 'soundfile'`** — install extras: `pip install voiceclonnx`.
 
 **Output audio is silent or very short** — ensure the input is 16 000 Hz mono float32;
 resample before passing to `clone_voice`.

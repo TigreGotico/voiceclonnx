@@ -24,13 +24,13 @@ pip install -e ".[convert]"
 # Run the per-engine export script
 # (Replace <engine> with the actual engine name, e.g. rvc)
 python -m conversion.export_<engine> \
-    --output-dir ~/vconnx-models/<engine> \
+    --output-dir ~/voiceclonnx-models/<engine> \
     --no-push
 ```
 
 The script:
 1. Downloads the upstream weights to your local HF cache.
-2. Exports ONNX artifacts to `~/vconnx-models/<engine>/`.
+2. Exports ONNX artifacts to `~/voiceclonnx-models/<engine>/`.
 3. Runs parity checks and fails if tolerances are exceeded.
 4. Produces `_q8.onnx` quantized variants.
 5. Writes `config.json` and `PROVENANCE.md`.
@@ -45,11 +45,11 @@ The `--no-push` flag skips the HF Hub upload step (and is required for
 Pass `model_dir` when constructing `VoiceCloner`:
 
 ```python
-from vconnx import VoiceCloner
+from voiceclonnx import VoiceCloner
 
 cloner = VoiceCloner(
     engine="rvc",                           # or whichever local-only engine
-    model_dir="~/vconnx-models/rvc",        # path to the export output directory
+    model_dir="~/voiceclonnx-models/rvc",        # path to the export output directory
     quantized=True,                         # optional: use _q8.onnx variants
 )
 out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
@@ -58,8 +58,8 @@ out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
 Or via the CLI (engine-specific flag — check the engine guide):
 
 ```bash
-vconnx clone --engine rvc \
-             --model-dir ~/vconnx-models/rvc \
+voiceclonnx clone --engine rvc \
+             --model-dir ~/voiceclonnx-models/rvc \
              --audio source.wav \
              --voice reference.wav \
              --out out.wav
@@ -70,7 +70,7 @@ vconnx clone --engine rvc \
 ## 4. Expected directory layout after export
 
 ```
-~/vconnx-models/<engine>/
+~/voiceclonnx-models/<engine>/
   config.json         ← manifest (components, sample rates, distributable: false)
   PROVENANCE.md       ← upstream lineage + license text
   <component>.onnx    ← full-precision model
@@ -86,6 +86,6 @@ layout must match exactly.
 ## 5. Sharing with others
 
 Because the weights are non-redistributable you cannot share the converted ONNX
-files. You **can** share your conversion script changes (MIT-licensed under vconnx)
+files. You **can** share your conversion script changes (MIT-licensed under voiceclonnx)
 so others can run the conversion themselves. The `PROVENANCE.md` records the exact
 upstream checkpoint and license, making attribution clear.

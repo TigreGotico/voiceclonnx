@@ -1,4 +1,4 @@
-"""TriAAN-VC adapter for vconnx.
+"""TriAAN-VC adapter for voiceclonnx.
 
 TriAAN-VC (winddori2002 et al., ICASSP 2023) — "Triple Adaptive Attention
 Normalization for Any-to-Any Voice Conversion."
@@ -16,7 +16,7 @@ Three-stage inference pipeline (all ONNX, no torch at runtime):
 F0 (fundamental frequency / pitch) extraction uses a lightweight pure-numpy
 WORLD-style autocorrelation estimator — no torch, no pyworld required.
 
-Requires: ``pip install vconnx``
+Requires: ``pip install voiceclonnx``
   -> onnxruntime, numpy, soundfile, huggingface_hub
 
 References
@@ -34,7 +34,7 @@ from typing import Optional
 
 import numpy as np
 
-from vconnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
 
 # TriAAN-VC operates at 16 kHz throughout
 _TRIAAN_SR = 16000
@@ -45,7 +45,7 @@ _WIN_LENGTH = 400
 _CPC_HIDDEN = 256
 
 # HF repo housing the exported ONNX artifacts
-_HF_REPO_ID = "TigreGotico/vconnx-triaan-vc"
+_HF_REPO_ID = "TigreGotico/voiceclonnx-triaan-vc"
 
 # Component filenames
 _CPC_FP32 = "cpc_encoder.onnx"
@@ -196,7 +196,7 @@ class TriAANVCAdapter(VoiceClonerBase):
         except ImportError as exc:
             raise ImportError(
                 "onnxruntime is required for engine='triaan'. "
-                "Install it with: pip install vconnx[triaan]"
+                "Install it with: pip install voiceclonnx[triaan]"
             ) from exc
 
         try:
@@ -406,7 +406,7 @@ register_engine(
         description=(
             "TriAAN-VC: CPC encoder + Triple Adaptive Attention Normalization decoder "
             "+ ParallelWaveGAN vocoder. Zero-shot any-to-any VC at 16 kHz. "
-            "ONNX artifacts from TigreGotico/vconnx-triaan-vc. "
+            "ONNX artifacts from TigreGotico/voiceclonnx-triaan-vc. "
             "(winddori2002 et al., ICASSP 2023, MIT license)"
         ),
         extras="",

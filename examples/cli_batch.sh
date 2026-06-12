@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# cli_batch.sh — batch voice-convert a folder of WAV files using the vconnx CLI.
+# cli_batch.sh — batch voice-convert a folder of WAV files using the voiceclonnx CLI.
 #
 # Usage:
 #   ./examples/cli_batch.sh <input_dir> <reference.wav> <output_dir> [engine]
@@ -14,7 +14,7 @@
 #   ./examples/cli_batch.sh ./wavs ref_speaker.wav ./out chatterbox
 #
 # Requirements:
-#   pip install vconnx   # all engines included
+#   pip install voiceclonnx   # all engines included
 
 set -euo pipefail
 
@@ -46,7 +46,7 @@ for wav in "$INPUT_DIR"/*.wav; do
     out="$OUTPUT_DIR/${base}_converted.wav"
 
     echo "  [$total] $wav → $out"
-    if vconnx clone \
+    if voiceclonnx clone \
             --engine "$ENGINE" \
             --audio "$wav" \
             --voice "$REFERENCE" \

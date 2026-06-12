@@ -3,7 +3,7 @@
 **Alias:** `speechtokenizer`
 **Sample rate:** 16 kHz
 **License:** Apache-2.0
-**Model repo:** [TigreGotico/vconnx-speechtokenizer](https://huggingface.co/TigreGotico/vconnx-speechtokenizer)
+**Model repo:** [TigreGotico/voiceclonnx-speechtokenizer](https://huggingface.co/TigreGotico/voiceclonnx-speechtokenizer)
 **Paper:** Zhang et al., ACL 2024 — [arXiv:2308.16692](https://arxiv.org/abs/2308.16692)
 
 ## Architecture
@@ -58,7 +58,7 @@ boundary gives the best measured intelligibility vs. timbre-transfer tradeoff.
 ## Usage
 
 ```python
-from vconnx import VoiceCloner
+from voiceclonnx import VoiceCloner
 
 cloner = VoiceCloner(engine="speechtokenizer")
 out = cloner.clone_voice("source.wav", "reference.wav", "converted.wav")
@@ -68,7 +68,7 @@ out = cloner.clone_voice("source.wav", "reference.wav", "converted.wav")
 
 | Parameter | Default | Description |
 |---|---|---|
-| `quantized` | `False` | **Not supported** — raises `NotImplementedError`. The INT8 exports in `TigreGotico/vconnx-speechtokenizer` use a different interface incompatible with this adapter's pipeline. Always use fp32. |
+| `quantized` | `False` | **Not supported** — raises `NotImplementedError`. The INT8 exports in `TigreGotico/voiceclonnx-speechtokenizer` use a different interface incompatible with this adapter's pipeline. Always use fp32. |
 | `content_layers` | `1` | Number of leading RVQ layers treated as content (default 1 = RVQ-1 only) |
 
 ## CPU performance
@@ -81,4 +81,4 @@ The fp32 encoder is the bottleneck; the INT8 variant reduces it by ~4×.
 - GitHub: <https://github.com/ZhangXInFD/SpeechTokenizer>
 - Paper: <https://arxiv.org/abs/2308.16692>
 - HF weights: <https://huggingface.co/fnlp/SpeechTokenizer>
-- vconnx ONNX: <https://huggingface.co/TigreGotico/vconnx-speechtokenizer>
+- voiceclonnx ONNX: <https://huggingface.co/TigreGotico/voiceclonnx-speechtokenizer>

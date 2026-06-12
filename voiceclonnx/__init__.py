@@ -1,11 +1,11 @@
-"""vconnx — pure-ONNX multi-engine voice-cloning library.
+"""voiceclonnx — pure-ONNX multi-engine voice-cloning library.
 
-**Audio-to-audio only.**  vconnx converts the voice in an existing audio
+**Audio-to-audio only.**  voiceclonnx converts the voice in an existing audio
 file to sound like a reference speaker.  Text-driven synthesis belongs to
 TTS engines; see the README scope section.
 
 Runtime dependencies: onnxruntime, numpy, soundfile, huggingface_hub (no torch,
-no librosa). A single ``pip install vconnx`` enables every engine — no per-engine
+no librosa). A single ``pip install voiceclonnx`` enables every engine — no per-engine
 extras required. ONNX models are downloaded on first use from Hugging Face Hub.
 
 Engine registry
@@ -60,15 +60,15 @@ Usage
 -----
 ::
 
-    from vconnx import VoiceCloner
+    from voiceclonnx import VoiceCloner
 
     cloner = VoiceCloner(engine="chatterbox")
     out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
     print(cloner.sample_rate)   # 24000
 """
 
-from vconnx.cloner import VoiceCloner
-from vconnx.engines.base import (
+from voiceclonnx.cloner import VoiceCloner
+from voiceclonnx.engines.base import (
     ENGINE_REGISTRY,
     EngineEntry,
     VoiceClonerBase,
@@ -77,17 +77,17 @@ from vconnx.engines.base import (
 )
 
 # Auto-import built-in engine adapters so they self-register
-import vconnx.engines.chatterbox  # noqa: F401
-import vconnx.engines.focalcodec  # noqa: F401
-import vconnx.engines.freevc  # noqa: F401
-import vconnx.engines.knnvc  # noqa: F401
-import vconnx.engines.openvoice  # noqa: F401
-import vconnx.engines.rvc  # noqa: F401
-import vconnx.engines.mimi  # noqa: F401
-import vconnx.engines.speechtokenizer  # noqa: F401
-import vconnx.engines.triaan  # noqa: F401
-import vconnx.engines.bicodec  # noqa: F401
-import vconnx.engines.facodec  # noqa: F401
+import voiceclonnx.engines.chatterbox  # noqa: F401
+import voiceclonnx.engines.focalcodec  # noqa: F401
+import voiceclonnx.engines.freevc  # noqa: F401
+import voiceclonnx.engines.knnvc  # noqa: F401
+import voiceclonnx.engines.openvoice  # noqa: F401
+import voiceclonnx.engines.rvc  # noqa: F401
+import voiceclonnx.engines.mimi  # noqa: F401
+import voiceclonnx.engines.speechtokenizer  # noqa: F401
+import voiceclonnx.engines.triaan  # noqa: F401
+import voiceclonnx.engines.bicodec  # noqa: F401
+import voiceclonnx.engines.facodec  # noqa: F401
 
 __all__ = [
     "VoiceCloner",

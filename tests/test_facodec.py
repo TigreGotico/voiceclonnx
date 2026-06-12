@@ -1,11 +1,11 @@
-"""Tests for the FACodec adapter — vconnx/engines/facodec.py.
+"""Tests for the FACodec adapter — voiceclonnx/engines/facodec.py.
 
 Structure
 ---------
 - Registry wiring (no model loading)
 - Prosody mel computation correctness (pure numpy)
 - Mock-session contract tests (full adapter pipeline with stubbed ORT)
-- E2E test: real conversion + WER gate (set VCONNX_E2E=1)
+- E2E test: real conversion + WER gate (set VOICECLONNX_E2E=1)
 """
 
 from __future__ import annotations
@@ -42,15 +42,15 @@ def _make_wav(path: str, duration_s: float = 1.0, sr: int = 16000) -> str:
 
 
 def test_facodec_registered():
-    import vconnx.engines.facodec  # noqa: F401
-    from vconnx.engines.base import ENGINE_REGISTRY
+    import voiceclonnx.engines.facodec  # noqa: F401
+    from voiceclonnx.engines.base import ENGINE_REGISTRY
 
     assert "facodec" in ENGINE_REGISTRY
 
 
 def test_facodec_entry_metadata():
-    import vconnx.engines.facodec  # noqa: F401
-    from vconnx.engines.base import get_engine
+    import voiceclonnx.engines.facodec  # noqa: F401
+    from voiceclonnx.engines.base import get_engine
 
     entry = get_engine("facodec")
     assert entry.alias == "facodec"
@@ -60,13 +60,13 @@ def test_facodec_entry_metadata():
 
 
 def test_facodec_sample_rate():
-    from vconnx.engines.facodec import FACodecAdapter
+    from voiceclonnx.engines.facodec import FACodecAdapter
 
     assert FACodecAdapter().sample_rate == 16000
 
 
 def test_facodec_quantized_flag():
-    from vconnx.engines.facodec import FACodecAdapter
+    from voiceclonnx.engines.facodec import FACodecAdapter
 
     assert FACodecAdapter(quantized=True)._quantized is True
     assert FACodecAdapter(quantized=False)._quantized is False
@@ -78,7 +78,7 @@ def test_facodec_quantized_flag():
 
 
 def test_prosody_mel_shape():
-    from vconnx.engines.facodec import _compute_prosody_mel
+    from voiceclonnx.engines.facodec import _compute_prosody_mel
 
     audio = np.zeros(16000, dtype=np.float32)
     mel = _compute_prosody_mel(audio)
@@ -89,7 +89,7 @@ def test_prosody_mel_shape():
 
 
 def test_prosody_mel_dtype():
-    from vconnx.engines.facodec import _compute_prosody_mel
+    from voiceclonnx.engines.facodec import _compute_prosody_mel
 
     audio = np.random.randn(8000).astype(np.float32)
     mel = _compute_prosody_mel(audio)
@@ -98,7 +98,7 @@ def test_prosody_mel_dtype():
 
 def test_prosody_mel_frame_count():
     """Number of frames should match T = floor(N/hop) for padded input."""
-    from vconnx.engines.facodec import _compute_prosody_mel, _FA_HOP
+    from voiceclonnx.engines.facodec import _compute_prosody_mel, _FA_HOP
 
     sr = 16000
     audio = np.zeros(sr, dtype=np.float32)
@@ -110,7 +110,7 @@ def test_prosody_mel_frame_count():
 
 def test_prosody_mel_log_compressed():
     """All values should be finite and log-compressed (no positive-infinity)."""
-    from vconnx.engines.facodec import _compute_prosody_mel
+    from voiceclonnx.engines.facodec import _compute_prosody_mel
 
     audio = np.random.randn(16000).astype(np.float32) * 0.5
     mel = _compute_prosody_mel(audio)
@@ -119,7 +119,7 @@ def test_prosody_mel_log_compressed():
 
 def test_prosody_mel_silence_vs_signal():
     """Silence should produce lower mel values than a sine tone."""
-    from vconnx.engines.facodec import _compute_prosody_mel
+    from voiceclonnx.engines.facodec import _compute_prosody_mel
 
     silence = np.zeros(16000, dtype=np.float32)
     tone = np.sin(2 * np.pi * 440 * np.arange(16000) / 16000).astype(np.float32) * 0.9
@@ -130,7 +130,7 @@ def test_prosody_mel_silence_vs_signal():
 
 def test_prosody_mel_filterbank_cached():
     """Calling _get_mel_filterbank twice returns the same object."""
-    from vconnx.engines.facodec import _get_mel_filterbank
+    from voiceclonnx.engines.facodec import _get_mel_filterbank
 
     fb1 = _get_mel_filterbank()
     fb2 = _get_mel_filterbank()
@@ -138,7 +138,7 @@ def test_prosody_mel_filterbank_cached():
 
 
 def test_prosody_mel_filterbank_shape():
-    from vconnx.engines.facodec import _get_mel_filterbank, _FA_N_MELS, _FA_N_FFT
+    from voiceclonnx.engines.facodec import _get_mel_filterbank, _FA_N_MELS, _FA_N_FFT
 
     fb = _get_mel_filterbank()
     assert fb.shape == (_FA_N_MELS, _FA_N_FFT // 2 + 1)
@@ -198,7 +198,7 @@ class _MockDecoder:
 
 
 def _make_adapter(dec=None) -> "tuple[FACodecAdapter, _MockDecoder]":  # noqa: F821
-    from vconnx.engines.facodec import FACodecAdapter
+    from voiceclonnx.engines.facodec import FACodecAdapter
 
     if dec is None:
         dec = _MockDecoder()
@@ -257,7 +257,7 @@ def test_adapter_encoder_called_twice(tmp_path):
             T = max(1, wav.shape[2] // 200)
             return [np.zeros((1, _D, T), dtype=np.float32)]
 
-    from vconnx.engines.facodec import FACodecAdapter
+    from voiceclonnx.engines.facodec import FACodecAdapter
 
     adapter = FACodecAdapter()
     adapter._enc_sess = CountingEncoder()
@@ -299,7 +299,7 @@ def test_adapter_decoder_receives_source_vq_ids(tmp_path):
 def test_adapter_lazy_load_raises_without_onnxruntime(monkeypatch):
     """Missing onnxruntime raises ImportError with a helpful message."""
     import builtins
-    from vconnx.engines.facodec import FACodecAdapter
+    from voiceclonnx.engines.facodec import FACodecAdapter
 
     real_import = builtins.__import__
 
@@ -333,13 +333,13 @@ def test_adapter_deterministic(tmp_path):
 
 
 # ---------------------------------------------------------------------------
-# 4. E2E test — real models, real audio (set VCONNX_E2E=1 to run)
+# 4. E2E test — real models, real audio (set VOICECLONNX_E2E=1 to run)
 # ---------------------------------------------------------------------------
 
-_SKIP_E2E = not os.environ.get("VCONNX_E2E", "")
+_SKIP_E2E = not os.environ.get("VOICECLONNX_E2E", "")
 _E2E_REASON = (
     "E2E FACodec test downloads ~200MB of public ONNX models; "
-    "set VCONNX_E2E=1 to run."
+    "set VOICECLONNX_E2E=1 to run."
 )
 
 
@@ -365,7 +365,7 @@ def test_e2e_facodec_clone_edge_tts_voices(tmp_path):
     except ImportError:
         pytest.skip("faster-whisper not installed")
 
-    from vconnx.engines.facodec import FACodecAdapter
+    from voiceclonnx.engines.facodec import FACodecAdapter
 
     SOURCE_TEXT = (
         "The quick brown fox jumps over the lazy dog. "

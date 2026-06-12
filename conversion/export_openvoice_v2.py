@@ -272,7 +272,7 @@ def export_openvoice_v2(
     layout = OutputLayout.for_engine("openvoice-v2", base_dir=output_dir)
     layout.makedirs()
 
-    _cache = Path(cache_dir) if cache_dir else Path.home() / ".cache" / "vconnx" / "openvoice-v2"
+    _cache = Path(cache_dir) if cache_dir else Path.home() / ".cache" / "voiceclonnx" / "openvoice-v2"
     _cache.mkdir(parents=True, exist_ok=True)
 
     # ------------------------------------------------------------------

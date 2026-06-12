@@ -1,4 +1,4 @@
-"""SpeechTokenizer adapter for vconnx.
+"""SpeechTokenizer adapter for voiceclonnx.
 
 SpeechTokenizer (ACL 2024, Apache-2.0) is a hierarchical RVQ speech codec
 with 8 quantizers at 50 Hz.  Quantizer 1 (RVQ-1) is semantically distilled
@@ -43,7 +43,7 @@ References
 - https://github.com/ZhangXInFD/SpeechTokenizer
 - https://arxiv.org/abs/2308.16692
 - https://huggingface.co/fnlp/SpeechTokenizer
-- https://huggingface.co/TigreGotico/vconnx-speechtokenizer
+- https://huggingface.co/TigreGotico/voiceclonnx-speechtokenizer
 """
 
 from __future__ import annotations
@@ -53,13 +53,13 @@ from pathlib import Path
 
 import numpy as np
 
-from vconnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
 
 # SpeechTokenizer operates at 16 kHz, 50 Hz token rate (320-sample hop)
 _ST_SR = 16000
 
 # HF repo housing the exported ONNX artifacts
-_HF_REPO_ID = "TigreGotico/vconnx-speechtokenizer"
+_HF_REPO_ID = "TigreGotico/voiceclonnx-speechtokenizer"
 
 # File names inside the HF repo
 _ENC_FP32 = "encoder.onnx"
@@ -231,7 +231,7 @@ class SpeechTokenizerAdapter(VoiceClonerBase):
     ----------
     quantized:
         Accepted for API uniformity but **not supported** — the INT8
-        exports in TigreGotico/vconnx-speechtokenizer use a different
+        exports in TigreGotico/voiceclonnx-speechtokenizer use a different
         interface (codes-in/waveform-out) that is incompatible with the
         continuous-feature pipeline this adapter implements.  Passing
         ``quantized=True`` raises ``NotImplementedError``.
@@ -256,7 +256,7 @@ class SpeechTokenizerAdapter(VoiceClonerBase):
         if quantized:
             raise NotImplementedError(
                 "speechtokenizer quantized=True is not supported: the INT8 exports "
-                "in TigreGotico/vconnx-speechtokenizer use a codes-in/waveform-out "
+                "in TigreGotico/voiceclonnx-speechtokenizer use a codes-in/waveform-out "
                 "interface incompatible with the continuous-feature pipeline. "
                 "Use quantized=False (fp32) instead."
             )
@@ -279,7 +279,7 @@ class SpeechTokenizerAdapter(VoiceClonerBase):
         except ImportError as exc:
             raise ImportError(
                 "onnxruntime is required for engine='speechtokenizer'. "
-                "Install it with: pip install vconnx"
+                "Install it with: pip install voiceclonnx"
             ) from exc
 
         try:
@@ -402,7 +402,7 @@ register_engine(
             "numpy nearest-neighbour VQ (8 codebooks), RVQ-1 source content + "
             "RVQ-2..8 reference timbre swap, convolutional decoder. "
             "Zero-shot any-to-any VC at 16 kHz. "
-            "ONNX artifacts from TigreGotico/vconnx-speechtokenizer. "
+            "ONNX artifacts from TigreGotico/voiceclonnx-speechtokenizer. "
             "(Zhang et al., ACL 2024, Apache-2.0)"
         ),
         extras="",

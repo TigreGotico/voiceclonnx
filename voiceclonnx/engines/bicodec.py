@@ -1,4 +1,4 @@
-"""BiCodec adapter for vconnx.
+"""BiCodec adapter for voiceclonnx.
 
 BiCodec (SparkAudio/Spark-TTS, March 2025) factorizes speech into two
 complementary token streams, making zero-shot voice conversion a direct
@@ -34,7 +34,7 @@ The ``content_split`` constructor parameter controls an experimental path
 where partial global tokens from the source are retained; the default (all
 global tokens from reference) is the recommended recipe per the issue spec.
 
-ONNX components (TigreGotico/vconnx-bicodec)
+ONNX components (TigreGotico/voiceclonnx-bicodec)
 --------------------------------------------
 - ``wav2vec2_encoder.onnx``  : (1, N) float32 → (1, T, 1024) float32
 - ``semantic_encoder.onnx``  : (1, T, 1024) float32 → (1, T2) int64
@@ -61,7 +61,7 @@ References
 - https://github.com/SparkAudio/Spark-TTS
 - https://arxiv.org/abs/2503.01710
 - https://huggingface.co/SparkAudio/Spark-TTS-0.5B
-- https://huggingface.co/TigreGotico/vconnx-bicodec
+- https://huggingface.co/TigreGotico/voiceclonnx-bicodec
 """
 
 from __future__ import annotations
@@ -71,13 +71,13 @@ from pathlib import Path
 
 import numpy as np
 
-from vconnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
 
 # BiCodec operates at 16 kHz
 _BC_SR = 16000
 
 # HF repo for the exported ONNX artifacts
-_HF_REPO_ID = "TigreGotico/vconnx-bicodec"
+_HF_REPO_ID = "TigreGotico/voiceclonnx-bicodec"
 
 # File names inside the HF repo (fp32 and INT8 variants)
 _W2V_FP32 = "wav2vec2_encoder.onnx"
@@ -302,7 +302,7 @@ class BiCodecAdapter(VoiceClonerBase):
         except ImportError as exc:
             raise ImportError(
                 "onnxruntime is required for engine='bicodec'. "
-                "Install it with: pip install vconnx"
+                "Install it with: pip install voiceclonnx"
             ) from exc
 
         try:
@@ -498,7 +498,7 @@ register_engine(
             "ECAPA-TDNN + Perceiver + FSQ → 32 global tokens (timbre). "
             "VC: swap global tokens from reference, decode. "
             "Zero-shot any-to-any VC at 16 kHz. "
-            "ONNX artifacts from TigreGotico/vconnx-bicodec. "
+            "ONNX artifacts from TigreGotico/voiceclonnx-bicodec. "
             "(SparkAudio 2025, CC BY-NC-SA 4.0 weights, Apache-2.0 code)"
         ),
         extras="",

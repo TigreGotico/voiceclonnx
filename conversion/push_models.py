@@ -1,12 +1,12 @@
 """Upload exported ONNX artifacts to Hugging Face — one PUBLIC repo per engine.
 
 Each engine lives in its own subdirectory on the Hub:
-``TigreGotico/vconnx-<engine>`` (public), grouped in the vconnx collection.
+``TigreGotico/voiceclonnx-<engine>`` (public), grouped in the voiceclonnx collection.
 
 Requirements
 ------------
 - ``HF_TOKEN`` env var (write access to the TigreGotico org).
-- ``huggingface_hub`` package (already a runtime dep of vconnx).
+- ``huggingface_hub`` package (already a runtime dep of voiceclonnx).
 
 Usage
 -----
@@ -34,11 +34,11 @@ from pathlib import Path
 from typing import Optional, Union
 
 HF_NAMESPACE = "TigreGotico"
-COLLECTION_SLUG = "TigreGotico/vconnx-pure-onnx-voice-conversion-6a2ac089852d9b90a66c4509"
+COLLECTION_SLUG = "TigreGotico/voiceclonnx-pure-onnx-voice-conversion-6a2ac089852d9b90a66c4509"
 
 
 def engine_repo_id(engine_name: str) -> str:
-    return f"{HF_NAMESPACE}/vconnx-{engine_name}"
+    return f"{HF_NAMESPACE}/voiceclonnx-{engine_name}"
 
 
 # ---------------------------------------------------------------------------
@@ -77,7 +77,7 @@ def _ensure_repo(repo_id: str, token: str, dry_run: bool) -> None:
         from huggingface_hub import add_collection_item
         add_collection_item(COLLECTION_SLUG, item_id=repo_id,
                             item_type="model", exists_ok=True)
-        print(f"[push] Added {repo_id!r} to the vconnx collection.")
+        print(f"[push] Added {repo_id!r} to the voiceclonnx collection.")
     except Exception as exc:  # collection add is best-effort
         print(f"[push] Could not add to collection: {exc}")
 
@@ -89,14 +89,14 @@ def push_engine(
     dry_run: bool = False,
     commit_message: Optional[str] = None,
 ) -> None:
-    """Upload *engine_dir* to the public ``TigreGotico/vconnx-<engine_name>`` repo.
+    """Upload *engine_dir* to the public ``TigreGotico/voiceclonnx-<engine_name>`` repo.
 
     Parameters
     ----------
     engine_dir:
         Local directory containing ONNX files + PROVENANCE.md + config.json.
     engine_name:
-        Engine name; the target repo becomes ``TigreGotico/vconnx-<name>``.
+        Engine name; the target repo becomes ``TigreGotico/voiceclonnx-<name>``.
     token:
         HF write token.  Falls back to the ``HF_TOKEN`` environment variable.
     dry_run:
@@ -184,7 +184,7 @@ def push_engine(
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Upload vconnx ONNX artifacts to HF.")
+    p = argparse.ArgumentParser(description="Upload voiceclonnx ONNX artifacts to HF.")
     p.add_argument("engine_dir", help="Local engine directory (output of export_base).")
     p.add_argument("--engine", required=True, help="Engine name (HF subdirectory).")
     p.add_argument("--token", default=None, help="HF write token (default: $HF_TOKEN).")

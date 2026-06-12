@@ -1,4 +1,4 @@
-"""Chatterbox AR codec-LM voice-conversion adapter for vconnx.
+"""Chatterbox AR codec-LM voice-conversion adapter for voiceclonnx.
 
 Ported directly from TigreGotico/chatterbox-onnx (TigreGotico IP).
 Only the voice-conversion (VC) path is implemented; TTS is intentionally
@@ -17,7 +17,7 @@ audio's prompt tokens are concatenated directly with the target prompt tokens
 and fed straight to the decoder — bypassing the generation loop entirely.
 No tokenizer.json is downloaded or parsed.
 
-Models: ``TigreGotico/vconnx-chatterbox`` (HF, Apache-2.0).
+Models: ``TigreGotico/voiceclonnx-chatterbox`` (HF, Apache-2.0).
 Output sample rate: 24 kHz.
 Core deps: onnxruntime, numpy, soundfile, huggingface_hub.
 """
@@ -29,13 +29,13 @@ from pathlib import Path
 
 import numpy as np
 
-from vconnx.engines.base import VoiceClonerBase, EngineEntry, register_engine
+from voiceclonnx.engines.base import VoiceClonerBase, EngineEntry, register_engine
 
 # Chatterbox outputs 24 kHz audio
 _CHATTERBOX_SR = 24000
 
 # HF model repo hosting the ONNX files
-_HF_MODEL_ID = "TigreGotico/vconnx-chatterbox"
+_HF_MODEL_ID = "TigreGotico/voiceclonnx-chatterbox"
 
 # ONNX filenames within the ``onnx/`` subdirectory of the repo — fp32 variants
 _SPEECH_ENC_ONNX = "onnx/speech_encoder.onnx"
@@ -105,7 +105,7 @@ class ChatterboxAdapter(VoiceClonerBase):
     quantized:
         When ``True``, load the INT8-quantized variants
         (``speech_encoder_q8.onnx`` + ``conditional_decoder_q8.onnx``) from
-        ``TigreGotico/vconnx-chatterbox``.  INT8 reduces total model size from
+        ``TigreGotico/voiceclonnx-chatterbox``.  INT8 reduces total model size from
         ~1 081 MB to ~468 MB (57% saving) with identical WER on reference clips.
     exaggeration:
         Voice-exaggeration scalar (default ``0.6``).  Stored for API
@@ -143,7 +143,7 @@ class ChatterboxAdapter(VoiceClonerBase):
         except ImportError as exc:
             raise ImportError(
                 "onnxruntime is required for engine='chatterbox'. "
-                "Install it with: pip install vconnx"
+                "Install it with: pip install voiceclonnx"
             ) from exc
 
         try:
@@ -268,7 +268,7 @@ register_engine(
         adapter_class=ChatterboxAdapter,
         description=(
             "Chatterbox AR codec-LM (Resemble AI). ONNX export via "
-            "TigreGotico/vconnx-chatterbox (HF). Voice conversion at 24 kHz. "
+            "TigreGotico/voiceclonnx-chatterbox (HF). Voice conversion at 24 kHz. "
             "VC path only — no tokenizer, no LLM generation loop. "
             "INT8 quantized variant available via quantized=True (57% smaller, same WER)."
         ),

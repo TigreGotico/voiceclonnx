@@ -11,7 +11,7 @@ Architecture:
 
 No separate speaker encoder is required; no discrete tokenisation during VC (all operations are in continuous feature space before the quantiser).
 
-ONNX artifacts: [TigreGotico/vconnx-focalcodec](https://huggingface.co/TigreGotico/vconnx-focalcodec) (Apache-2.0 license).
+ONNX artifacts: [TigreGotico/voiceclonnx-focalcodec](https://huggingface.co/TigreGotico/voiceclonnx-focalcodec) (Apache-2.0 license).
 
 Output sample rate: **16 kHz**.
 
@@ -20,7 +20,7 @@ Output sample rate: **16 kHz**.
 ## Install
 
 ```bash
-pip install vconnx
+pip install voiceclonnx
 ```
 
 Dependencies pulled in: `onnxruntime`, `numpy`, `soundfile`.
@@ -63,7 +63,7 @@ Models are downloaded from HF Hub on first use (~659 MB fp32 or ~358 MB int8 com
 ### Python
 
 ```python
-from vconnx import VoiceCloner
+from voiceclonnx import VoiceCloner
 
 # Default (fp32, k=4)
 cloner = VoiceCloner(engine="focalcodec")
@@ -81,9 +81,9 @@ cloner = VoiceCloner(engine="focalcodec", k=8)
 ### CLI
 
 ```bash
-pip install vconnx
+pip install voiceclonnx
 
-vconnx clone --engine focalcodec \
+voiceclonnx clone --engine focalcodec \
              --audio source.wav \
              --voice reference.wav \
              --out out.wav
@@ -102,7 +102,7 @@ vconnx clone --engine focalcodec \
 ## Troubleshooting
 
 **`ImportError: onnxruntime is required`**
-Install the extras group: `pip install vconnx`.
+Install the extras group: `pip install voiceclonnx`.
 
 **Output sounds noisy or garbled**
 Ensure the reference clip is clean, at least 5 s long, and recorded at 16 kHz (or

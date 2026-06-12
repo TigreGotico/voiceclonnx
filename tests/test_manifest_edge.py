@@ -8,7 +8,7 @@ Covers:
 - OutputLayout.for_engine accepts Path or str for base_dir
 - push_engine refuses non-distributable manifest (without dry_run bypass)
 - PROVENANCE.md content when license_text is absent
-- EngineEntry.extras is the pip key for the install hint in vconnx list
+- EngineEntry.extras is the pip key for the install hint in voiceclonnx list
 """
 
 from __future__ import annotations
@@ -150,17 +150,17 @@ class TestProvenanceNoLicense:
 
 
 # ---------------------------------------------------------------------------
-# EngineEntry extras → pip install hint in vconnx list
+# EngineEntry extras → pip install hint in voiceclonnx list
 # ---------------------------------------------------------------------------
 
 
 class TestEngineEntryExtrasHint:
     def test_list_shows_install_hint(self, capsys):
-        """vconnx list shows pip install hint when extras is set."""
+        """voiceclonnx list shows pip install hint when extras is set."""
         from unittest.mock import patch
 
-        from vconnx.__main__ import main
-        from vconnx.engines.base import ENGINE_REGISTRY, EngineEntry, VoiceClonerBase, register_engine
+        from voiceclonnx.__main__ import main
+        from voiceclonnx.engines.base import ENGINE_REGISTRY, EngineEntry, VoiceClonerBase, register_engine
 
         class _Dummy(VoiceClonerBase):
             _sample_rate = 16000
@@ -176,7 +176,7 @@ class TestEngineEntryExtrasHint:
         )
         register_engine(entry)
         try:
-            with patch("sys.argv", ["vconnx", "list"]):
+            with patch("sys.argv", ["voiceclonnx", "list"]):
                 main()
         finally:
             ENGINE_REGISTRY.pop("_hint_test", None)
@@ -186,11 +186,11 @@ class TestEngineEntryExtrasHint:
         assert "pip install" in out.lower()
 
     def test_list_no_install_hint_when_extras_empty(self, capsys):
-        """vconnx list skips pip install line when extras is empty string."""
+        """voiceclonnx list skips pip install line when extras is empty string."""
         from unittest.mock import patch
 
-        from vconnx.__main__ import main
-        from vconnx.engines.base import ENGINE_REGISTRY, EngineEntry, VoiceClonerBase, register_engine
+        from voiceclonnx.__main__ import main
+        from voiceclonnx.engines.base import ENGINE_REGISTRY, EngineEntry, VoiceClonerBase, register_engine
 
         class _Dummy2(VoiceClonerBase):
             _sample_rate = 16000
@@ -206,7 +206,7 @@ class TestEngineEntryExtrasHint:
         )
         register_engine(entry)
         try:
-            with patch("sys.argv", ["vconnx", "list"]):
+            with patch("sys.argv", ["voiceclonnx", "list"]):
                 main()
         finally:
             ENGINE_REGISTRY.pop("_no_hint_test", None)

@@ -1,4 +1,4 @@
-"""Tests for the Mimi (Kyutai) adapter — vconnx/engines/mimi.py.
+"""Tests for the Mimi (Kyutai) adapter — voiceclonnx/engines/mimi.py.
 
 Structure
 ---------
@@ -6,7 +6,7 @@ Structure
 2. Stream-swap logic — real numpy computation on synthetic codes
 3. Audio I/O helpers — load/save round-trip
 4. Adapter contract with mocked ORT sessions
-5. E2E test — real models, real audio (VCONNX_E2E-gated)
+5. E2E test — real models, real audio (VOICECLONNX_E2E-gated)
 """
 
 from __future__ import annotations
@@ -43,16 +43,16 @@ def _make_wav(path: str, duration_s: float = 1.0, sr: int = 24000) -> str:
 
 
 def test_mimi_registered():
-    """mimi engine must appear in ENGINE_REGISTRY after importing vconnx."""
-    import vconnx.engines.mimi  # noqa: F401
-    from vconnx.engines.base import ENGINE_REGISTRY
+    """mimi engine must appear in ENGINE_REGISTRY after importing voiceclonnx."""
+    import voiceclonnx.engines.mimi  # noqa: F401
+    from voiceclonnx.engines.base import ENGINE_REGISTRY
 
     assert "mimi" in ENGINE_REGISTRY
 
 
 def test_mimi_entry_metadata():
-    import vconnx.engines.mimi  # noqa: F401
-    from vconnx.engines.base import get_engine
+    import voiceclonnx.engines.mimi  # noqa: F401
+    from voiceclonnx.engines.base import get_engine
 
     entry = get_engine("mimi")
     assert entry.alias == "mimi"
@@ -62,7 +62,7 @@ def test_mimi_entry_metadata():
 
 
 def test_mimi_sample_rate():
-    from vconnx.engines.mimi import MimiAdapter
+    from voiceclonnx.engines.mimi import MimiAdapter
 
     adapter = MimiAdapter()
     assert adapter.sample_rate == 24000
@@ -74,7 +74,7 @@ def test_mimi_sample_rate():
 
 
 def test_swap_streams_output_shape():
-    from vconnx.engines.mimi import _swap_streams
+    from voiceclonnx.engines.mimi import _swap_streams
 
     rng = np.random.default_rng(0)
     src = rng.integers(0, 2048, (1, 32, 25)).astype(np.int64)
@@ -87,7 +87,7 @@ def test_swap_streams_output_shape():
 
 def test_swap_streams_semantic_from_ref():
     """Stream 0 (semantic style) must come from the reference."""
-    from vconnx.engines.mimi import _swap_streams
+    from voiceclonnx.engines.mimi import _swap_streams
 
     rng = np.random.default_rng(1)
     src = rng.integers(0, 2048, (1, 32, 20)).astype(np.int64)
@@ -99,7 +99,7 @@ def test_swap_streams_semantic_from_ref():
 
 def test_swap_streams_acoustic_from_src_same_length():
     """When src and ref have the same T, acoustic streams 1-31 come directly from src."""
-    from vconnx.engines.mimi import _swap_streams
+    from voiceclonnx.engines.mimi import _swap_streams
 
     rng = np.random.default_rng(2)
     src = rng.integers(0, 2048, (1, 32, 15)).astype(np.int64)
@@ -111,7 +111,7 @@ def test_swap_streams_acoustic_from_src_same_length():
 
 def test_swap_streams_length_adaptation():
     """When lengths differ, acoustic streams are adapted to source length."""
-    from vconnx.engines.mimi import _swap_streams
+    from voiceclonnx.engines.mimi import _swap_streams
 
     rng = np.random.default_rng(3)
     T_src, T_ref = 10, 25
@@ -127,7 +127,7 @@ def test_swap_streams_length_adaptation():
 
 def test_swap_streams_deterministic():
     """Stream swap is deterministic."""
-    from vconnx.engines.mimi import _swap_streams
+    from voiceclonnx.engines.mimi import _swap_streams
 
     rng = np.random.default_rng(42)
     src = rng.integers(0, 2048, (1, 32, 20)).astype(np.int64)
@@ -140,7 +140,7 @@ def test_swap_streams_deterministic():
 
 def test_swap_streams_no_mutation():
     """swap_streams must not modify src_codes or ref_codes in place."""
-    from vconnx.engines.mimi import _swap_streams
+    from voiceclonnx.engines.mimi import _swap_streams
 
     rng = np.random.default_rng(5)
     src = rng.integers(0, 2048, (1, 32, 12)).astype(np.int64)
@@ -159,7 +159,7 @@ def test_swap_streams_no_mutation():
 
 
 def test_load_wav_mono(tmp_path):
-    from vconnx.engines.mimi import _load_wav
+    from voiceclonnx.engines.mimi import _load_wav
 
     p = str(tmp_path / "test.wav")
     _make_wav(p, duration_s=0.5, sr=24000)
@@ -170,7 +170,7 @@ def test_load_wav_mono(tmp_path):
 
 
 def test_load_wav_resamples(tmp_path):
-    from vconnx.engines.mimi import _load_wav
+    from voiceclonnx.engines.mimi import _load_wav
 
     p = str(tmp_path / "test16k.wav")
     _make_wav(p, duration_s=1.0, sr=16000)
@@ -180,7 +180,7 @@ def test_load_wav_resamples(tmp_path):
 
 
 def test_save_wav_pcm16(tmp_path):
-    from vconnx.engines.mimi import _save_wav
+    from voiceclonnx.engines.mimi import _save_wav
 
     audio = np.zeros(24000, dtype=np.float32)
     p = str(tmp_path / "out.wav")
@@ -220,7 +220,7 @@ class _MockDecoderSession:
 
 def test_adapter_clone_voice_mock(tmp_path):
     """Adapter pipeline completes with mocked ORT sessions."""
-    from vconnx.engines.mimi import MimiAdapter
+    from voiceclonnx.engines.mimi import MimiAdapter
 
     src_wav = _make_wav(str(tmp_path / "src.wav"), duration_s=1.0)
     ref_wav = _make_wav(str(tmp_path / "ref.wav"), duration_s=1.5)
@@ -242,7 +242,7 @@ def test_adapter_clone_voice_mock(tmp_path):
 
 def test_adapter_output_is_24khz(tmp_path):
     """Output WAV must be 24 kHz regardless of input sample rate."""
-    from vconnx.engines.mimi import MimiAdapter
+    from voiceclonnx.engines.mimi import MimiAdapter
 
     src_path = str(tmp_path / "src44.wav")
     n = 44100
@@ -269,7 +269,7 @@ def test_adapter_output_is_24khz(tmp_path):
 def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
     """Missing onnxruntime raises ImportError with a helpful message."""
     import builtins
-    from vconnx.engines.mimi import MimiAdapter
+    from voiceclonnx.engines.mimi import MimiAdapter
 
     real_import = builtins.__import__
 
@@ -286,7 +286,7 @@ def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
 
 
 def test_adapter_quantized_flag_stored():
-    from vconnx.engines.mimi import MimiAdapter
+    from voiceclonnx.engines.mimi import MimiAdapter
 
     a = MimiAdapter(quantized=True)
     assert a._quantized is True
@@ -296,7 +296,7 @@ def test_adapter_quantized_flag_stored():
 
 def test_adapter_mock_stream_swap_applied(tmp_path):
     """Verify the stream-swap changes the codes: stream 0 from source, rest from ref."""
-    from vconnx.engines.mimi import MimiAdapter, _swap_streams
+    from voiceclonnx.engines.mimi import MimiAdapter, _swap_streams
 
     # Deterministic mock: distinguishable src vs ref codes
     class _DetEncoderSession:
@@ -339,13 +339,13 @@ def test_adapter_mock_stream_swap_applied(tmp_path):
 
 
 # ---------------------------------------------------------------------------
-# 5. E2E test — real models (VCONNX_E2E-gated)
+# 5. E2E test — real models (VOICECLONNX_E2E-gated)
 # ---------------------------------------------------------------------------
 
-_SKIP_E2E = not os.environ.get("VCONNX_E2E", "")
+_SKIP_E2E = not os.environ.get("VOICECLONNX_E2E", "")
 _E2E_REASON = (
     "E2E mimi test downloads ~290MB of public ONNX models; "
-    "set VCONNX_E2E=1 to run."
+    "set VOICECLONNX_E2E=1 to run."
 )
 
 
@@ -366,7 +366,7 @@ def test_e2e_mimi_clone_edge_tts_voices(tmp_path):
     except ImportError:
         pytest.skip("edge-tts not installed")
 
-    from vconnx.engines.mimi import MimiAdapter
+    from voiceclonnx.engines.mimi import MimiAdapter
 
     async def _synth(text: str, voice: str, out: str):
         await edge_tts.Communicate(text, voice).save(out)

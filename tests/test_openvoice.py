@@ -1,4 +1,4 @@
-"""Tests for the OpenVoice v2 adapter -- vconnx/engines/openvoice.py.
+"""Tests for the OpenVoice v2 adapter -- voiceclonnx/engines/openvoice.py.
 
 Structure
 ---------
@@ -43,15 +43,15 @@ def _make_wav(path: str, duration_s: float = 1.0, sr: int = 22050) -> str:
 
 
 def test_openvoice_registered():
-    import vconnx.engines.openvoice  # noqa: F401 -- trigger registration
-    from vconnx.engines.base import ENGINE_REGISTRY
+    import voiceclonnx.engines.openvoice  # noqa: F401 -- trigger registration
+    from voiceclonnx.engines.base import ENGINE_REGISTRY
 
     assert "openvoice" in ENGINE_REGISTRY
 
 
 def test_openvoice_entry_metadata():
-    import vconnx.engines.openvoice  # noqa: F401
-    from vconnx.engines.base import get_engine
+    import voiceclonnx.engines.openvoice  # noqa: F401
+    from voiceclonnx.engines.base import get_engine
 
     entry = get_engine("openvoice")
     assert entry.alias == "openvoice"
@@ -61,14 +61,14 @@ def test_openvoice_entry_metadata():
 
 
 def test_openvoice_sample_rate():
-    from vconnx.engines.openvoice import OpenVoiceV2Adapter
+    from voiceclonnx.engines.openvoice import OpenVoiceV2Adapter
 
     adapter = OpenVoiceV2Adapter()
     assert adapter.sample_rate == 22050
 
 
 def test_openvoice_quantized_flag_stored():
-    from vconnx.engines.openvoice import OpenVoiceV2Adapter
+    from voiceclonnx.engines.openvoice import OpenVoiceV2Adapter
 
     a = OpenVoiceV2Adapter(quantized=True)
     assert a._quantized is True
@@ -82,7 +82,7 @@ def test_openvoice_quantized_flag_stored():
 
 
 def test_compute_linear_spec_shape():
-    from vconnx.engines.openvoice import _compute_linear_spec
+    from voiceclonnx.engines.openvoice import _compute_linear_spec
 
     audio = np.zeros(22050, dtype=np.float32)
     spec = _compute_linear_spec(audio)
@@ -93,7 +93,7 @@ def test_compute_linear_spec_shape():
 
 def test_compute_linear_spec_positive():
     """Magnitude spectrogram must be positive (sqrt of sum of squares + eps)."""
-    from vconnx.engines.openvoice import _compute_linear_spec
+    from voiceclonnx.engines.openvoice import _compute_linear_spec
 
     rng = np.random.default_rng(42)
     audio = rng.uniform(-0.5, 0.5, 22050).astype(np.float32)
@@ -102,7 +102,7 @@ def test_compute_linear_spec_positive():
 
 
 def test_compute_linear_spec_finite():
-    from vconnx.engines.openvoice import _compute_linear_spec
+    from voiceclonnx.engines.openvoice import _compute_linear_spec
 
     audio = np.zeros(22050, dtype=np.float32)
     spec = _compute_linear_spec(audio)
@@ -111,7 +111,7 @@ def test_compute_linear_spec_finite():
 
 def test_compute_linear_spec_sine_energy():
     """Sine wave should concentrate energy at the tone frequency bin."""
-    from vconnx.engines.openvoice import _compute_linear_spec
+    from voiceclonnx.engines.openvoice import _compute_linear_spec
 
     sr = 22050
     freq = 440.0
@@ -129,7 +129,7 @@ def test_compute_linear_spec_sine_energy():
 
 
 def test_compute_linear_spec_different_signals():
-    from vconnx.engines.openvoice import _compute_linear_spec
+    from voiceclonnx.engines.openvoice import _compute_linear_spec
 
     sr = 22050
     t = np.linspace(0, 1.0, sr, endpoint=False)
@@ -167,7 +167,7 @@ class _MockConverterSession:
 
 def test_adapter_clone_voice_mock(tmp_path):
     """Adapter pipeline completes with mocked ORT sessions."""
-    from vconnx.engines.openvoice import OpenVoiceV2Adapter
+    from voiceclonnx.engines.openvoice import OpenVoiceV2Adapter
 
     src_wav = _make_wav(str(tmp_path / "src.wav"), duration_s=0.5, sr=22050)
     ref_wav = _make_wav(str(tmp_path / "ref.wav"), duration_s=0.5, sr=22050)
@@ -189,7 +189,7 @@ def test_adapter_clone_voice_mock(tmp_path):
 
 def test_adapter_output_is_22050hz(tmp_path):
     """Output WAV must be 22050 Hz regardless of input sample rate."""
-    from vconnx.engines.openvoice import OpenVoiceV2Adapter
+    from voiceclonnx.engines.openvoice import OpenVoiceV2Adapter
 
     src_path = str(tmp_path / "src16k.wav")
     n = 16000
@@ -216,7 +216,7 @@ def test_adapter_output_is_22050hz(tmp_path):
 def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
     """Missing onnxruntime raises ImportError with a helpful message."""
     import builtins
-    from vconnx.engines.openvoice import OpenVoiceV2Adapter
+    from voiceclonnx.engines.openvoice import OpenVoiceV2Adapter
 
     real_import = builtins.__import__
 
@@ -234,7 +234,7 @@ def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
 
 def test_adapter_extract_tone_embedding_shape():
     """_extract_tone_embedding returns (1, 256) array."""
-    from vconnx.engines.openvoice import OpenVoiceV2Adapter
+    from voiceclonnx.engines.openvoice import OpenVoiceV2Adapter
 
     adapter = OpenVoiceV2Adapter()
     adapter._ref_enc_sess = _MockRefEncSession()
@@ -249,7 +249,7 @@ def test_adapter_extract_tone_embedding_shape():
 
 def test_adapter_spec_shape_to_ref_enc():
     """Spec passed to ref_enc session has shape (1, T, 513)."""
-    from vconnx.engines.openvoice import OpenVoiceV2Adapter, _SPEC_CHANNELS
+    from voiceclonnx.engines.openvoice import OpenVoiceV2Adapter, _SPEC_CHANNELS
 
     received = {}
 
@@ -272,7 +272,7 @@ def test_adapter_spec_shape_to_ref_enc():
 
 def test_adapter_spec_shape_to_converter():
     """Spec passed to converter session has shape (1, 513, T)."""
-    from vconnx.engines.openvoice import OpenVoiceV2Adapter, _SPEC_CHANNELS
+    from voiceclonnx.engines.openvoice import OpenVoiceV2Adapter, _SPEC_CHANNELS
 
     received = {}
 
@@ -302,7 +302,7 @@ def test_adapter_spec_shape_to_converter():
 
 def test_adapter_different_tones_for_different_references():
     """Different audio inputs must produce different tone embeddings."""
-    from vconnx.engines.openvoice import OpenVoiceV2Adapter
+    from voiceclonnx.engines.openvoice import OpenVoiceV2Adapter
 
     class _InputDependentSession:
         def run(self, output_names, inputs):
@@ -330,10 +330,10 @@ def test_adapter_different_tones_for_different_references():
 # ---------------------------------------------------------------------------
 
 
-_SKIP_E2E = not os.environ.get("VCONNX_E2E", "")
+_SKIP_E2E = not os.environ.get("VOICECLONNX_E2E", "")
 
 _E2E_REASON = (
-    "E2E openvoice test downloads public models; set VCONNX_E2E=1 to run "
+    "E2E openvoice test downloads public models; set VOICECLONNX_E2E=1 to run "
     "and network access to download models."
 )
 
@@ -356,7 +356,7 @@ def test_e2e_openvoice_clone_edge_tts_voices(tmp_path):
     except ImportError:
         pytest.skip("edge-tts not installed")
 
-    from vconnx.engines.openvoice import OpenVoiceV2Adapter
+    from voiceclonnx.engines.openvoice import OpenVoiceV2Adapter
 
     async def _synth(text: str, voice: str, out: str):
         communicate = edge_tts.Communicate(text, voice)

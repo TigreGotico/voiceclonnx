@@ -1,4 +1,4 @@
-"""Tests for the BiCodec adapter — vconnx/engines/bicodec.py.
+"""Tests for the BiCodec adapter — voiceclonnx/engines/bicodec.py.
 
 Structure
 ---------
@@ -6,7 +6,7 @@ Structure
 - Token-swap logic on synthetic data (pure numpy)
 - Chunked Wav2Vec2 feature extraction (numpy, mock ORT session)
 - Adapter contract tests with mocked ORT sessions (full pipeline)
-- E2E test gated on VCONNX_E2E=1 (real models, edge-tts, WER gate ≤25%)
+- E2E test gated on VOICECLONNX_E2E=1 (real models, edge-tts, WER gate ≤25%)
 """
 
 from __future__ import annotations
@@ -43,16 +43,16 @@ def _make_wav(path: str, duration_s: float = 1.0, sr: int = 16000) -> str:
 
 
 def test_bicodec_registered():
-    """bicodec engine must appear in ENGINE_REGISTRY after importing vconnx."""
-    import vconnx.engines.bicodec  # noqa: F401
-    from vconnx.engines.base import ENGINE_REGISTRY
+    """bicodec engine must appear in ENGINE_REGISTRY after importing voiceclonnx."""
+    import voiceclonnx.engines.bicodec  # noqa: F401
+    from voiceclonnx.engines.base import ENGINE_REGISTRY
 
     assert "bicodec" in ENGINE_REGISTRY
 
 
 def test_bicodec_entry_metadata():
-    import vconnx.engines.bicodec  # noqa: F401
-    from vconnx.engines.base import get_engine
+    import voiceclonnx.engines.bicodec  # noqa: F401
+    from voiceclonnx.engines.base import get_engine
 
     entry = get_engine("bicodec")
     assert entry.alias == "bicodec"
@@ -62,14 +62,14 @@ def test_bicodec_entry_metadata():
 
 
 def test_bicodec_sample_rate():
-    from vconnx.engines.bicodec import BiCodecAdapter
+    from voiceclonnx.engines.bicodec import BiCodecAdapter
 
     adapter = BiCodecAdapter()
     assert adapter.sample_rate == 16000
 
 
 def test_bicodec_quantized_flag():
-    from vconnx.engines.bicodec import BiCodecAdapter
+    from voiceclonnx.engines.bicodec import BiCodecAdapter
 
     a = BiCodecAdapter(quantized=True)
     assert a._quantized is True
@@ -78,7 +78,7 @@ def test_bicodec_quantized_flag():
 
 
 def test_bicodec_chunk_samples_stored():
-    from vconnx.engines.bicodec import BiCodecAdapter
+    from voiceclonnx.engines.bicodec import BiCodecAdapter
 
     a = BiCodecAdapter(chunk_samples=16000)
     assert a._chunk_samples == 16000
@@ -145,7 +145,7 @@ class _MockW2VSession:
 
 def test_chunked_extraction_short_no_chunking():
     """Audio shorter than chunk_samples goes through as a single batch."""
-    from vconnx.engines.bicodec import _extract_features_chunked
+    from voiceclonnx.engines.bicodec import _extract_features_chunked
 
     wav = np.zeros(16000, dtype=np.float32)
     sess = _MockW2VSession()
@@ -156,7 +156,7 @@ def test_chunked_extraction_short_no_chunking():
 
 def test_chunked_extraction_long_concatenates():
     """Audio longer than chunk_samples is split and concatenated."""
-    from vconnx.engines.bicodec import _extract_features_chunked
+    from voiceclonnx.engines.bicodec import _extract_features_chunked
 
     wav = np.zeros(96000, dtype=np.float32)  # 6 s
     sess = _MockW2VSession()
@@ -171,7 +171,7 @@ def test_chunked_extraction_long_concatenates():
 
 def test_chunked_extraction_output_dtype():
     """Feature output must be float32."""
-    from vconnx.engines.bicodec import _extract_features_chunked
+    from voiceclonnx.engines.bicodec import _extract_features_chunked
 
     wav = np.zeros(48000, dtype=np.float32)
     sess = _MockW2VSession()
@@ -230,7 +230,7 @@ def _inject_mock_sessions(adapter) -> "BiCodecAdapter":
 
 def test_adapter_clone_voice_mock(tmp_path):
     """Adapter pipeline completes with mocked ORT sessions."""
-    from vconnx.engines.bicodec import BiCodecAdapter
+    from voiceclonnx.engines.bicodec import BiCodecAdapter
 
     src_wav = _make_wav(str(tmp_path / "src.wav"), duration_s=1.0)
     ref_wav = _make_wav(str(tmp_path / "ref.wav"), duration_s=2.0)
@@ -251,7 +251,7 @@ def test_adapter_clone_voice_mock(tmp_path):
 
 def test_adapter_output_is_16khz(tmp_path):
     """Output WAV must be 16 kHz regardless of input sample rate."""
-    from vconnx.engines.bicodec import BiCodecAdapter
+    from voiceclonnx.engines.bicodec import BiCodecAdapter
 
     src_path = str(tmp_path / "src44.wav")
     n = 44100
@@ -277,7 +277,7 @@ def test_adapter_output_is_16khz(tmp_path):
 def test_adapter_lazy_load_raises_without_onnxruntime(monkeypatch):
     """Missing onnxruntime raises ImportError with a helpful message."""
     import builtins
-    from vconnx.engines.bicodec import BiCodecAdapter
+    from voiceclonnx.engines.bicodec import BiCodecAdapter
 
     real_import = builtins.__import__
 
@@ -295,7 +295,7 @@ def test_adapter_lazy_load_raises_without_onnxruntime(monkeypatch):
 
 def test_adapter_uses_source_semantic_tokens(tmp_path):
     """Verify adapter feeds source semantic tokens (not reference) to decoder."""
-    from vconnx.engines.bicodec import BiCodecAdapter
+    from voiceclonnx.engines.bicodec import BiCodecAdapter
 
     src_wav = _make_wav(str(tmp_path / "src.wav"), duration_s=1.0)
     ref_wav = _make_wav(str(tmp_path / "ref.wav"), duration_s=1.0)
@@ -357,7 +357,7 @@ def test_adapter_uses_source_semantic_tokens(tmp_path):
 
 def test_adapter_returns_resolved_path(tmp_path):
     """clone_voice return value must be the resolved absolute path."""
-    from vconnx.engines.bicodec import BiCodecAdapter
+    from voiceclonnx.engines.bicodec import BiCodecAdapter
 
     src = _make_wav(str(tmp_path / "s.wav"))
     ref = _make_wav(str(tmp_path / "r.wav"))
@@ -372,14 +372,14 @@ def test_adapter_returns_resolved_path(tmp_path):
 
 
 # ---------------------------------------------------------------------------
-# 5. E2E test — real models, real audio (skip unless VCONNX_E2E=1)
+# 5. E2E test — real models, real audio (skip unless VOICECLONNX_E2E=1)
 # ---------------------------------------------------------------------------
 
-_SKIP_E2E = not os.environ.get("VCONNX_E2E", "")
+_SKIP_E2E = not os.environ.get("VOICECLONNX_E2E", "")
 
 _E2E_REASON = (
     "E2E bicodec test downloads ~1.5 GB of ONNX models (Wav2Vec2 + BiCodec); "
-    "set VCONNX_E2E=1 to run."
+    "set VOICECLONNX_E2E=1 to run."
 )
 
 
@@ -409,7 +409,7 @@ def test_e2e_bicodec_clone_edge_tts_voices(tmp_path):
     except ImportError:
         pytest.skip("faster-whisper not installed")
 
-    from vconnx.engines.bicodec import BiCodecAdapter
+    from voiceclonnx.engines.bicodec import BiCodecAdapter
 
     SOURCE_TEXT = (
         "The quick brown fox jumps over the lazy dog. "

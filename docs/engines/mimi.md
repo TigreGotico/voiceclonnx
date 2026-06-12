@@ -39,7 +39,7 @@ reference voices).
 
 ## Model artifacts
 
-HF repo: [TigreGotico/vconnx-mimi](https://huggingface.co/TigreGotico/vconnx-mimi)
+HF repo: [TigreGotico/voiceclonnx-mimi](https://huggingface.co/TigreGotico/voiceclonnx-mimi)
 
 | File | Size |
 |---|---|

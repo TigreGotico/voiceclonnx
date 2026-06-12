@@ -17,7 +17,7 @@ Architecture:
 All neural components run via onnxruntime.  Fully non-autoregressive; no diffusion
 steps; streaming-friendly.
 
-ONNX artifacts: [TigreGotico/vconnx-freevc](https://huggingface.co/TigreGotico/vconnx-freevc) (MIT license).
+ONNX artifacts: [TigreGotico/voiceclonnx-freevc](https://huggingface.co/TigreGotico/voiceclonnx-freevc) (MIT license).
 
 Output sample rate: **16 kHz**.
 
@@ -26,7 +26,7 @@ Output sample rate: **16 kHz**.
 ## Install
 
 ```bash
-pip install vconnx
+pip install voiceclonnx
 ```
 
 Core deps: `onnxruntime`, `numpy`, `soundfile`, `huggingface_hub` — no librosa at inference.
@@ -70,7 +70,7 @@ Models are downloaded from HF Hub on first use (~1.2 GB fp32 or ~342 MB int8).
 ### Python
 
 ```python
-from vconnx import VoiceCloner
+from voiceclonnx import VoiceCloner
 
 # Default (fp32)
 cloner = VoiceCloner(engine="freevc")
@@ -85,9 +85,9 @@ out = cloner.clone_voice("source.wav", "reference.wav", "out_q8.wav")
 ### CLI
 
 ```bash
-pip install vconnx
+pip install voiceclonnx
 
-vconnx clone --engine freevc \
+voiceclonnx clone --engine freevc \
              --audio source.wav \
              --voice reference.wav \
              --out out.wav
@@ -101,8 +101,8 @@ FreeVC and kNN-VC both use WavLM-Large but extract different outputs:
 
 | Engine | Extraction | File |
 |---|---|---|
-| kNN-VC | Layer-6 hidden states (`hidden_states[7]`) | `TigreGotico/vconnx-knn-vc / wavlm_layer6.onnx` |
-| FreeVC | Final transformer output (`last_hidden_state`) | `TigreGotico/vconnx-freevc / wavlm_freevc.onnx` |
+| kNN-VC | Layer-6 hidden states (`hidden_states[7]`) | `TigreGotico/voiceclonnx-knn-vc / wavlm_layer6.onnx` |
+| FreeVC | Final transformer output (`last_hidden_state`) | `TigreGotico/voiceclonnx-freevc / wavlm_freevc.onnx` |
 
 These are **not interchangeable**.  The adapter downloads `wavlm_freevc.onnx` from
 its own repo; the kNN-VC file is not referenced.
@@ -120,10 +120,10 @@ its own repo; the kNN-VC file is not referenced.
 ## Troubleshooting
 
 **`ImportError: onnxruntime is required`**
-Install the extras group: `pip install vconnx`.
+Install the extras group: `pip install voiceclonnx`.
 
 
-Same fix: `pip install vconnx` pulls librosa.
+Same fix: `pip install voiceclonnx` pulls librosa.
 
 **Output sounds muffled or robotic**
 The conversion quality depends on having a clean reference clip that is at least

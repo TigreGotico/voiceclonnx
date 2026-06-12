@@ -1,4 +1,4 @@
-"""RVC (Retrieval-based Voice Conversion) adapter for vconnx.
+"""RVC (Retrieval-based Voice Conversion) adapter for voiceclonnx.
 
 RVC (RVC-Project, MIT license) is the most widely-deployed community voice
 conversion system.  Unlike any-to-any systems such as kNN-VC, **RVC is
@@ -29,13 +29,13 @@ numpy — no torch at inference.
   is ``None`` or empty.
 
 Base models (shared ContentVec encoder + RMVPE F0 predictor):
-  ``TigreGotico/vconnx-rvc`` (public, MIT)
+  ``TigreGotico/voiceclonnx-rvc`` (public, MIT)
 
 Voice models are user-supplied (community .pth files converted to ONNX via
 ``convert_rvc_model.py``, or pulled from HF repos that redistribute ONNX
 files).
 
-Requires: ``pip install vconnx``
+Requires: ``pip install voiceclonnx``
   -> onnxruntime, numpy, soundfile, huggingface_hub
 
 References
@@ -53,7 +53,7 @@ from typing import Optional, Union
 
 import numpy as np
 
-from vconnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -64,7 +64,7 @@ _RVC_INPUT_SR = 16000  # ContentVec/RMVPE input: 16 kHz
 _RVC_HOP = 320         # 320-sample hop → 50 Hz feature rate at 16 kHz
 
 # HF repo holding shared base models (ContentVec + RMVPE)
-_HF_BASE_REPO = "TigreGotico/vconnx-rvc"
+_HF_BASE_REPO = "TigreGotico/voiceclonnx-rvc"
 
 # Filenames within the base repo
 _CONTENTVEC_FP32 = "contentvec_768l12.onnx"
@@ -320,7 +320,7 @@ class RVCAdapter(VoiceClonerBase):
         except ImportError as exc:
             raise ImportError(
                 "onnxruntime is required for engine='rvc'. "
-                "Install it with: pip install vconnx[rvc]"
+                "Install it with: pip install voiceclonnx[rvc]"
             ) from exc
 
         try:
@@ -353,7 +353,7 @@ class RVCAdapter(VoiceClonerBase):
         except ImportError as exc:
             raise ImportError(
                 "onnxruntime is required for engine='rvc'. "
-                "Install it with: pip install vconnx[rvc]"
+                "Install it with: pip install voiceclonnx[rvc]"
             ) from exc
 
         onnx_path = self._resolve_model_path(model_ref)
@@ -441,7 +441,7 @@ class RVCAdapter(VoiceClonerBase):
         """Run ContentVec encoder; return (T, 768) features.
 
         Supports two community ONNX formats:
-        - TigreGotico/vconnx-rvc export: input ``input_values`` (1, T),
+        - TigreGotico/voiceclonnx-rvc export: input ``input_values`` (1, T),
           optional ``attention_mask`` (1, T); output ``hidden_states`` (1, T, 768)
         - ozada/onnx_rvc vec-768-layer-12 format: input ``source`` (1, 1, T);
           output ``embed`` (1, T, 768)
@@ -454,7 +454,7 @@ class RVCAdapter(VoiceClonerBase):
             # ozada-format: (1, 1, T)
             feed = {"source": inp_f32[:, np.newaxis, :]}
         else:
-            # vconnx-rvc format: (1, T) + optional attention_mask
+            # voiceclonnx-rvc format: (1, T) + optional attention_mask
             feed = {"input_values": inp_f32}
             if "attention_mask" in input_names:
                 feed["attention_mask"] = np.ones((1, inp_f32.shape[1]), dtype=np.int64)
@@ -545,7 +545,7 @@ class RVCAdapter(VoiceClonerBase):
             },
         )
         # Output: (1, 1, samples) → (samples,)
-        # Some models name the output 'audio' (ozada format) or 'waveform' (vconnx)
+        # Some models name the output 'audio' (ozada format) or 'waveform' (voiceclonnx)
         return out[0][0, 0]  # first output, first batch, first channel
 
     # ------------------------------------------------------------------
@@ -647,7 +647,7 @@ register_engine(
             "RVC (Retrieval-based Voice Conversion): ContentVec encoder + RMVPE F0 predictor "
             "+ VITS-based synthesizer.  Any-to-ONE: the target speaker is baked into the model. "
             "reference_voice = path to an RVC .onnx voice model or HF repo ID.  "
-            "Base models from TigreGotico/vconnx-rvc (MIT).  "
+            "Base models from TigreGotico/voiceclonnx-rvc (MIT).  "
             "(RVC-Project, MIT license)"
         ),
         extras="",

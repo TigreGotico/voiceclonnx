@@ -10,7 +10,7 @@ Model footprints:
 
 Requirements::
 
-    pip install vconnx
+    pip install voiceclonnx
 
 Run::
 
@@ -27,7 +27,7 @@ def _clone(engine: str, quantized: bool, src: str, ref: str, out: str) -> None:
     """Run one conversion and print timing + file size."""
     import time
 
-    from vconnx import VoiceCloner
+    from voiceclonnx import VoiceCloner
 
     label = f"{engine} {'int8' if quantized else 'fp32':>4}"
     print(f"  [{label}] loading …", end="", flush=True)

@@ -1,11 +1,11 @@
 """End-to-end test: real Chatterbox ONNX voice conversion.
 
-Skipped unless VCONNX_E2E=1 is set; also requires edge-tts + ffmpeg for
-audio generation.  Runs a real voice_convert call using native vconnx
+Skipped unless VOICECLONNX_E2E=1 is set; also requires edge-tts + ffmpeg for
+audio generation.  Runs a real voice_convert call using native voiceclonnx
 chatterbox adapter (no chatterbox_onnx package needed).
 
 Run locally with:
-    VCONNX_E2E=1 pytest tests/test_e2e_chatterbox.py -v -s
+    VOICECLONNX_E2E=1 pytest tests/test_e2e_chatterbox.py -v -s
 """
 
 import asyncio
@@ -17,10 +17,10 @@ from pathlib import Path
 
 import pytest
 
-_SKIP_E2E = not os.environ.get("VCONNX_E2E", "")
+_SKIP_E2E = not os.environ.get("VOICECLONNX_E2E", "")
 _E2E_REASON = (
     "E2E chatterbox test downloads large ONNX models and requires ffmpeg+edge-tts; "
-    "set VCONNX_E2E=1 to run."
+    "set VOICECLONNX_E2E=1 to run."
 )
 
 
@@ -51,7 +51,7 @@ def tts_wav(tmp_path_factory):
     src_path = str(tmp / "source.wav")
     ref_path = str(tmp / "reference.wav")
 
-    _synth_wav("Hello, this is a voice cloning test using vconnx.", "en-US-AriaNeural", src_path)
+    _synth_wav("Hello, this is a voice cloning test using voiceclonnx.", "en-US-AriaNeural", src_path)
     _synth_wav("The quick brown fox jumps over the lazy dog.", "en-GB-SoniaNeural", ref_path)
     return src_path, ref_path
 
@@ -59,7 +59,7 @@ def tts_wav(tmp_path_factory):
 @pytest.mark.skipif(_SKIP_E2E, reason=_E2E_REASON)
 @pytest.mark.timeout(360)
 def test_chatterbox_voice_convert(tts_wav, tmp_path):
-    from vconnx import VoiceCloner
+    from voiceclonnx import VoiceCloner
 
     src_path, ref_path = tts_wav
     out_path = str(tmp_path / "converted.wav")

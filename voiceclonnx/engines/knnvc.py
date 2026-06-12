@@ -1,4 +1,4 @@
-"""kNN-VC adapter for vconnx.
+"""kNN-VC adapter for voiceclonnx.
 
 kNN-VC (Baas et al., Interspeech 2023) is a zero-shot any-to-any voice
 conversion system.  At inference it uses:
@@ -12,7 +12,7 @@ conversion system.  At inference it uses:
 All neural components run via onnxruntime.  The kNN step is pure numpy —
 no ONNX, no torch at inference.
 
-Requires: ``pip install vconnx``
+Requires: ``pip install voiceclonnx``
   -> onnxruntime, numpy, soundfile, huggingface_hub
 
 References
@@ -29,13 +29,13 @@ from typing import Optional, Union
 
 import numpy as np
 
-from vconnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
 
 # kNN-VC outputs 16 kHz audio (same rate as WavLM input)
 _KNNVC_SR = 16000
 
 # HF repo housing the exported ONNX artifacts
-_HF_REPO_ID = "TigreGotico/vconnx-knn-vc"
+_HF_REPO_ID = "TigreGotico/voiceclonnx-knn-vc"
 
 # Paths within the HF repo
 _WAVLM_FP32 = "wavlm_layer6.onnx"
@@ -176,7 +176,7 @@ class KNNVCAdapter(VoiceClonerBase):
         except ImportError as exc:
             raise ImportError(
                 "onnxruntime is required for engine='knnvc'. "
-                "Install it with: pip install vconnx[knnvc]"
+                "Install it with: pip install voiceclonnx[knnvc]"
             ) from exc
 
         try:
@@ -286,7 +286,7 @@ register_engine(
         description=(
             "kNN-VC: WavLM-Large layer-6 encoder + k-nearest-neighbour matching "
             "(pure numpy) + HiFi-GAN vocoder. Zero-shot any-to-any VC at 16 kHz. "
-            "ONNX artifacts from TigreGotico/vconnx-knn-vc. "
+            "ONNX artifacts from TigreGotico/voiceclonnx-knn-vc. "
             "(Baas et al., Interspeech 2023, MIT license)"
         ),
         extras="",

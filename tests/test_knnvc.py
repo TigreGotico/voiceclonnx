@@ -1,4 +1,4 @@
-"""Tests for the kNN-VC adapter — vconnx/engines/knnvc.py.
+"""Tests for the kNN-VC adapter — voiceclonnx/engines/knnvc.py.
 
 Structure
 ---------
@@ -53,16 +53,16 @@ def _mock_ort_session(output: np.ndarray) -> MagicMock:
 
 
 def test_knnvc_registered():
-    """knnvc engine must appear in ENGINE_REGISTRY after importing vconnx."""
-    import vconnx.engines.knnvc  # noqa: F401 — trigger registration
-    from vconnx.engines.base import ENGINE_REGISTRY
+    """knnvc engine must appear in ENGINE_REGISTRY after importing voiceclonnx."""
+    import voiceclonnx.engines.knnvc  # noqa: F401 — trigger registration
+    from voiceclonnx.engines.base import ENGINE_REGISTRY
 
     assert "knnvc" in ENGINE_REGISTRY
 
 
 def test_knnvc_entry_metadata():
-    import vconnx.engines.knnvc  # noqa: F401
-    from vconnx.engines.base import get_engine
+    import voiceclonnx.engines.knnvc  # noqa: F401
+    from voiceclonnx.engines.base import get_engine
 
     entry = get_engine("knnvc")
     assert entry.alias == "knnvc"
@@ -72,7 +72,7 @@ def test_knnvc_entry_metadata():
 
 
 def test_knnvc_sample_rate():
-    from vconnx.engines.knnvc import KNNVCAdapter
+    from voiceclonnx.engines.knnvc import KNNVCAdapter
 
     adapter = KNNVCAdapter()
     assert adapter.sample_rate == 16000
@@ -85,7 +85,7 @@ def test_knnvc_sample_rate():
 
 def test_knn_match_exact_copy():
     """When source == reference the matched output equals the input."""
-    from vconnx.engines.knnvc import _knn_match
+    from voiceclonnx.engines.knnvc import _knn_match
 
     rng = np.random.default_rng(42)
     feats = rng.random((20, 1024), dtype=np.float32)
@@ -95,7 +95,7 @@ def test_knn_match_exact_copy():
 
 
 def test_knn_match_output_shape():
-    from vconnx.engines.knnvc import _knn_match
+    from voiceclonnx.engines.knnvc import _knn_match
 
     rng = np.random.default_rng(0)
     src = rng.random((30, 1024), dtype=np.float32)
@@ -108,7 +108,7 @@ def test_knn_match_output_shape():
 
 def test_knn_match_k_clipped_to_ref_size():
     """k is silently clipped to len(reference) — must not raise."""
-    from vconnx.engines.knnvc import _knn_match
+    from voiceclonnx.engines.knnvc import _knn_match
 
     rng = np.random.default_rng(7)
     src = rng.random((10, 8), dtype=np.float32)
@@ -120,7 +120,7 @@ def test_knn_match_k_clipped_to_ref_size():
 
 def test_knn_match_is_mean_of_k():
     """For k=2, each output row equals the mean of the 2 nearest ref rows."""
-    from vconnx.engines.knnvc import _knn_match
+    from voiceclonnx.engines.knnvc import _knn_match
 
     # 3-dim space for easy manual verification
     ref = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=np.float32)
@@ -138,7 +138,7 @@ def test_knn_match_is_mean_of_k():
 
 def test_knn_match_nearest_is_not_random():
     """Nearest-neighbour assignment should be deterministic."""
-    from vconnx.engines.knnvc import _knn_match
+    from voiceclonnx.engines.knnvc import _knn_match
 
     rng = np.random.default_rng(99)
     src = rng.random((40, 256), dtype=np.float32)
@@ -178,7 +178,7 @@ class _MockHiFiGANSession:
 
 def test_adapter_clone_voice_mock(tmp_path):
     """Adapter pipeline completes with mocked ORT sessions."""
-    from vconnx.engines.knnvc import KNNVCAdapter
+    from voiceclonnx.engines.knnvc import KNNVCAdapter
 
     src_wav = _make_wav(str(tmp_path / "src.wav"), duration_s=1.0)
     ref_wav = _make_wav(str(tmp_path / "ref.wav"), duration_s=2.0)
@@ -201,7 +201,7 @@ def test_adapter_clone_voice_mock(tmp_path):
 
 def test_adapter_output_is_16khz(tmp_path):
     """Output WAV must be 16 kHz regardless of input sample rate."""
-    from vconnx.engines.knnvc import KNNVCAdapter
+    from voiceclonnx.engines.knnvc import KNNVCAdapter
 
     # Write 44100 Hz source (non-standard rate)
     src_path = str(tmp_path / "src44.wav")
@@ -230,7 +230,7 @@ def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
     """Missing onnxruntime raises ImportError with a helpful message."""
     import builtins
 
-    from vconnx.engines.knnvc import KNNVCAdapter
+    from voiceclonnx.engines.knnvc import KNNVCAdapter
 
     real_import = builtins.__import__
 
@@ -248,7 +248,7 @@ def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
 
 def test_knn_match_quantized_flag_stored():
     """quantized flag stored and accessible."""
-    from vconnx.engines.knnvc import KNNVCAdapter
+    from voiceclonnx.engines.knnvc import KNNVCAdapter
 
     a = KNNVCAdapter(quantized=True)
     assert a._quantized is True
@@ -260,10 +260,10 @@ def test_knn_match_quantized_flag_stored():
 # 4. E2E test — real model, real audio (skip if no HF token or heavy deps)
 # ---------------------------------------------------------------------------
 
-_SKIP_E2E = not os.environ.get("VCONNX_E2E", "")  # models are public; gate on opt-in (large downloads)
+_SKIP_E2E = not os.environ.get("VOICECLONNX_E2E", "")  # models are public; gate on opt-in (large downloads)
 
 _E2E_REASON = (
-    "E2E knnvc test downloads ~500MB of public models; set VCONNX_E2E=1 to run "
+    "E2E knnvc test downloads ~500MB of public models; set VOICECLONNX_E2E=1 to run "
     "and network access to download models."
 )
 
@@ -285,7 +285,7 @@ def test_e2e_knnvc_clone_edge_tts_voices(tmp_path):
     except ImportError:
         pytest.skip("edge-tts not installed")
 
-    from vconnx.engines.knnvc import KNNVCAdapter
+    from voiceclonnx.engines.knnvc import KNNVCAdapter
 
     async def _synth(text: str, voice: str, out: str):
         communicate = edge_tts.Communicate(text, voice)

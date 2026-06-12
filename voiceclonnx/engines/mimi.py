@@ -1,4 +1,4 @@
-"""Mimi (Kyutai) adapter for vconnx.
+"""Mimi (Kyutai) adapter for voiceclonnx.
 
 Mimi is the neural audio codec powering Moshi (Kyutai, 2024).  It produces
 32 residual-vector-quantizer (RVQ) code streams at 12.5 Hz / 24 kHz.
@@ -22,7 +22,7 @@ This preserves source intelligibility while injecting reference prosodic style.
 
 Runtime requirements: ``onnxruntime``, ``numpy``, ``soundfile``.
 
-Requires: ``pip install vconnx``
+Requires: ``pip install voiceclonnx``
   -> onnxruntime, numpy, soundfile, huggingface_hub
 
 References
@@ -40,7 +40,7 @@ from typing import Optional, Union
 
 import numpy as np
 
-from vconnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
 
 # Mimi operates at 24 kHz; RVQ frame rate = 12.5 Hz
 _MIMI_SR = 24000
@@ -50,7 +50,7 @@ _NUM_SEMANTIC = 1    # stream 0 — WavLM-distilled content
 _NUM_ACOUSTIC = 31   # streams 1–31 — timbre/texture
 
 # HF repo housing the exported ONNX artifacts
-_HF_REPO_ID = "TigreGotico/vconnx-mimi"
+_HF_REPO_ID = "TigreGotico/voiceclonnx-mimi"
 
 _ENC_FP32 = "mimi_encoder.onnx"
 _ENC_INT8 = "mimi_encoder_q8.onnx"
@@ -187,7 +187,7 @@ class MimiAdapter(VoiceClonerBase):
         except ImportError as exc:
             raise ImportError(
                 "onnxruntime is required for engine='mimi'. "
-                "Install it with: pip install vconnx"
+                "Install it with: pip install voiceclonnx"
             ) from exc
 
         try:
@@ -284,7 +284,7 @@ register_engine(
         description=(
             "Mimi: Kyutai RVQ codec VC — stream-0 (WavLM-semantic) from source, "
             "streams 1–31 (acoustic/timbre) from reference (pure numpy swap). "
-            "ONNX artifacts from TigreGotico/vconnx-mimi. "
+            "ONNX artifacts from TigreGotico/voiceclonnx-mimi. "
             "24 kHz, 12.5 Hz frame rate, 32 code streams. "
             "(Kyutai, 2024, CC BY 4.0)"
         ),
