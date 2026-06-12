@@ -1236,3 +1236,57 @@ may be re-distributed under their upstream license:
 
 This pattern is also appropriate for SeedVC (planned as issue #25), which
 uses a similar Transformer architecture under a research license.
+
+## Appendix F: LinaCodec onset artifact — root cause and fix (issue #24)
+
+### Symptom
+
+`linacodec` scored 27%/27% WER on both demo clips.  The body of each sentence
+transcribed correctly, but the onset was garbled: "The quick brown fox" →
+"But the plot-bound fox" / "The clip brushbox".
+
+### Root cause: two interacting artifacts
+
+**1. WavLM left-context starvation at chunk boundaries.**
+WavLM Base Plus uses a convolutional front-end with hop=320 at 16 kHz.  When
+audio starts at sample 0 with no left-context, the first analysis windows are
+computed over incomplete frames.  The distill_wavlm_encoder ONNX was exported
+with symmetric zero-padding applied on both sides (upstream
+`_calculate_waveform_padding`), so the model expects valid left-context
+even at the nominal t=0.  Without this padding the first 2–3 content tokens
+are wrong, corrupting the sentence onset.
+
+**2. mel_decoder self-attention quality degrades for long sequences.**
+The mel_decoder is a full-sequence self-attention Transformer.  When the
+content sequence exceeds ~3 seconds (~37 tokens), quality of later tokens
+degrades because the attention distributes over a much longer key–value
+matrix.  This produced the systematic "Voice conversion" → "Those conversion"
+confusion at the start of the second sentence in the 10.7 s source clip.
+The effect is distinct from the first artifact: it appears mid-utterance at
+every location where a new chunk boundary would naturally fall.
+
+### Fix
+
+Two complementary changes in `voiceclonnx/engines/linacodec.py`:
+
+1. **Chunked processing (3 s chunks, 0.5 s crossfade).**
+   Source audio is split into 3-second chunks processed independently through
+   the full SSL → content_encoder → mel_decoder → Vocos pipeline.  Consecutive
+   decoded chunks are crossfaded with a 0.5-second linear fade.  This keeps
+   each content sequence short enough for the mel_decoder to maintain quality.
+
+2. **Per-chunk reflect-padding (8 token onset pad).**
+   Each chunk's 16 kHz waveform is reflect-padded by
+   `_ONSET_PAD_TOKENS × 4 × 320 = 10240 samples (≈ 0.64 s)` before SSL
+   extraction.  After content encoding, the leading `_ONSET_PAD_TOKENS = 8`
+   content tokens are discarded.  This gives the WavLM convolutional extractor
+   sufficient left-context at each chunk boundary.
+
+### Verification
+
+Before fix: 27%/27% WER (both clips).
+After fix: 8% (aria) / 15% (sonia) WER — both well under the ≤25% gate.
+
+The INT8 quantized variants are unaffected by this fix but degrade to ~27%
+WER regardless; `quantized=False` (default fp32) is the supported path.
+See `demo/QUANTS.md` for the full comparison table.

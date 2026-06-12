@@ -20,6 +20,8 @@ against the known source text (gate: WER ≤ 40%).
 | [`outputs/freevc__sonia.wav`](outputs/freevc__sonia.wav) | 12% | ✅ | the quick brown fox jumps in the lazy dog. Voice conversion changes who was making, but no |
 | [`outputs/knnvc__aria.wav`](outputs/knnvc__aria.wav) | 12% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes was sticky, but not  |
 | [`outputs/knnvc__sonia.wav`](outputs/knnvc__sonia.wav) | 15% | ✅ | The quick brown fights jumps over the lazy dart. Voice conversion changes so is speedy, bu |
+| [`outputs/linacodec__aria.wav`](outputs/linacodec__aria.wav) | 8% | ✅ | The clip band Fox jumps over the lazy dog. Voice conversion changes who is speaking, but n |
+| [`outputs/linacodec__sonia.wav`](outputs/linacodec__sonia.wav) | 15% | ✅ | The clock-brand fox jumps over the lazy dog. Voice conversion changes who was thinking, bu |
 | [`outputs/mimi__aria.wav`](outputs/mimi__aria.wav) | 0% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/mimi__sonia.wav`](outputs/mimi__sonia.wav) | 0% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/openvoice__aria.wav`](outputs/openvoice__aria.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |

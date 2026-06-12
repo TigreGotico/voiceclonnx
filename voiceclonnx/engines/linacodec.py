@@ -69,6 +69,23 @@ _N_MELS = 100
 
 _HF_REPO_ID = "TigreGotico/voiceclonnx-linacodec"
 
+# Chunked inference parameters.
+# The mel_decoder self-attention quality degrades for sequences longer than
+# ~3 seconds — later tokens (e.g. the second sentence) come out garbled when
+# the full 10 s sequence is encoded in one pass.  3-second chunks with a
+# 0.5 s linear crossfade restore mid-utterance intelligibility.
+_CHUNK_SECONDS = 3.0     # maximum chunk duration fed to the SSL + mel pipeline
+_OVERLAP_SECONDS = 0.5   # crossfade overlap between consecutive decoded chunks
+
+# Onset padding: at the start of each chunk the WavLM encoder has no
+# left-context, so the first few content tokens are computed from an
+# incomplete analysis window and come out garbled.  Reflect-pad each 16 kHz
+# chunk by _ONSET_PAD_TOKENS * downsample_factor * wavlm_hop samples before
+# SSL extraction, then strip those leading tokens before mel decoding.
+# WavLM hop = 320 @ 16 kHz, content_encoder downsample_factor = 4.
+_ONSET_PAD_TOKENS = 8              # leading tokens to discard per chunk
+_ONSET_PAD_16K = _ONSET_PAD_TOKENS * 4 * 320  # = 10240 samples ≈ 0.64 s @ 16 kHz
+
 # ONNX component filenames (fp32 and INT8)
 _ACOUSTIC_FP32 = "acoustic_ssl_encoder.onnx"
 _ACOUSTIC_INT8 = "acoustic_ssl_encoder_q8.onnx"
@@ -363,6 +380,62 @@ class LinaCodecAdapter(VoiceClonerBase):
     # Encode: waveform → (content_embedding, global_embedding)
     # ------------------------------------------------------------------
 
+    def _encode_content(self, wav_24k: np.ndarray, onset_pad: bool = True) -> np.ndarray:
+        """Encode a 24 kHz waveform chunk into a content embedding.
+
+        Applies reflect-padding before SSL extraction to give the WavLM
+        encoder left-context at the chunk boundary, then strips the
+        corresponding leading tokens so the returned embedding matches the
+        original chunk duration.
+
+        Args:
+            wav_24k: (N,) float32 waveform at 24 kHz.
+            onset_pad: If True, prepend _ONSET_PAD_16K reflect-pad and strip
+                       _ONSET_PAD_TOKENS leading content tokens (default True).
+
+        Returns:
+            content_embedding: (1, T_tokens, 768) float32.
+        """
+        wav_16k = _resample_linear(wav_24k, _MODEL_SR, _SSL_SR)  # (N_16k,)
+
+        if onset_pad:
+            # Reflect-pad the start so the first real content token has
+            # full left-context in the WavLM convolutional feature extractor.
+            wav_16k = np.pad(wav_16k, (_ONSET_PAD_16K, 0), mode="reflect")
+
+        semantic_feats = self._distill_sess.run(
+            None, {"waveform_16k": wav_16k[np.newaxis]}
+        )[0]  # (1, T_ssl, 768)
+
+        semantic_feats = _normalize_ssl(semantic_feats)
+
+        content_emb, _tokens = self._content_sess.run(
+            None, {"local_ssl_features": semantic_feats}
+        )  # (1, T_tokens, 768)
+
+        if onset_pad:
+            # Strip the leading tokens that correspond to the reflect-pad.
+            content_emb = content_emb[:, _ONSET_PAD_TOKENS:, :]
+
+        return content_emb
+
+    def _encode_global(self, wav_24k: np.ndarray) -> np.ndarray:
+        """Encode a 24 kHz waveform into a global (speaker) embedding.
+
+        Args:
+            wav_24k: (N,) float32 waveform at 24 kHz.
+
+        Returns:
+            global_embedding: (1, 128) float32.
+        """
+        wav_16k = _resample_linear(wav_24k, _MODEL_SR, _SSL_SR)[np.newaxis]  # (1, N_16k)
+        acoustic_feats = self._acoustic_sess.run(
+            None, {"waveform_16k": wav_16k}
+        )[0]  # (1, T_ssl, 768)
+        return self._global_sess.run(
+            None, {"acoustic_features": acoustic_feats}
+        )[0]  # (1, 128)
+
     def _encode(self, wav_24k: np.ndarray):
         """Encode a 24kHz waveform into (content_embedding, global_embedding).
 
@@ -373,33 +446,7 @@ class LinaCodecAdapter(VoiceClonerBase):
             content_embedding: (1, T, 768) float32
             global_embedding: (1, 128) float32
         """
-        # Resample to SSL rate
-        wav_16k = _resample_linear(wav_24k, _MODEL_SR, _SSL_SR)[np.newaxis]  # (1, N_16k)
-
-        # Acoustic SSL features for global branch
-        acoustic_feats = self._acoustic_sess.run(
-            None, {"waveform_16k": wav_16k}
-        )[0]  # (1, T_ssl, 768)
-
-        # Distilled WavLM features for content branch
-        semantic_feats = self._distill_sess.run(
-            None, {"waveform_16k": wav_16k}
-        )[0]  # (1, T_ssl, 768)
-
-        # Normalize semantic features
-        semantic_feats = _normalize_ssl(semantic_feats)
-
-        # Content encoder: local Transformer + FSQ
-        content_emb, _tokens = self._content_sess.run(
-            None, {"local_ssl_features": semantic_feats}
-        )  # (1, T_tokens, 768), (1, T_tokens)
-
-        # Global encoder: speaker identity
-        global_emb = self._global_sess.run(
-            None, {"acoustic_features": acoustic_feats}
-        )[0]  # (1, 128)
-
-        return content_emb, global_emb
+        return self._encode_content(wav_24k), self._encode_global(wav_24k)
 
     # ------------------------------------------------------------------
     # Decode: (content_embedding, global_embedding) → 48kHz waveform
@@ -487,14 +534,50 @@ class LinaCodecAdapter(VoiceClonerBase):
         src_wav = _load_wav(str(audio), target_sr=_MODEL_SR)
         ref_wav = _load_wav(str(reference_voice), target_sr=_MODEL_SR)
 
-        # Encode source: get content embedding
-        src_content_emb, _ = self._encode(src_wav)
+        # Global (speaker) embedding from the full reference clip.
+        ref_global_emb = self._encode_global(ref_wav)
 
-        # Encode reference: get global (speaker) embedding
-        _, ref_global_emb = self._encode(ref_wav)
+        # Chunked source encoding and decoding.
+        # Processing the full source in one pass degrades mid-utterance
+        # quality — the mel_decoder self-attention quality drops when the
+        # content sequence exceeds ~3 seconds.  Splitting into overlapping
+        # chunks with linear crossfade restores intelligibility.
+        chunk_samples = int(_CHUNK_SECONDS * _MODEL_SR)
+        overlap_samples = int(_OVERLAP_SECONDS * _MODEL_SR)
+        # Output sample counts at 48 kHz
+        overlap_out = int(_OVERLAP_SECONDS * _LINA_SR)
+        step_samples = chunk_samples - overlap_samples
 
-        # Decode: source content + reference speaker → 48kHz audio
-        waveform = self._decode(src_content_emb, ref_global_emb)
+        n_src = len(src_wav)
+        if n_src <= chunk_samples:
+            # Short clip — single pass, no chunking needed.
+            content_emb = self._encode_content(src_wav, onset_pad=True)
+            waveform = self._decode(content_emb, ref_global_emb)
+        else:
+            # Process in overlapping chunks; crossfade the 48 kHz outputs.
+            fade_out = np.linspace(1.0, 0.0, overlap_out, dtype=np.float32)
+            fade_in  = np.linspace(0.0, 1.0, overlap_out, dtype=np.float32)
+            waveform = None
+            pos = 0
+            while pos < n_src:
+                end = min(pos + chunk_samples, n_src)
+                chunk = src_wav[pos:end]
+                content_emb = self._encode_content(chunk, onset_pad=True)
+                seg = self._decode(content_emb, ref_global_emb)  # (T_48k,)
+                if waveform is None:
+                    waveform = seg
+                else:
+                    # Crossfade the tail of the accumulated output with the
+                    # head of the new segment.
+                    n_xf = min(overlap_out, len(waveform), len(seg))
+                    blend = (
+                        fade_out[:n_xf] * waveform[-n_xf:]
+                        + fade_in[:n_xf] * seg[:n_xf]
+                    )
+                    waveform = np.concatenate([waveform[:-n_xf], blend, seg[n_xf:]])
+                if end >= n_src:
+                    break
+                pos += step_samples
 
         out_path = str(Path(out_path).resolve())
         _save_wav(out_path, waveform, sr=_LINA_SR)
