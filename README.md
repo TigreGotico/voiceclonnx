@@ -82,6 +82,7 @@ All engines ship with `pip install voiceclonnx` — no per-engine extras needed.
 | `rvc` | 40/48 kHz | [TigreGotico/voiceclonnx-rvc](https://huggingface.co/TigreGotico/voiceclonnx-rvc) | MIT |
 | `speechtokenizer` | 16 kHz | [TigreGotico/voiceclonnx-speechtokenizer](https://huggingface.co/TigreGotico/voiceclonnx-speechtokenizer) | Apache-2.0 |
 | `bicodec` | 16 kHz | [TigreGotico/voiceclonnx-bicodec](https://huggingface.co/TigreGotico/voiceclonnx-bicodec) | CC BY-NC-SA 4.0 |
+| `cosyvoice` | 22 kHz | [TigreGotico/voiceclonnx-cosyvoice](https://huggingface.co/TigreGotico/voiceclonnx-cosyvoice) | Apache-2.0 |
 | `quickvc` | 16 kHz | [TigreGotico/voiceclonnx-quickvc](https://huggingface.co/TigreGotico/voiceclonnx-quickvc) | MIT |
 | `triaan` | 16 kHz | [TigreGotico/voiceclonnx-triaan-vc](https://huggingface.co/TigreGotico/voiceclonnx-triaan-vc) | MIT |
 
