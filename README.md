@@ -79,6 +79,7 @@ All engines ship with `pip install vconnx` — no per-engine extras needed.
 | `mimi` | 24 kHz | [TigreGotico/vconnx-mimi](https://huggingface.co/TigreGotico/vconnx-mimi) | CC BY 4.0 |
 | `openvoice` | 22 kHz | [TigreGotico/vconnx-openvoice-v2](https://huggingface.co/TigreGotico/vconnx-openvoice-v2) | MIT |
 | `rvc` | 40/48 kHz | [TigreGotico/vconnx-rvc](https://huggingface.co/TigreGotico/vconnx-rvc) | MIT |
+| `speechtokenizer` | 16 kHz | [TigreGotico/vconnx-speechtokenizer](https://huggingface.co/TigreGotico/vconnx-speechtokenizer) | Apache-2.0 |
 | `triaan` | 16 kHz | [TigreGotico/vconnx-triaan-vc](https://huggingface.co/TigreGotico/vconnx-triaan-vc) | MIT |
 
 ### rvc
