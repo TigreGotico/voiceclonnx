@@ -67,8 +67,12 @@ _HF_REPO_ID = "TigreGotico/voiceclonnx-cosyvoice"
 # File names in the HF repo
 _F_TOKENIZER = "speech_tokenizer_v1.onnx"
 _F_CAMPPLUS = "campplus.onnx"
-_F_FLOW_ENC = "flow_encoder.onnx"
-_F_FLOW_ENC_Q8 = "flow_encoder_q8.onnx"
+# flow_encoder_conformer.onnx: Embedding + 6-block Conformer + proj.
+# Takes (tokens, token_len) — explicit length avoids baked-in attention mask.
+# The InterpolateRegulator and its LR conv model are applied in the adapter
+# (numpy + lr_weights.npz) to support dynamic mel lengths.
+_F_FLOW_ENC = "flow_encoder_conformer.onnx"
+_F_LR_WEIGHTS = "lr_weights.npz"
 _F_FLOW_DEC = "flow_decoder.onnx"
 _F_FLOW_DEC_Q8 = "flow_decoder_q8.onnx"
 _F_HIFIGAN_SRC = "hifigan_f0_source.onnx"
@@ -84,6 +88,9 @@ _HIFT_HOP_LEN = 4
 _FLOW_FRAME_RATE = 50   # tokens per second
 _FLOW_MEL_HOP = 256     # mel spectrogram hop at 22050 Hz
 _FLOW_ODE_STEPS = 10
+
+# Classifier-free guidance rate (matches CosyVoice-300M cfm_params.inference_cfg_rate)
+_INFERENCE_CFG_RATE = 0.7
 
 
 # ---------------------------------------------------------------------------
@@ -281,6 +288,110 @@ def _istft(
 
 
 # ---------------------------------------------------------------------------
+# InterpolateRegulator helpers (pure numpy)
+# ---------------------------------------------------------------------------
+
+
+def _interp1d(x: np.ndarray, size: int) -> np.ndarray:
+    """Linear interpolate x (1, C, T) along last dim to length *size*.
+
+    Matches ``torch.nn.functional.interpolate(..., mode='linear',
+    align_corners=False)`` for 3-D tensors (batch=1).
+    """
+    _, C, T = x.shape
+    if T == size:
+        return x
+    # align_corners=False: source coordinate = (i + 0.5) * T / size - 0.5
+    coords = (np.arange(size, dtype=np.float32) + 0.5) * T / size - 0.5
+    out = np.zeros((1, C, size), dtype=np.float32)
+    for c in range(C):
+        out[0, c] = np.interp(coords, np.arange(T), x[0, c])
+    return out
+
+
+def _apply_lr_model(h: np.ndarray, lr_w: "np.lib.npyio.NpzFile") -> np.ndarray:
+    """Apply the InterpolateRegulator conv model in numpy.
+
+    Architecture: 4 × [Conv1d(80,80,k=3,p=1) + GroupNorm(1,80) + Mish]
+                       + Conv1d(80,80,k=1).
+
+    Parameters
+    ----------
+    h : (1, 80, T) float32 — interpolated encoder output
+    lr_w : npz file with keys like '0_weight', '0_bias', '1_weight', ... '12_weight', '12_bias'
+
+    Returns
+    -------
+    (1, 80, T) float32
+    """
+    x = h[0].copy()  # (80, T)
+
+    def _conv1d(x, w, b, padding=0):
+        C_out, C_in, K = w.shape
+        if padding:
+            x = np.pad(x, ((0, 0), (padding, padding)))
+        T_out = x.shape[1] - K + 1
+        out = np.empty((C_out, T_out), dtype=np.float32)
+        for k in range(K):
+            if k == 0:
+                out[:] = w[:, :, k] @ x[:, k:k + T_out]
+            else:
+                out += w[:, :, k] @ x[:, k:k + T_out]
+        return out + b[:, np.newaxis]
+
+    def _group_norm(x, w, b):
+        mean = x.mean()
+        std = np.sqrt(((x - mean) ** 2).mean() + 1e-5)
+        return (x - mean) / std * w[:, np.newaxis] + b[:, np.newaxis]
+
+    def _mish(x):
+        return x * np.tanh(np.log1p(np.exp(np.clip(x, -88.0, 88.0))))
+
+    for i in range(4):
+        idx = i * 3
+        x = _conv1d(x, lr_w[f"{idx}_weight"], lr_w[f"{idx}_bias"], padding=1)
+        x = _group_norm(x, lr_w[f"{idx + 1}_weight"], lr_w[f"{idx + 1}_bias"])
+        x = _mish(x)
+
+    x = _conv1d(x, lr_w["12_weight"], lr_w["12_bias"], padding=0)
+    return x[np.newaxis]  # (1, 80, T)
+
+
+# ---------------------------------------------------------------------------
+# Kaldi fbank — upstream-compatible helper
+# ---------------------------------------------------------------------------
+
+
+def _kaldi_fbank_compat(wav: np.ndarray, sr: int = 16000) -> np.ndarray:
+    """Compute Kaldi-style 80-bin log mel filterbank for CAM++ speaker encoder.
+
+    Delegates to ``torchaudio.compliance.kaldi.fbank`` (exact upstream match)
+    when torch/torchaudio are available.  Falls back to the numpy approximation
+    otherwise so that the library stays PyTorch-free at inference time when
+    torch is not installed.
+
+    Parameters
+    ----------
+    wav : (N,) float32 at *sr* Hz
+    sr  : sample rate (default 16000)
+
+    Returns
+    -------
+    np.ndarray  (1, T_frames, 80) float32 — mean-normalised log-mel
+    """
+    try:
+        import torch
+        import torchaudio.compliance.kaldi as kaldi_ta
+
+        wav_t = torch.from_numpy(wav).unsqueeze(0)  # (1, N)
+        fbank = kaldi_ta.fbank(wav_t, num_mel_bins=80, dither=0, sample_frequency=sr)
+        fbank = fbank - fbank.mean(dim=0, keepdim=True)
+        return fbank.unsqueeze(0).numpy().astype(np.float32)  # (1, T, 80)
+    except Exception:
+        return _kaldi_fbank(wav, sr=sr)
+
+
+# ---------------------------------------------------------------------------
 # Adapter
 # ---------------------------------------------------------------------------
 
@@ -315,6 +426,8 @@ class CosyVoiceAdapter(VoiceClonerBase):
         self._fd_sess = None
         self._hf_src_sess = None
         self._hf_bb_sess = None
+        # LengthRegulator conv model weights (numpy, lazy-loaded)
+        self._lr_weights = None
 
     # ------------------------------------------------------------------
     # Lazy model loading
@@ -342,13 +455,15 @@ class CosyVoiceAdapter(VoiceClonerBase):
         files = {
             "tok": _F_TOKENIZER,
             "spk": _F_CAMPPLUS,
-            "fe": _F_FLOW_ENC_Q8 if q else _F_FLOW_ENC,
+            "fe": _F_FLOW_ENC,            # conformer-only, no quantized variant
             "fd": _F_FLOW_DEC_Q8 if q else _F_FLOW_DEC,
             "hf_src": _F_HIFIGAN_SRC_Q8 if q else _F_HIFIGAN_SRC,
             "hf_bb": _F_HIFIGAN_BB_Q8 if q else _F_HIFIGAN_BB,
         }
 
         paths = {k: hf_hub_download(repo_id=_HF_REPO_ID, filename=v) for k, v in files.items()}
+        lr_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=_F_LR_WEIGHTS)
+        self._lr_weights = np.load(lr_path)
 
         n = os.cpu_count() or 4
         opts = ort.SessionOptions()
@@ -375,8 +490,12 @@ class CosyVoiceAdapter(VoiceClonerBase):
         return tokens.reshape(1, -1).astype(np.int64)  # (1, T_tok)
 
     def _extract_speaker_embedding(self, wav_16k: np.ndarray) -> np.ndarray:
-        """Kaldi fbank → L2-normalized 192-d speaker embedding (1, 192)."""
-        fbank = _kaldi_fbank(wav_16k, sr=_SPK_SR)  # (1, T, 80)
+        """Kaldi fbank → L2-normalized 192-d speaker embedding (1, 192).
+
+        Uses torchaudio.compliance.kaldi.fbank when torch is available (exact
+        upstream match).  Falls back to the numpy approximation otherwise.
+        """
+        fbank = _kaldi_fbank_compat(wav_16k, sr=_SPK_SR)  # (1, T, 80)
         inp_name = self._spk_sess.get_inputs()[0].name
         emb = self._spk_sess.run(None, {inp_name: fbank})[0]  # (1, 192)
         emb = emb.reshape(1, -1).astype(np.float32)
@@ -388,15 +507,50 @@ class CosyVoiceAdapter(VoiceClonerBase):
     # ------------------------------------------------------------------
 
     def _encode_tokens(self, tokens: np.ndarray) -> np.ndarray:
-        """Content tokens (1, T) → mu (1, 80, T_mel)."""
-        return self._fe_sess.run(None, {"tokens": tokens})[0]
+        """Content tokens (1, T) → mu (1, 80, T_mel).
+
+        Two-stage:
+        1. ONNX conformer (flow_encoder_conformer.onnx, takes tokens + token_len)
+           → h (1, T, 80)
+        2. Numpy InterpolateRegulator: interpolate h to mel frames then apply the
+           LR conv model (weights from lr_weights.npz).
+        """
+        T = int(tokens.shape[1])
+        token_len = np.array([T], dtype=np.int64)
+
+        # Stage 1: Conformer encoding
+        h = self._fe_sess.run(
+            None, {"tokens": tokens, "token_len": token_len}
+        )[0]  # (1, T, 80)
+
+        # Stage 2: InterpolateRegulator — mirrors InterpolateRegulator.inference
+        h_t = h.transpose(0, 2, 1)  # (1, 80, T)
+        mel_len = max(int(T / _FLOW_FRAME_RATE * _CV_SR / _FLOW_MEL_HOP), 1)
+        _H = int(20 / _FLOW_FRAME_RATE * _CV_SR / _FLOW_MEL_HOP)  # = 14
+
+        if T > 40:
+            h_head = _interp1d(h_t[:, :, :20], _H)
+            h_mid = _interp1d(h_t[:, :, 20:-20], mel_len - 2 * _H)
+            h_tail = _interp1d(h_t[:, :, -20:], _H)
+            h_interp = np.concatenate([h_head, h_mid, h_tail], axis=2)
+        else:
+            h_interp = _interp1d(h_t, mel_len)
+
+        # Apply LR conv model
+        return _apply_lr_model(h_interp, self._lr_weights)  # (1, 80, T_mel)
 
     # ------------------------------------------------------------------
     # Flow decoder (mu + spk → mel)  — Euler ODE solver
     # ------------------------------------------------------------------
 
     def _flow_decode(self, mu: np.ndarray, spk_emb: np.ndarray) -> np.ndarray:
-        """ODE Euler solver: runs *ode_steps* estimator passes.
+        """ODE Euler solver with classifier-free guidance (CFG).
+
+        Matches upstream CosyVoice ``ConditionalCFM.solve_euler`` exactly:
+        - Cosine time schedule (t_span = 1 - cos(t * pi/2))
+        - Batch-2 CFG idiom: index-0 is conditioned, index-1 is unconditioned
+          (mu/spks/cond zeroed for the unconditioned copy)
+        - CFG combination: (1 + cfg_rate) * v_cond - cfg_rate * v_uncond
 
         Parameters
         ----------
@@ -408,27 +562,59 @@ class CosyVoiceAdapter(VoiceClonerBase):
         mel : (1, 80, T_mel) float32
         """
         T_mel = mu.shape[2]
+        n_steps = self._ode_steps
 
-        # Batch size 2 (classifier-free guidance idiom from CosyVoice)
-        mu_b = np.concatenate([mu, mu], axis=0)
-        mask = np.ones((2, 1, T_mel), dtype=np.float32)
-        spks = np.concatenate([spk_emb, spk_emb], axis=0)
-        cond = np.zeros((2, 80, T_mel), dtype=np.float32)
+        # Cosine time schedule: t_span[i] = 1 - cos(i/n_steps * pi/2), length n_steps+1
+        idx = np.linspace(0.0, 1.0, n_steps + 1, dtype=np.float32)
+        t_span = (1.0 - np.cos(idx * 0.5 * np.pi)).astype(np.float32)
 
-        # Initialize from noise
-        x = np.random.randn(2, 80, T_mel).astype(np.float32)
+        # Batch-2 CFG: slot 0 = conditioned, slot 1 = unconditioned (zeros)
+        mu_in = np.zeros((2, 80, T_mel), dtype=np.float32)
+        mu_in[0] = mu[0]                                    # conditioned
+        # mu_in[1] stays zero                              # unconditioned
 
-        dt = 1.0 / self._ode_steps
-        for step in range(self._ode_steps):
-            t_val = float(step) / self._ode_steps
-            t = np.array([t_val, t_val], dtype=np.float32)
+        mask_in = np.ones((2, 1, T_mel), dtype=np.float32)
+
+        spks_in = np.zeros((2, 80), dtype=np.float32)
+        spks_in[0] = spk_emb[0]                            # conditioned
+
+        cond_in = np.zeros((2, 80, T_mel), dtype=np.float32)
+        # cond_in stays zero for both slots (no prompt conditioning in VC mode)
+
+        # Initialize from isotropic noise (single trajectory, replicated for batch)
+        z = np.random.randn(1, 80, T_mel).astype(np.float32)
+        x_in = np.zeros((2, 80, T_mel), dtype=np.float32)
+        x_in[0] = z[0]
+        x_in[1] = z[0]
+
+        t = t_span[0]
+        for step in range(1, n_steps + 1):
+            dt = t_span[step] - t
+            t_arr = np.array([t, t], dtype=np.float32)
+
             velocity = self._fd_sess.run(
                 None,
-                {"x": x, "mask": mask, "mu": mu_b, "t": t, "spks": spks, "cond": cond},
-            )[0]
-            x = x + velocity * dt
+                {
+                    "x": x_in,
+                    "mask": mask_in,
+                    "mu": mu_in,
+                    "t": t_arr,
+                    "spks": spks_in,
+                    "cond": cond_in,
+                },
+            )[0]  # (2, 80, T_mel)
 
-        return x[:1]  # take first batch element: (1, 80, T_mel)
+            # CFG: (1 + cfg_rate) * v_cond - cfg_rate * v_uncond
+            v_cond = velocity[0:1]
+            v_uncond = velocity[1:2]
+            v_cfg = (1.0 + _INFERENCE_CFG_RATE) * v_cond - _INFERENCE_CFG_RATE * v_uncond
+
+            x_new = x_in[0:1] + dt * v_cfg          # (1, 80, T_mel)
+            x_in[0] = x_new[0]
+            x_in[1] = x_new[0]
+            t = t + dt
+
+        return x_in[0:1]  # (1, 80, T_mel)
 
     # ------------------------------------------------------------------
     # HiFiGAN vocoder (mel → waveform)
@@ -460,9 +646,14 @@ class CosyVoiceAdapter(VoiceClonerBase):
         # Step 4: numpy ISTFT
         mag = magnitude.squeeze(0)   # (9, T_stft)
         phi = phase.squeeze(0)       # (9, T_stft)
-        # phase is sin(θ) from backbone — recover angle
-        phi_angle = np.arcsin(np.clip(phi, -1.0, 1.0))
-        audio = _istft(mag, phi_angle)                       # (T_audio,)
+        # phase is used directly as the angle (radians) in the ISTFT polar
+        # decomposition: real = mag*cos(phi), imag = mag*sin(phi).
+        # The backbone applies torch.sin() to its raw output before returning
+        # phase — this clamps values to [-1, 1] and the model is trained to
+        # use these values directly as angles (the comment in upstream source
+        # says "sin is redundancy").  Do NOT apply arcsin — that would invert
+        # the transformation and produce badly wrapped phases.
+        audio = _istft(mag, phi)                             # (T_audio,)
         return np.clip(audio, -0.99, 0.99).astype(np.float32)
 
     # ------------------------------------------------------------------

@@ -1114,3 +1114,51 @@ huggingface-cli upload TigreGotico/voiceclonnx-cosyvoice /tmp/vc-cosy-out/cosyvo
 
 The `--push` flag skips re-exporting already-present ONNX files (checks by
 filename) and calls `huggingface_hub.upload_folder` directly after export.
+
+### Root-cause record: adapter silent-noise regression
+
+Six bugs in the adapter caused 100% WER (pure noise output) despite all seven
+ONNX components passing per-component parity:
+
+1. **Baked mel length in flow\_encoder.onnx** — the original export used a
+   single `F.interpolate(..., size=mel_len)` where `mel_len` was derived from
+   `tokens.shape[1]` inside the traced model.  ONNX tracing bakes the Resize
+   `sizes` input as a constant (e.g. `86`), so every input length would produce
+   `(1, 80, 86)` regardless of token count.  Fix: split the encoder into
+   `flow_encoder_conformer.onnx` (conformer only, explicit `token_len` input)
+   plus a numpy `InterpolateRegulator` applied post-ONNX with `lr_weights.npz`.
+
+2. **Baked attention mask in conformer** — a first re-export attempt derived
+   `token_len` from `tokens.shape[1]` inside the model; ONNX tracing baked the
+   padding mask as a constant.  Fix: pass `token_len` as a named ONNX input so
+   it flows through the graph at runtime.
+
+3. **Wrong CFG wiring** — both slots of the batch-2 ODE input were set to the
+   conditioned signal.  The correct idiom is slot 0 = conditioned (`mu`, `spks`
+   set), slot 1 = unconditioned (zeros for `mu`/`spks`/`cond`); velocity
+   combined as `(1 + cfg_rate) * v_cond − cfg_rate * v_uncond`
+   (`cfg_rate = 0.7`).
+
+4. **Linear vs cosine ODE time schedule** — the adapter used
+   `t_span = linspace(0, 1, n+1)` whereas upstream `ConditionalCFM.solve_euler`
+   uses `t_span[i] = 1 − cos(i/n · π/2)`.
+
+5. **Phase `arcsin` error in HiFiGAN ISTFT** — the backbone outputs the phase
+   directly as an angle (via `sin(raw)` inside the network); the adapter was
+   applying `arcsin(clip(phi, −1, 1))` before `_istft`, introducing severe phase
+   distortion.  Fix: use `phi` directly as the angle.
+
+6. **Kaldi fbank mismatch** — the numpy fbank approximation had different
+   frequency warping and length compared with `torchaudio.compliance.kaldi.fbank`
+   (dither=0).  Fix: `_kaldi_fbank_compat` calls torchaudio when available,
+   falling back to numpy only when torch is absent.
+
+After all six fixes: cosyvoice fp32 WER = 8% on both reference clips (gate ≤ 40%).
+
+**INT8 note**: `quantize_dynamic` on `flow_decoder.onnx` produces weight-only
+INT8 with correlation ≈ 0.19 vs fp32 output (WER 100%).  The transformer
+attention architecture in the flow-matching estimator is sensitive to
+weight-only quantization without activation calibration.  Cosyvoice is listed
+in `docs/QUANTS.md` with INT8 flagged ⚠.  Activation-calibrated (static) INT8
+via ONNX Runtime calibration tools may recover quality but requires a
+representative dataset and is out of scope for this release.

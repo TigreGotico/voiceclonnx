@@ -173,10 +173,14 @@ class _MockCAMPlussSess:
 
 
 class _MockFlowEncoderSess:
-    """Fake flow_encoder: tokens (1,T) → mu (1,80,T*2) float32."""
+    """Fake flow_encoder_conformer: (tokens, token_len) → h (1,T,80) float32.
+
+    The adapter now uses a two-stage encoder: the ONNX conformer returns
+    h (1, T, 80), then numpy InterpolateRegulator + LR model produce mu.
+    """
     def run(self, _, inputs):
         T = inputs["tokens"].shape[1]
-        return [np.zeros((1, 80, T * 2), dtype=np.float32)]
+        return [np.zeros((1, T, 80), dtype=np.float32)]
 
 
 class _MockFlowDecoderSess:
@@ -212,6 +216,22 @@ def _inject_mocks(adapter) -> "CosyVoiceAdapter":
     # Inject a dummy spk_proj so _project_spk_emb works without HF download
     adapter._spk_proj_w = np.zeros((80, 192), dtype=np.float32)
     adapter._spk_proj_b = np.zeros(80, dtype=np.float32)
+    # Inject identity LR weights so the numpy LR model passes through
+    # Architecture: 4 × [Conv1d(80,80,k=3,p=1)+GN+Mish] + Conv1d(80,80,k=1)
+    # Use identity-like weights (zero bias, identity-ish weight)
+    eye80 = np.eye(80, dtype=np.float32)
+    zeros80 = np.zeros(80, dtype=np.float32)
+    w3_identity = np.zeros((80, 80, 3), dtype=np.float32)
+    w3_identity[:, :, 1] = eye80  # centre tap = identity
+    w1_identity = eye80[:, :, np.newaxis]  # (80, 80, 1)
+    adapter._lr_weights = {
+        **{f"{i * 3}_weight": w3_identity for i in range(4)},
+        **{f"{i * 3}_bias": zeros80 for i in range(4)},
+        **{f"{i * 3 + 1}_weight": np.ones(80, dtype=np.float32) for i in range(4)},
+        **{f"{i * 3 + 1}_bias": zeros80 for i in range(4)},
+        "12_weight": w1_identity,
+        "12_bias": zeros80,
+    }
     return adapter
 
 
