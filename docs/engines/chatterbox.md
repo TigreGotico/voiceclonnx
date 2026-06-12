@@ -10,11 +10,11 @@ Voice conversion runs at **24 kHz**.
 ## Install
 
 ```bash
-pip install "vconnx[chatterbox]"
+pip install vconnx
 ```
 
-This pulls in the `chatterbox_onnx` package which handles model download and ONNX
-session management internally.
+No per-engine extras required. ONNX models are downloaded on first use from
+[onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx).
 
 ---
 
@@ -22,9 +22,7 @@ session management internally.
 
 | Key | Type | Default | Description |
 |---|---|---|---|
-| `quantized` | `bool` | `True` | Use the Q4-quantized language model. Set to `False` for full-precision (much larger and slower on CPU). |
 | `exaggeration` | `float` | `0.6` | Voice exaggeration factor. Higher values produce a more pronounced voice style; `0.5` is a neutral starting point. |
-| `max_new_tokens` | `int` | `512` | Maximum speech tokens to generate per call. Increase for long utterances. |
 
 ---
 
@@ -68,21 +66,18 @@ vconnx clone --engine chatterbox \
 
 | Artifact | HF repo | License |
 |---|---|---|
-| `chatterbox_onnx` model files | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | See upstream repo |
+| ONNX model files | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | Apache-2.0 |
 
-Model download is handled by `chatterbox_onnx` internally — no manual step needed.
+Models are downloaded automatically on first use via `huggingface_hub`.
 
 ---
 
 ## Troubleshooting
 
-**`ImportError: chatterbox_onnx is required`**
-Install the extras group: `pip install "vconnx[chatterbox]"`.
-
 **Quality is robotic / artefact-heavy**
-Try `exaggeration=0.5` (lower) or increase `max_new_tokens` if the output is cut off.
+Try `exaggeration=0.5` (lower value).
 
 **Slow on CPU**
-The default `quantized=True` uses a Q4 LM which is significantly faster than
-`quantized=False`. On a typical laptop CPU, expect 10–40 s per conversion depending
-on utterance length.
+The two ONNX sessions (speech_encoder + conditional_decoder) run on CPU via
+onnxruntime. On a typical laptop CPU expect 5–30 s depending on utterance length.
+The VC path does not use the LLM, so it is faster than TTS with the same models.

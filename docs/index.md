@@ -11,24 +11,22 @@ TTS-engine concern and is out of scope here.
 ## Install
 
 ```bash
-pip install vconnx                    # core (no engine)
-pip install "vconnx[chatterbox]"      # Chatterbox AR codec-LM (default engine)
-pip install "vconnx[knnvc]"           # kNN-VC — WavLM + HiFi-GAN
-pip install "vconnx[openvoice]"       # OpenVoice v2 tone-color converter
+pip install vconnx
 ```
 
-### Extras matrix
+One command installs **every engine**. Core dependencies:
+`onnxruntime`, `numpy`, `soundfile`, `huggingface_hub`. ONNX models are
+downloaded on first use from Hugging Face Hub.
 
-| Extra | What it installs | Engine alias |
+For conversion / export tooling and tests only:
+
+| Extra | What it installs | Use |
 |---|---|---|
-| `chatterbox` | `chatterbox_onnx` | `chatterbox` |
-| `knnvc` | `onnxruntime`, `numpy`, `soundfile` | `knnvc` |
-| `openvoice` | `onnxruntime`, `numpy`, `soundfile` | `openvoice` |
-| `convert` | `torch`, `onnx`, `onnxruntime`, `onnxruntime-tools`, `huggingface_hub` | — (conversion toolchain only) |
-| `test` | `pytest`, `edge-tts` | — |
+| `convert` | `torch`, `onnx`, `transformers`, `librosa`, `onnxruntime-tools`, `huggingface_hub` | Export new ONNX models from upstream checkpoints — never needed for inference |
+| `bench` | `faster-whisper`, `edge-tts` | Benchmark/demo generation |
+| `test` | `pytest`, `faster-whisper`, `edge-tts` | Test suite |
 
-The `convert` extra is only needed when exporting new ONNX artifacts from upstream
-model checkpoints. See [converting.md](converting.md).
+See [converting.md](converting.md) for the full conversion toolchain.
 
 ---
 
@@ -46,11 +44,17 @@ print(cloner.sample_rate)   # 24000
 
 ## Engine matrix
 
-| Alias | Install extra | Sample rate | HF model repo | Notes |
-|---|---|---|---|---|
-| `chatterbox` | `vconnx[chatterbox]` | 24 kHz | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | Default engine; AR codec-LM |
-| `knnvc` | `vconnx[knnvc]` | 16 kHz | [TigreGotico/vconnx-knn-vc](https://huggingface.co/TigreGotico/vconnx-knn-vc) | WavLM + k-NN + HiFi-GAN; CPU-friendly |
-| `openvoice` | `vconnx[openvoice]` | 22 kHz | [TigreGotico/vconnx-openvoice-v2](https://huggingface.co/TigreGotico/vconnx-openvoice-v2) | Tone-color transfer; Griffin-Lim vocoder |
+All engines are included in the base `pip install vconnx`.
+
+| Alias | Sample rate | HF model repo | Notes |
+|---|---|---|---|
+| `chatterbox` | 24 kHz | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | AR codec-LM; VC path only |
+| `focalcodec` | 16 kHz | [TigreGotico/vconnx-focalcodec](https://huggingface.co/TigreGotico/vconnx-focalcodec) | WavLM + cosine kNN + Vocos ISTFT |
+| `freevc` | 16 kHz | [TigreGotico/vconnx-freevc](https://huggingface.co/TigreGotico/vconnx-freevc) | WavLM + GE2E + VITS decoder |
+| `knnvc` | 16 kHz | [TigreGotico/vconnx-knn-vc](https://huggingface.co/TigreGotico/vconnx-knn-vc) | WavLM + L2-kNN + HiFi-GAN |
+| `openvoice` | 22 kHz | [TigreGotico/vconnx-openvoice-v2](https://huggingface.co/TigreGotico/vconnx-openvoice-v2) | Tone-color transfer |
+| `rvc` | 40/48 kHz | [TigreGotico/vconnx-rvc](https://huggingface.co/TigreGotico/vconnx-rvc) | Any-to-ONE; voice baked into model |
+| `triaan` | 16 kHz | [TigreGotico/vconnx-triaan-vc](https://huggingface.co/TigreGotico/vconnx-triaan-vc) | CPC + TriAAN decoder + PWG |
 
 ---
 

@@ -57,7 +57,7 @@ def test_rvc_entry_metadata():
     entry = get_engine("rvc")
     assert entry.alias == "rvc"
     assert entry.onnx_native is True
-    assert entry.extras == "rvc"
+    assert entry.extras == ""
     assert entry.adapter_class.__name__ == "RVCAdapter"
 
 

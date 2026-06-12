@@ -67,7 +67,7 @@ def test_knnvc_entry_metadata():
     entry = get_engine("knnvc")
     assert entry.alias == "knnvc"
     assert entry.onnx_native is True
-    assert entry.extras == "knnvc"
+    assert entry.extras == ""
     assert entry.adapter_class.__name__ == "KNNVCAdapter"
 
 

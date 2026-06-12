@@ -59,7 +59,7 @@ def test_freevc_entry_metadata():
     entry = get_engine("freevc")
     assert entry.alias == "freevc"
     assert entry.onnx_native is True
-    assert entry.extras == "freevc"
+    assert entry.extras == ""
     assert entry.adapter_class.__name__ == "FreeVCAdapter"
 
 
@@ -86,7 +86,7 @@ def test_freevc_quantized_flag():
 
 def test_log_mel_shape():
     """Log-mel output shape should be (n_frames, 40)."""
-    pytest.importorskip("librosa")
+    pass  # no longer requires librosa; pure numpy
     from vconnx.engines.freevc import _compute_log_mel
 
     sr = 16000
@@ -100,7 +100,7 @@ def test_log_mel_shape():
 
 def test_log_mel_nonzero_for_signal():
     """Non-silent audio should produce non-uniform mel values."""
-    pytest.importorskip("librosa")
+    pass  # no longer requires librosa; pure numpy
     from vconnx.engines.freevc import _compute_log_mel
 
     sr = 16000
@@ -150,7 +150,7 @@ class _MockDecoderSession:
 
 def test_adapter_clone_voice_mock(tmp_path):
     """Adapter pipeline completes with mocked ORT sessions."""
-    pytest.importorskip("librosa")
+    pass  # no longer requires librosa; pure numpy
     from vconnx.engines.freevc import FreeVCAdapter
 
     src_wav = _make_wav(str(tmp_path / "src.wav"), duration_s=1.0)
@@ -174,7 +174,7 @@ def test_adapter_clone_voice_mock(tmp_path):
 
 def test_adapter_output_is_16khz(tmp_path):
     """Output WAV must be 16 kHz regardless of input sample rate."""
-    pytest.importorskip("librosa")
+    pass  # no longer requires librosa; pure numpy
     from vconnx.engines.freevc import FreeVCAdapter
 
     src_path = str(tmp_path / "src44.wav")
@@ -220,7 +220,7 @@ def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
 
 def test_decode_input_shapes(tmp_path):
     """Decoder receives correct tensor shapes: c=(1,1024,T), g=(1,256)."""
-    pytest.importorskip("librosa")
+    pass  # no longer requires librosa; pure numpy
     from vconnx.engines.freevc import FreeVCAdapter
 
     captured = {}

@@ -18,62 +18,28 @@ requires-python = ">=3.9"
 dependencies = [
     "numpy",
     "onnxruntime",
+    "soundfile",
     "huggingface_hub",
 ]
 
 [project.optional-dependencies]
-chatterbox = ["chatterbox_onnx"]
-focalcodec = [
-    "onnxruntime",
-    "numpy",
-    "soundfile",
-]
-freevc = [
-    "onnxruntime",
-    "numpy",
-    "soundfile",
-    "librosa",
-]
-knnvc = [
-    "onnxruntime",
-    "numpy",
-    "soundfile",
-]
-openvoice = [
-    "onnxruntime",
-    "numpy",
-    "soundfile",
-]
-rvc = [
-    "onnxruntime",
-    "numpy",
-    "soundfile",
-    "librosa",
-]
-triaan = [
-    "onnxruntime",
-    "numpy",
-    "soundfile",
-    "librosa",
-]
 convert = [
     "torch",
     "onnx",
     "onnxruntime",
     "onnxruntime-tools",
     "huggingface_hub",
+    "transformers",
+    "librosa",
+]
+bench = [
+    "faster-whisper",
+    "edge-tts",
 ]
 test = [
     "pytest",
+    "faster-whisper",
     "edge-tts",
-]
-test-convert = [
-    "pytest",
-    "torch",
-    "onnx",
-    "onnxruntime",
-    "onnxruntime-tools",
-    "huggingface_hub",
 ]
 
 [project.scripts]

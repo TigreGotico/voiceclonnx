@@ -26,10 +26,10 @@ Output sample rate: **16 kHz**.
 ## Install
 
 ```bash
-pip install "vconnx[freevc]"
+pip install vconnx
 ```
 
-Dependencies pulled in: `onnxruntime`, `numpy`, `soundfile`, `librosa`.
+Core deps: `onnxruntime`, `numpy`, `soundfile`, `huggingface_hub` — no librosa at inference.
 Models are downloaded from HF Hub on first use (~1.2 GB fp32 or ~342 MB int8).
 
 ---
@@ -85,7 +85,7 @@ out = cloner.clone_voice("source.wav", "reference.wav", "out_q8.wav")
 ### CLI
 
 ```bash
-pip install "vconnx[freevc]"
+pip install vconnx
 
 vconnx clone --engine freevc \
              --audio source.wav \
@@ -120,10 +120,10 @@ its own repo; the kNN-VC file is not referenced.
 ## Troubleshooting
 
 **`ImportError: onnxruntime is required`**
-Install the extras group: `pip install "vconnx[freevc]"`.
+Install the extras group: `pip install vconnx`.
 
-**`ImportError: librosa`**
-Same fix: `pip install "vconnx[freevc]"` pulls librosa.
+
+Same fix: `pip install vconnx` pulls librosa.
 
 **Output sounds muffled or robotic**
 The conversion quality depends on having a clean reference clip that is at least

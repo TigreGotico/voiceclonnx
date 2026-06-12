@@ -20,7 +20,7 @@ Output sample rate: **22050 Hz**.
 ## Install
 
 ```bash
-pip install "vconnx[openvoice]"
+pip install vconnx
 ```
 
 Dependencies pulled in: `onnxruntime`, `numpy`, `soundfile`.
@@ -72,7 +72,7 @@ out = cloner.clone_voice("source.wav", "reference.wav", "out_hq.wav")
 ### CLI
 
 ```bash
-pip install "vconnx[openvoice]"
+pip install vconnx
 
 vconnx clone --engine openvoice \
              --audio source.wav \
@@ -92,7 +92,7 @@ vconnx clone --engine openvoice \
 ## Troubleshooting
 
 **`ImportError: onnxruntime is required`**
-Install the extras group: `pip install "vconnx[openvoice]"`.
+Install the extras group: `pip install vconnx`.
 
 **Output sounds muffled or phasey**
 This is a known limitation of the Griffin-Lim vocoder. Increase `gl_iters` (e.g. 64)

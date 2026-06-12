@@ -16,8 +16,8 @@ Three-stage inference pipeline (all ONNX, no torch at runtime):
 F0 (fundamental frequency / pitch) extraction uses a lightweight pure-numpy
 WORLD-style autocorrelation estimator — no torch, no pyworld required.
 
-Requires: ``pip install vconnx[triaan]``
-  → onnxruntime, numpy, soundfile, librosa
+Requires: ``pip install vconnx``
+  -> onnxruntime, numpy, soundfile, huggingface_hub
 
 References
 ----------
@@ -71,17 +71,12 @@ def _load_wav(path: str, target_sr: int = _TRIAAN_SR) -> np.ndarray:
         audio = audio.mean(axis=1)
 
     if sr != target_sr:
-        # Librosa for quality resampling
-        try:
-            import librosa
-            audio = librosa.resample(audio, orig_sr=sr, target_sr=target_sr)
-        except ImportError:
-            n_out = int(len(audio) * target_sr / sr)
-            audio = np.interp(
-                np.linspace(0, len(audio) - 1, n_out),
-                np.arange(len(audio)),
-                audio,
-            ).astype(np.float32)
+        n_out = int(len(audio) * target_sr / sr)
+        audio = np.interp(
+            np.linspace(0, len(audio) - 1, n_out),
+            np.arange(len(audio)),
+            audio,
+        ).astype(np.float32)
 
     # Normalise peak amplitude
     peak = np.abs(audio).max()
@@ -414,7 +409,7 @@ register_engine(
             "ONNX artifacts from TigreGotico/vconnx-triaan-vc. "
             "(winddori2002 et al., ICASSP 2023, MIT license)"
         ),
-        extras="triaan",
+        extras="",
         onnx_native=True,
     )
 )

@@ -4,26 +4,42 @@
 file to sound like a reference speaker.  Text-driven synthesis belongs to
 TTS engines; see the README scope section.
 
-Runtime dependencies: onnxruntime, numpy, huggingface_hub (no torch).
+Runtime dependencies: onnxruntime, numpy, soundfile, huggingface_hub (no torch,
+no librosa). A single ``pip install vconnx`` enables every engine — no per-engine
+extras required. ONNX models are downloaded on first use from Hugging Face Hub.
 
 Engine registry
 ---------------
 Engines are discovered by importing their adapter module.  The built-in
 engines ship alongside this package and are auto-imported here.
 
-``"chatterbox"`` (default):
-    Chatterbox AR codec-LM ONNX export (onnx-community/chatterbox-onnx).
-    Requires: ``pip install vconnx[chatterbox]``
+``"chatterbox"``:
+    Chatterbox AR codec-LM — VC path only (no tokenizer, no LLM generation).
+    Models: onnx-community/chatterbox-onnx.  Output: 24 kHz.
 
 ``"focalcodec"``:
     FocalCodec: WavLM encoder + kNN cosine matching (pure numpy) + Vocos
     ISTFT decoder. Zero-shot any-to-any VC at 16 kHz. Apache-2.0.
-    Requires: ``pip install vconnx[focalcodec]``
+
+``"freevc"``:
+    FreeVC: WavLM-Large + GE2E speaker encoder + VITS decoder.
+    Zero-shot any-to-any VC at 16 kHz. MIT.
+
+``"knnvc"``:
+    kNN-VC: WavLM-Large layer-6 + L2-kNN matching (pure numpy) + HiFi-GAN.
+    Zero-shot any-to-any VC at 16 kHz. MIT.
+
+``"openvoice"``:
+    OpenVoice v2: tone-color reference encoder + VITS-style converter.
+    Zero-shot any-to-any VC at 22 kHz. MIT.
+
+``"rvc"``:
+    RVC: ContentVec + RMVPE F0 + VITS synthesizer. Any-to-ONE.
+    reference_voice = path to an RVC .onnx model. MIT.
 
 ``"triaan"``:
     TriAAN-VC: CPC encoder + Triple Adaptive Attention Normalization decoder
-    + ParallelWaveGAN vocoder. Zero-shot any-to-any VC at 16 kHz.
-    Requires: ``pip install vconnx[triaan]``
+    + ParallelWaveGAN vocoder. Zero-shot any-to-any VC at 16 kHz. MIT.
 
 Usage
 -----

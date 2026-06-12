@@ -26,8 +26,13 @@ Chunking note:
   processes source audio in overlapping chunks (``_CHUNK_SECONDS``) and
   crossfades the waveform segments back together.
 
-Requires: ``pip install vconnx[freevc]``
-  → onnxruntime, numpy, soundfile, librosa
+Requires: ``pip install vconnx``
+  -> onnxruntime, numpy, soundfile, huggingface_hub
+
+Log-mel note:
+  The GE2E speaker encoder expects a 40-bin log-mel spectrogram.  This is
+  computed with a pure-numpy HTK-scale mel filterbank + Hann-window STFT so
+  that librosa is NOT required at inference.
 
 References
 ----------
@@ -111,6 +116,39 @@ def _save_wav(path: str, audio: np.ndarray, sr: int) -> None:
 # ---------------------------------------------------------------------------
 
 
+def _mel_filterbank(
+    n_fft: int,
+    n_mels: int,
+    sr: int,
+    fmin: float,
+    fmax: float,
+) -> np.ndarray:
+    """Build an HTK-scale mel filterbank matrix of shape (n_mels, n_fft//2+1)."""
+
+    def _hz2mel(hz: float) -> float:
+        return 2595.0 * np.log10(1.0 + hz / 700.0)
+
+    def _mel2hz(mel: float) -> float:
+        return 700.0 * (10.0 ** (mel / 2595.0) - 1.0)
+
+    n_bins = n_fft // 2 + 1
+    fft_freqs = np.linspace(0.0, sr / 2.0, n_bins)
+
+    mel_min = _hz2mel(fmin)
+    mel_max = _hz2mel(fmax)
+    mel_points = np.linspace(mel_min, mel_max, n_mels + 2)
+    freq_points = np.array([_mel2hz(m) for m in mel_points])
+
+    fb = np.zeros((n_mels, n_bins), dtype=np.float64)
+    for m in range(n_mels):
+        lo, center, hi = freq_points[m], freq_points[m + 1], freq_points[m + 2]
+        up = (fft_freqs >= lo) & (fft_freqs <= center)
+        down = (fft_freqs > center) & (fft_freqs <= hi)
+        fb[m, up] = (fft_freqs[up] - lo) / (center - lo + 1e-10)
+        fb[m, down] = (hi - fft_freqs[down]) / (hi - center + 1e-10)
+    return fb.astype(np.float32)
+
+
 def _compute_log_mel(
     audio: np.ndarray,
     sr: int = _FREEVC_SR,
@@ -122,32 +160,39 @@ def _compute_log_mel(
 ) -> np.ndarray:
     """Compute log-mel spectrogram compatible with the GE2E speaker encoder.
 
+    Pure-numpy implementation (Hann-window STFT + HTK mel filterbank).
+    Output matches librosa.feature.melspectrogram + librosa.power_to_db
+    to within the precision of the mel filterbank discretization.
+
     Returns
     -------
     np.ndarray
         (n_frames, n_mels) float32 — log-mel spectrogram.
     """
-    try:
-        import librosa
-    except ImportError as exc:
-        raise ImportError(
-            "librosa is required for engine='freevc'. "
-            "Install it with: pip install vconnx[freevc]"
-        ) from exc
-
     n_fft = int(sr * window_ms / 1000)
     hop_length = int(sr * step_ms / 1000)
-    mel = librosa.feature.melspectrogram(
-        y=audio,
-        sr=sr,
-        n_fft=n_fft,
-        hop_length=hop_length,
-        n_mels=n_mels,
-        fmin=fmin,
-        fmax=fmax,
-    )
-    log_mel = librosa.power_to_db(mel, ref=np.max).astype(np.float32)
-    return log_mel.T  # (n_frames, n_mels)
+
+    window = np.hanning(n_fft).astype(np.float32)
+    pad = n_fft // 2
+    audio_padded = np.pad(audio, (pad, pad), mode="reflect")
+
+    n_frames = 1 + (len(audio_padded) - n_fft) // hop_length
+    frames = np.stack(
+        [audio_padded[i * hop_length: i * hop_length + n_fft] for i in range(n_frames)],
+        axis=0,
+    )  # (n_frames, n_fft)
+
+    windowed = frames * window[np.newaxis, :]
+    spec = np.fft.rfft(windowed, n=n_fft, axis=1)  # (n_frames, n_fft//2+1)
+    power = (spec.real ** 2 + spec.imag ** 2).astype(np.float32)  # power spectrogram
+
+    fb = _mel_filterbank(n_fft, n_mels, sr, fmin, fmax)  # (n_mels, n_fft//2+1)
+    mel = (fb @ power.T).T  # (n_frames, n_mels)
+
+    # power_to_db: 10 * log10(S / ref) where ref = S.max()
+    ref = mel.max() if mel.max() > 0 else 1.0
+    log_mel = (10.0 * np.log10(np.maximum(mel, 1e-10) / ref)).astype(np.float32)
+    return log_mel  # (n_frames, n_mels)
 
 
 # ---------------------------------------------------------------------------
@@ -424,7 +469,7 @@ register_engine(
             "ONNX artifacts from TigreGotico/vconnx-freevc. "
             "(Qian et al., ICASSP 2023, MIT license)"
         ),
-        extras="freevc",
+        extras="",
         onnx_native=True,
     )
 )

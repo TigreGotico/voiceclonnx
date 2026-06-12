@@ -6,7 +6,7 @@ Any-to-any voice conversion using Triple Adaptive Attention Normalization
 ## Install
 
 ```bash
-pip install "vconnx[triaan]"
+pip install vconnx
 ```
 
 ## Usage
@@ -87,7 +87,7 @@ Vocoder derived from [kan-bayashi/ParallelWaveGAN](https://github.com/kan-bayash
 
 ## Troubleshooting
 
-**`ImportError: No module named 'soundfile'`** — install extras: `pip install "vconnx[triaan]"`.
+**`ImportError: No module named 'soundfile'`** — install extras: `pip install vconnx`.
 
 **Output audio is silent or very short** — ensure the input is 16 000 Hz mono float32;
 resample before passing to `clone_voice`.

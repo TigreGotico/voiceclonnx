@@ -26,8 +26,8 @@ Preprocessing (pure numpy, matches upstream ``spectrogram_torch``):
 
 All neural components run via onnxruntime.  The STFT is pure numpy.
 
-Requires: ``pip install vconnx[openvoice]``
-  -> onnxruntime, numpy, soundfile
+Requires: ``pip install vconnx``
+  -> onnxruntime, numpy, soundfile, huggingface_hub
 
 References
 ----------
@@ -314,7 +314,7 @@ register_engine(
             "ONNX artifacts from TigreGotico/vconnx-openvoice-v2. "
             "(myshell-ai/OpenVoice, MIT license)"
         ),
-        extras="openvoice",
+        extras="",
         onnx_native=True,
     )
 )
