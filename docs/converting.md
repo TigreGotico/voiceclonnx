@@ -878,3 +878,112 @@ Upstream weights: **CC BY-NC-SA 4.0** (SparkAudio/Spark-TTS-0.5B).
 Upstream code: Apache-2.0.
 The `TigreGotico/vconnx-bicodec` HF repo states the license plainly on the
 model card.  Non-commercial use only.
+
+---
+
+## Appendix: Chatterbox quantization notes
+
+### Source models
+
+The fp32 ONNX artifacts are re-hosted from
+[`onnx-community/chatterbox-onnx`](https://huggingface.co/onnx-community/chatterbox-onnx)
+(Apache-2.0).  No PyTorch export is needed; this is a pure quantization pass.
+
+### speech_encoder.onnx — Gemm(transB=1) preprocessing bug
+
+`speech_encoder.onnx` (opset 20) contains two `Gemm(transB=1)` nodes in the
+S3 RVQ codebook (`s3.quantizer._codebook.project_down`).  When
+`onnxruntime.quantization.quantize_dynamic` runs, its internal preprocessor
+decomposes every `Gemm` into `MatMul + Add` *before* applying INT8
+quantization.  For `Gemm(A, B, bias, transB=1)` the weight B has shape
+`(8, 1280)` (output_dim × input_dim).  The preprocessor emits
+`MatMul(A, B) + bias` without transposing B, producing a `MatMul((N,1280), (8,1280))`
+node whose K-dimensions are incompatible.  ORT's session initializer catches
+this via shape inference and raises:
+
+```
+[ShapeInferenceError] Incompatible dimensions
+```
+
+The `nodes_to_exclude` parameter does not prevent this because the
+decomposition runs before the quantization pass, not during it.
+
+**Fix** (`conversion/export_chatterbox.py`): patch the fp32 model before
+calling `quantize_dynamic` — transpose the `project_down.weight` initializer
+from `(8, 1280)` to `(1280, 8)` and rewrite the two `Gemm` nodes as
+`MatMul(A, B_T) + bias`.  The resulting graph is numerically identical to the
+original; the shape is now correct for `MatMul((N,1280), (1280,8)) = (N,8)`.
+
+### conditional_decoder.onnx — If-subgraph hang
+
+`conditional_decoder.onnx` (opset 17) has 23,934 nodes and 20 `If` nodes with
+subgraph `MatMul` ops.  When `quantize_dynamic` quantizes `MatMul` ops inside
+`If` subgraphs, ORT's session initializer hangs indefinitely during graph
+optimization (not a crash — no error is raised; the process simply never
+returns from `InferenceSession(...)`).
+
+**Fix**: enumerate all node names inside `If` subgraphs and pass them to
+`nodes_to_exclude`.  Only main-graph `MatMul` nodes are quantized (4,585 of
+them); the 40 subgraph nodes are left at fp32.
+
+### WER results
+
+Measured with `faster-whisper base.en` on the vconnx reference demo clip
+(10.7 s, `source.wav` → `reference_aria.wav`):
+
+| Variant | WER | Total size (MB) |
+|---|---|---|
+| fp32 | 8% | 1 080.3 |
+| INT8 | 8% | 467.0 |
+
+**57% size reduction, identical WER.  INT8 recommended.**
+
+The VQ codebook token selection (discrete token indices from the S3 encoder)
+is slightly different between fp32 and INT8 runs (the quantization error in
+the continuous 1280-dim transformer embeddings shifts a small fraction of
+codebook lookups), but this does not affect intelligibility on the tested clips.
+
+### Stitch analysis: can speech_encoder + conditional_decoder merge into one graph?
+
+**Verdict: stitchable in principle, impractical due to opset conflict.**
+
+The VC pipeline calls the encoder *twice*:
+
+```
+enc(ref_audio) -> tgt_tokens, x_vector, prompt_feat
+enc(src_audio) -> src_tokens
+speech_tokens  = concat([tgt_tokens, src_tokens], axis=1)   # <-- this is the only glue
+dec(speech_tokens, x_vector, prompt_feat) -> waveform
+```
+
+The sole inter-session operation (`np.concatenate`) is a plain ONNX `Concat`
+node — no non-ONNX control flow, no dynamic dispatch, no Python-side
+computation.  A stitched graph taking `(src_audio, ref_audio)` as dual inputs
+is structurally sound.
+
+**Why it does not work in practice:**
+
+1. **Opset conflict.**  `speech_encoder.onnx` uses opset 20 (requires `STFT`
+   op available at opset 17+).  `conditional_decoder.onnx` uses opset 17 and
+   contains `ReduceL2` with `axes` as an attribute (deprecated in opset 18).
+   A merged ONNX graph has one opset version; there is no setting where both
+   models are valid simultaneously.
+
+2. **Double weight footprint.**  The VC pipeline needs two independent encoder
+   runs (on different audio inputs).  A naive `onnx.compose` merge duplicates
+   all encoder initializers (~1.1 GB shared weights × 2 = 2.2 GB), defeating
+   any session-startup benefit.  De-duplicating initializers after merging is
+   possible but requires custom graph surgery since both copies share the same
+   weight names in the original model.
+
+3. **`onnx.compose.merge_models` is two-component only.**  Stitching three
+   components (enc_src + enc_ref + dec) requires two separate merge passes or
+   manual graph assembly.
+
+The two-model adapter path is the correct design.  Introducing `stitched=True`
+as an adapter option would add complexity for zero runtime benefit (ORT already
+amortises weight loading across sessions sharing a cache).
+
+**Recommendation:** keep the two-session path.  If a single-file distribution
+is needed, pack the two fp32 models into a ZIP/tar alongside the adapter; do
+not attempt a merged ONNX graph.

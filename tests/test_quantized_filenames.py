@@ -297,11 +297,11 @@ class TestTriaanFilenames:
 
 
 # ---------------------------------------------------------------------------
-# Tests: chatterbox — quantized=True accepted but silently ignored (fp32-only)
+# Tests: chatterbox — quantized=True loads _q8 files from TigreGotico/vconnx-chatterbox
 # ---------------------------------------------------------------------------
 
 
-class TestChatterboxQuantizedIgnored:
+class TestChatterboxFilenames:
     @staticmethod
     def _filenames(quantized: bool) -> list[str]:
         from vconnx.engines.chatterbox import ChatterboxAdapter
@@ -309,17 +309,37 @@ class TestChatterboxQuantizedIgnored:
 
     def test_fp32_no_q8_files(self):
         names = self._filenames(False)
-        assert not any("q8" in n for n in names)
+        onnx_names = [n for n in names if ".onnx" in n]
+        assert onnx_names, f"expected onnx files, got: {names}"
+        assert not any("q8" in n for n in onnx_names), (
+            f"fp32 mode should not request q8 files: {onnx_names}"
+        )
 
-    def test_quantized_true_also_loads_fp32_only(self):
-        """Even with quantized=True chatterbox loads fp32 (no q8 upstream)."""
+    def test_fp32_loads_external_data_sidecars(self):
+        """fp32 mode downloads the .onnx_data sidecar files."""
+        names = self._filenames(False)
+        data_names = [n for n in names if ".onnx_data" in n]
+        assert data_names, f"expected .onnx_data sidecars, got: {names}"
+
+    def test_int8_loads_q8_onnx_files(self):
+        """quantized=True requests the _q8 ONNX files (no external-data sidecars)."""
         names = self._filenames(True)
-        assert not any("q8" in n for n in names), (
-            "chatterbox loaded q8 files — update this test if upstream ships INT8 exports"
+        onnx_names = [n for n in names if ".onnx" in n and ".onnx_data" not in n]
+        assert onnx_names, f"expected onnx files, got: {names}"
+        assert all("q8" in n for n in onnx_names), (
+            f"int8 mode should request only q8 files: {onnx_names}"
+        )
+
+    def test_int8_no_external_data_sidecars(self):
+        """quantized=True must NOT download .onnx_data sidecars (q8 files are self-contained)."""
+        names = self._filenames(True)
+        data_names = [n for n in names if ".onnx_data" in n]
+        assert not data_names, (
+            f"int8 mode should not request .onnx_data sidecars: {data_names}"
         )
 
     def test_quantized_attr_stored(self):
         from vconnx.engines.chatterbox import ChatterboxAdapter
 
         a = ChatterboxAdapter(quantized=True)
-        assert a._quantized is True, "quantized flag should be stored for API completeness"
+        assert a._quantized is True
