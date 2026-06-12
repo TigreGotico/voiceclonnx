@@ -6,7 +6,7 @@ against the known source text (gate: WER ≤ 40%).
 | clip | WER | intelligible | transcript |
 |---|---|---|---|
 | [`source.wav`](source.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
-| [`outputs/chatterbox__aria.wav`](outputs/chatterbox__aria.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
+| [`outputs/chatterbox__aria.wav`](outputs/chatterbox__aria.wav) | 4% | ✅ | The quit-brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but  |
 | [`outputs/chatterbox__sonia.wav`](outputs/chatterbox__sonia.wav) | 8% | ✅ | The quit-brown fox jumps over the lazy dog. Voice conversion changes who was speaking, but |
 | [`outputs/focalcodec__aria.wav`](outputs/focalcodec__aria.wav) | 15% | ✅ | The quit-brown fox jumps over the lazy dog. Voice conversion changes always speedy, but no |
 | [`outputs/focalcodec__sonia.wav`](outputs/focalcodec__sonia.wav) | 19% | ✅ | that what brown fox jumps over the lazy dog. Voice conversion changes always speeding, but |
