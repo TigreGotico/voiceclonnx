@@ -18,6 +18,7 @@ libraries for that.
 ```bash
 pip install vconnx                    # core (no engine)
 pip install "vconnx[chatterbox]"      # Chatterbox AR codec-LM (default)
+pip install "vconnx[focalcodec]"      # FocalCodec — WavLM + kNN cosine + Vocos
 pip install "vconnx[freevc]"          # FreeVC — WavLM + VITS decoder
 pip install "vconnx[knnvc]"           # kNN-VC — WavLM + HiFi-GAN
 pip install "vconnx[openvoice]"       # OpenVoice v2 tone-color converter
@@ -67,6 +68,7 @@ vconnx list
 | Alias | Install extra | Sample rate | Model repo | License |
 |---|---|---|---|---|
 | `chatterbox` | `vconnx[chatterbox]` | 24 kHz | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | See upstream |
+| `focalcodec` | `vconnx[focalcodec]` | 16 kHz | [TigreGotico/vconnx-focalcodec](https://huggingface.co/TigreGotico/vconnx-focalcodec) | Apache-2.0 |
 | `freevc` | `vconnx[freevc]` | 16 kHz | [TigreGotico/vconnx-freevc](https://huggingface.co/TigreGotico/vconnx-freevc) | MIT |
 | `knnvc` | `vconnx[knnvc]` | 16 kHz | [TigreGotico/vconnx-knn-vc](https://huggingface.co/TigreGotico/vconnx-knn-vc) | MIT |
 | `openvoice` | `vconnx[openvoice]` | 22 kHz | [TigreGotico/vconnx-openvoice-v2](https://huggingface.co/TigreGotico/vconnx-openvoice-v2) | MIT |

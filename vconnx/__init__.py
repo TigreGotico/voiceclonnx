@@ -15,6 +15,11 @@ engines ship alongside this package and are auto-imported here.
     Chatterbox AR codec-LM ONNX export (onnx-community/chatterbox-onnx).
     Requires: ``pip install vconnx[chatterbox]``
 
+``"focalcodec"``:
+    FocalCodec: WavLM encoder + kNN cosine matching (pure numpy) + Vocos
+    ISTFT decoder. Zero-shot any-to-any VC at 16 kHz. Apache-2.0.
+    Requires: ``pip install vconnx[focalcodec]``
+
 ``"triaan"``:
     TriAAN-VC: CPC encoder + Triple Adaptive Attention Normalization decoder
     + ParallelWaveGAN vocoder. Zero-shot any-to-any VC at 16 kHz.
@@ -42,6 +47,7 @@ from vconnx.engines.base import (
 
 # Auto-import built-in engine adapters so they self-register
 import vconnx.engines.chatterbox  # noqa: F401
+import vconnx.engines.focalcodec  # noqa: F401
 import vconnx.engines.freevc  # noqa: F401
 import vconnx.engines.knnvc  # noqa: F401
 import vconnx.engines.openvoice  # noqa: F401
