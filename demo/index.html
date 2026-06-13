@@ -1,0 +1,34 @@
+<!doctype html><html lang=en><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>voiceclonnx — engine demos</title><style>
+:root{color-scheme:light dark}
+body{font:15px/1.5 system-ui,sans-serif;max-width:760px;margin:0 auto;padding:1.5rem 1rem 4rem}
+h1{margin:.2rem 0}p.sub{color:#888;margin-top:0}
+.inputs{background:#0001;border-radius:10px;padding:.8rem 1rem;margin:1rem 0}
+section{border:1px solid #8884;border-radius:10px;padding:.6rem 1rem;margin:.8rem 0}
+h2{margin:.2rem 0 .6rem;font-size:1.05rem;text-transform:capitalize}
+.clip{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin:.35rem 0}
+.lbl{min-width:9rem;font-size:.9rem}.wer{color:#888;font-variant-numeric:tabular-nums}
+audio{height:34px;flex:1;min-width:240px}
+</style></head><body>
+<h1>voiceclonnx</h1>
+<p class=sub>Same sentence, every engine — listen and compare. Pure-ONNX voice conversion.</p>
+<div class=inputs><strong>Inputs</strong><div class=clip><div class=lbl>source</div><audio controls preload=none src="source.wav"></audio></div>
+<div class=clip><div class=lbl>reference aria</div><audio controls preload=none src="reference_aria.wav"></audio></div>
+<div class=clip><div class=lbl>reference sonia</div><audio controls preload=none src="reference_sonia.wav"></audio></div></div>
+<section><h2>bicodec</h2><div class=clip><div class=lbl>aria &nbsp;<span class="wer">WER 12%</span></div><audio controls preload=none src="outputs/bicodec__aria.wav"></audio></div>
+<div class=clip><div class=lbl>sonia &nbsp;<span class="wer">WER 12%</span></div><audio controls preload=none src="outputs/bicodec__sonia.wav"></audio></div></section><section><h2>chatterbox</h2><div class=clip><div class=lbl>aria &nbsp;<span class="wer">WER 4%</span></div><audio controls preload=none src="outputs/chatterbox__aria.wav"></audio></div>
+<div class=clip><div class=lbl>sonia &nbsp;<span class="wer">WER 8%</span></div><audio controls preload=none src="outputs/chatterbox__sonia.wav"></audio></div></section><section><h2>cosyvoice</h2><div class=clip><div class=lbl>aria &nbsp;<span class="wer">WER 8%</span></div><audio controls preload=none src="outputs/cosyvoice__aria.wav"></audio></div>
+<div class=clip><div class=lbl>sonia &nbsp;<span class="wer">WER 8%</span></div><audio controls preload=none src="outputs/cosyvoice__sonia.wav"></audio></div></section><section><h2>facodec</h2><div class=clip><div class=lbl>aria &nbsp;<span class="wer">WER 0%</span></div><audio controls preload=none src="outputs/facodec__aria.wav"></audio></div>
+<div class=clip><div class=lbl>sonia &nbsp;<span class="wer">WER 0%</span></div><audio controls preload=none src="outputs/facodec__sonia.wav"></audio></div></section><section><h2>focalcodec</h2><div class=clip><div class=lbl>aria &nbsp;<span class="wer">WER 15%</span></div><audio controls preload=none src="outputs/focalcodec__aria.wav"></audio></div>
+<div class=clip><div class=lbl>sonia &nbsp;<span class="wer">WER 19%</span></div><audio controls preload=none src="outputs/focalcodec__sonia.wav"></audio></div></section><section><h2>freevc</h2><div class=clip><div class=lbl>aria &nbsp;<span class="wer">WER 12%</span></div><audio controls preload=none src="outputs/freevc__aria.wav"></audio></div>
+<div class=clip><div class=lbl>sonia &nbsp;<span class="wer">WER 12%</span></div><audio controls preload=none src="outputs/freevc__sonia.wav"></audio></div></section><section><h2>knnvc</h2><div class=clip><div class=lbl>aria &nbsp;<span class="wer">WER 12%</span></div><audio controls preload=none src="outputs/knnvc__aria.wav"></audio></div>
+<div class=clip><div class=lbl>sonia &nbsp;<span class="wer">WER 15%</span></div><audio controls preload=none src="outputs/knnvc__sonia.wav"></audio></div></section><section><h2>linacodec</h2><div class=clip><div class=lbl>aria &nbsp;<span class="wer">WER 8%</span></div><audio controls preload=none src="outputs/linacodec__aria.wav"></audio></div>
+<div class=clip><div class=lbl>sonia &nbsp;<span class="wer">WER 15%</span></div><audio controls preload=none src="outputs/linacodec__sonia.wav"></audio></div></section><section><h2>mimi</h2><div class=clip><div class=lbl>aria &nbsp;<span class="wer">WER 0%</span></div><audio controls preload=none src="outputs/mimi__aria.wav"></audio></div>
+<div class=clip><div class=lbl>sonia &nbsp;<span class="wer">WER 0%</span></div><audio controls preload=none src="outputs/mimi__sonia.wav"></audio></div></section><section><h2>openvoice</h2><div class=clip><div class=lbl>aria &nbsp;<span class="wer">WER 0%</span></div><audio controls preload=none src="outputs/openvoice__aria.wav"></audio></div>
+<div class=clip><div class=lbl>sonia &nbsp;<span class="wer">WER 0%</span></div><audio controls preload=none src="outputs/openvoice__sonia.wav"></audio></div></section><section><h2>quickvc</h2><div class=clip><div class=lbl>reference_aria &nbsp;<span class="wer">WER 0%</span></div><audio controls preload=none src="outputs/quickvc__reference_aria.wav"></audio></div>
+<div class=clip><div class=lbl>reference_sonia &nbsp;<span class="wer">WER 0%</span></div><audio controls preload=none src="outputs/quickvc__reference_sonia.wav"></audio></div></section><section><h2>rvc</h2><div class=clip><div class=lbl>woman1 &nbsp;<span class="wer">WER 38%</span></div><audio controls preload=none src="outputs/rvc__woman1.wav"></audio></div></section><section><h2>speechtokenizer</h2><div class=clip><div class=lbl>aria &nbsp;<span class="wer">WER 4%</span></div><audio controls preload=none src="outputs/speechtokenizer__aria.wav"></audio></div>
+<div class=clip><div class=lbl>sonia &nbsp;<span class="wer">WER 12%</span></div><audio controls preload=none src="outputs/speechtokenizer__sonia.wav"></audio></div></section><section><h2>triaan</h2><div class=clip><div class=lbl>aria &nbsp;<span class="wer">WER 4%</span></div><audio controls preload=none src="outputs/triaan__aria.wav"></audio></div>
+<div class=clip><div class=lbl>sonia &nbsp;<span class="wer">WER 4%</span></div><audio controls preload=none src="outputs/triaan__sonia.wav"></audio></div></section>
+<p class=sub>Generated by <code>demo/build_player.py</code> from <code>demo/outputs/</code> + <code>VERIFICATION.md</code>.</p>
+</body></html>

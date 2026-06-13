@@ -3,7 +3,7 @@
 **Family:** AR codec-LM
 **Sample rate:** 24 kHz
 **WER:** 4–8%
-**INT8:** fp32 only (no upstream INT8 variants)
+**INT8:** ✅ available (8% WER, 57% smaller) — we host the quantized models
 **License:** Apache-2.0
 **Model:** [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx)
 
@@ -30,7 +30,7 @@ The `exaggeration` parameter scales the reference conditioning strength.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `quantized` | `bool` | `False` | Accepted for API uniformity but **ignored** — no INT8 variants exist. Chatterbox is fp32-only. |
+| `quantized` | `bool` | `False` | When `True`, loads INT8 variants (`*_q8.onnx`) — 8% WER, ~57% smaller. |
 | `exaggeration` | `float` | `0.6` | Voice exaggeration factor. `0.5` = neutral; higher = more pronounced style transfer. |
 
 ## Model and license
@@ -48,10 +48,10 @@ Models download automatically on first use via `huggingface_hub`.
 
 ## INT8 note
 
-Chatterbox is **fp32-only**. The `onnx-community/chatterbox-onnx` repository
-does not publish INT8 variants of `speech_encoder.onnx` or
-`conditional_decoder.onnx`. `quantized=True` is silently ignored.
-See [QUANTS.md](../QUANTS.md) for context.
+INT8 quantized variants are hosted at `TigreGotico/voiceclonnx-chatterbox`
+(we quantize them ourselves; upstream `onnx-community/chatterbox-onnx`
+ships fp32 only). `quantized=True` loads them — 8% WER, matching fp32, at
+~57% smaller (1080 MB → 467 MB).
 
 ## WER
 

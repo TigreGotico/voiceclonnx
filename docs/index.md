@@ -99,7 +99,7 @@ flow-matching (ODE solver).
 Autoregressive language model over audio codec tokens. Transfers both voice
 timbre and speaking style (prosody, expressiveness).
 
-- **chatterbox** — Resemble AI Chatterbox AR codec-LM. 24 kHz. fp32-only
+- **chatterbox** — Resemble AI Chatterbox AR codec-LM. 24 kHz. INT8 available
   (no INT8 variants published upstream). Configurable exaggeration factor.
 
 ### Any-to-ONE (`rvc`)
@@ -121,7 +121,7 @@ community-trained RVC voice models exist on Hugging Face.
 | `mimi` | RVQ token-swap | 24 kHz | 0% | ✅ | CC BY 4.0 |
 | `openvoice` | Flow-matching | 22 kHz | 0% | ✅ | MIT |
 | `quickvc` | Flow-matching | 16 kHz | 0% | ✅ | MIT |
-| `chatterbox` | AR codec-LM | 24 kHz | 4–8% | fp32 only | Apache-2.0 |
+| `chatterbox` | AR codec-LM | 24 kHz | 4–8% | ✅ INT8 | Apache-2.0 |
 | `triaan` | Flow-matching | 16 kHz | 4% | ✅ | MIT |
 | `speechtokenizer` | RVQ token-swap | 16 kHz | 4–12% | ✅ | Apache-2.0 |
 | `cosyvoice` | Flow-matching | 22 kHz | 8% | ⚠ degrades | Apache-2.0 |
