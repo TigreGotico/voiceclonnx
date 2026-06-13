@@ -86,6 +86,7 @@ All engines ship with `pip install voiceclonnx` — no per-engine extras needed.
 | `quickvc` | 16 kHz | [TigreGotico/voiceclonnx-quickvc](https://huggingface.co/TigreGotico/voiceclonnx-quickvc) | MIT |
 | `triaan` | 16 kHz | [TigreGotico/voiceclonnx-triaan-vc](https://huggingface.co/TigreGotico/voiceclonnx-triaan-vc) | MIT |
 | `linacodec` | **48 kHz** | [TigreGotico/voiceclonnx-linacodec](https://huggingface.co/TigreGotico/voiceclonnx-linacodec) | Llama 3 Community / BSD-2-Clause (see model card) |
+| `seedvc` | 22 kHz | [TigreGotico/voiceclonnx-seedvc](https://huggingface.co/TigreGotico/voiceclonnx-seedvc) | Apache-2.0 weights; GPL-3.0 code (external checkout only — see model card) |
 
 ### bicodec
 

@@ -1234,8 +1234,69 @@ may be re-distributed under their upstream license:
 4. Document the pattern in this appendix so future maintainers understand why
    the export script clones externally.
 
-This pattern is also appropriate for SeedVC (planned as issue #25), which
-uses a similar Transformer architecture under a research license.
+This pattern is now used by **SeedVC** (issue #2) as described in the appendix below.
+
+## Appendix G: Seed-VC export notes
+
+### License
+
+Seed-VC code is GPL-3.0.  The EXTERNAL-CHECKOUT pattern applies: the export
+script (`conversion/export_seedvc.py`) clones
+`github.com/Plachtaa/seed-vc` (pinned to `51383efd`, archived Nov 2025) into
+`/tmp/seed-vc` at export time.  No GPL code is committed to voiceclonnx.  The
+ONNX weights are published to `TigreGotico/voiceclonnx-seedvc`; the model card
+states the upstream code license (GPL-3.0) and the weight license separately.
+
+### Architecture (non-F0 path, 22050 Hz)
+
+| Component | ONNX artifact | I/O |
+|---|---|---|
+| Whisper-small encoder | `whisper_encoder.onnx` | log-mel (1,128,3000) → hidden (1,T_enc,768) |
+| CAMPPlus speaker encoder | `campplus.onnx` | fbank (1,T,80) → embedding (1,192) |
+| LR embedding | `lr_embedding.npz` | codebook (2048,512) — numpy lookup |
+| LR conv model | `lr_model.onnx` | (1,512,T) → (1,512,T) |
+| DiT flow estimator | `flow_estimator.onnx` | (x,prompt_x,x_lens,t,style,mu) → velocity |
+| BigVGAN vocoder | `bigvgan.onnx` | mel (1,80,T) → wav (1,1,T_audio) |
+
+### ODE schedule: LINEAR (not cosine)
+
+Unlike CosyVoice (cosine schedule), Seed-VC uses a linear time schedule:
+
+```python
+t_span = np.linspace(0.0, 1.0, n_steps + 1)   # upstream BASECFM.inference
+```
+
+The CFG formula and batch-2 idiom are identical to CosyVoice (slot-0 = cond,
+slot-1 = uncond zeros; `v = (1 + 0.7) * v_cond - 0.7 * v_uncond`).
+
+### Flow prompt
+
+The reference mel is prepended to the source conditioning before the ODE.
+The total sequence is `T_total = T_ref + T_src`.  The estimator zeroes the
+prompt region at each step; the adapter strips those frames after the ODE.
+
+### flow_estimator.onnx tracing notes
+
+The DiT uses `setup_caches(max_batch_size=2, max_seq_length=8192)` for
+KV-cache pre-allocation.  Call this before export.  The WaveNet final layer
+uses grouped convolutions that trace correctly at opset 14.
+
+### INT8 quantization
+
+The flow_estimator WaveNet final layer is likely sensitive to weight-only INT8
+(similar to CosyVoice's flow_decoder).  Verify WER before deploying
+`quantized=True`.  See `docs/QUANTS.md` for the comparison table once E2E
+results are recorded.
+
+### Parity results
+
+| Component | max\_abs Δ | mean\_abs Δ | Verdict |
+|---|---|---|---|
+| whisper\_encoder | < 5e-3 | — | PASS |
+| campplus | < 1e-3 | — | PASS |
+| lr\_model | < 1e-3 | — | PASS |
+| flow\_estimator | < 1e-2 | — | PASS |
+| bigvgan | < 1e-3 | — | PASS |
 
 ## Appendix F: LinaCodec onset artifact — root cause and fix (issue #24)
 
