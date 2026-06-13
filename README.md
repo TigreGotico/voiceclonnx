@@ -196,3 +196,7 @@ Apache 2.0 — see [LICENSE](LICENSE).
 Model weights are governed by their upstream licenses (MIT, Apache-2.0, CC BY 4.0,
 CC BY-NC-SA 4.0 for bicodec). See [docs/converting.md](docs/converting.md) for
 the weight-license policy (distributable vs local-only).
+
+## Credits & Funding
+
+Developed by [TigreGotico](https://tigregotico.pt) for [OpenVoiceOS](https://openvoiceos.org), funded by the [NGI0 Commons Fund](https://nlnet.nl/commonsfund/) — a fund established by [NLnet](https://nlnet.nl) with financial support from the European Commission's [Next Generation Internet](https://ngi.eu) programme (grant agreement No 101135429).
