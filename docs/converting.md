@@ -1,7 +1,41 @@
 # Converting a voice-conversion model to ONNX
 
-This guide walks an engine-issue implementer through the full pipeline:
+This guide covers the full pipeline for adding a new engine:
 **export → parity → quantize → push → adapter**.
+
+## Quick recipe
+
+```bash
+pip install -e ".[convert]"
+python -m conversion.export_<engine> --output-dir /tmp/<engine>-out
+python -m conversion.parity --onnx /tmp/<engine>-out/encoder.onnx ...
+python -m conversion.quantize /tmp/<engine>-out/encoder.onnx
+python -m conversion.push_models /tmp/<engine>-out --dry-run
+python -m conversion.push_models /tmp/<engine>-out
+```
+
+Then write the adapter (subclass `VoiceClonerBase`), add the auto-import, add
+`docs/engines/<engine>.md`, update the engine table in `README.md` and
+`docs/index.md`, run `demo/generate_demos.py --engines <engine>` and
+`demo/verify_demos.py`.
+
+---
+
+## Contents
+
+| Section | What it covers |
+|---------|---------------|
+| [0. Prerequisites](#0-prerequisites) | Install `[convert]` extras |
+| [1. Export](#1-export) | `conversion/export_<engine>.py` contract |
+| [2. Parity check](#2-parity-check) | Tolerance verification vs torch |
+| [3. Quantize](#3-quantize) | Produce `*_q8.onnx` INT8 variants |
+| [4. Push to HF](#4-push-to-hf) | Upload to `TigreGotico/voiceclonnx-<engine>` |
+| [5. Write the adapter](#5-write-the-voiceclonnx-adapter) | Subclass + register |
+| [Output directory layout](#output-directory-layout) | File naming conventions |
+| [Weight-license policy](#weight-license-policy-publish-with-the-license-stated) | Distributable vs local-only |
+| Per-engine appendices | rvc, freevc, triaan-vc, focalcodec, speechtokenizer, mimi, facodec, bicodec, chatterbox, quickvc, cosyvoice, linacodec |
+
+---
 
 All toolchain scripts live under `conversion/` and require the
 `voiceclonnx[convert]` extras group (PyTorch, onnxruntime, transformers, librosa,

@@ -4,11 +4,39 @@
 ![Python](https://img.shields.io/pypi/pyversions/voiceclonnx)
 ![License](https://img.shields.io/pypi/l/voiceclonnx)
 
-Pure-ONNX multi-engine voice-cloning library — no PyTorch at runtime.
+**Pure-ONNX voice conversion. 14 engines. Zero PyTorch at runtime.**
 
-**Audio-to-audio only.** voiceclonnx converts the voice in an existing speech file to
-sound like a reference speaker. Text-driven synthesis (text → cloned audio) is a
-TTS-engine concern and is explicitly out of scope.
+Audio-to-audio only — voiceclonnx converts the voice in an existing speech file
+to sound like a reference speaker. Text-driven synthesis (text → cloned audio) is
+a TTS concern and is out of scope.
+
+---
+
+## Why voiceclonnx
+
+- **Zero PyTorch at runtime.** Every engine runs on `onnxruntime`, `numpy`,
+  `soundfile`, and `huggingface_hub` only. No torch, no CUDA driver required
+  for inference.
+- **One install, every engine.** `pip install voiceclonnx` activates all 14
+  engines immediately — no per-engine extras, no optional groups for inference.
+- **Widest pure-ONNX VC collection available.** 14 distinct architectures in a
+  single unified API: kNN feature-swap, factorized codec, flow-matching,
+  RVQ token-swap, and AR codec-LM families.
+- **Every engine STT-verified.** Each demo clip is transcribed with
+  faster-whisper and scored against the source text. WER is published and
+  gated — no engine ships without a passing intelligibility score.
+- **INT8 quantization with measured tradeoffs.** Most engines ship `*_q8.onnx`
+  variants: 45–75% smaller, faster on CPU, with documented WER cost per engine.
+- **Documented conversion toolchain.** A step-by-step guide covers
+  export → parity → quantize → push → adapter for anyone adding a new engine.
+
+---
+
+## Listen first, install later
+
+**[demo/README.md](demo/README.md)** — every engine converts the same sentence
+to two reference voices (Aria and Sonia). GitHub renders the audio players inline.
+Compare all 14 engines by ear, zero code required.
 
 ---
 
@@ -18,163 +46,121 @@ TTS-engine concern and is explicitly out of scope.
 pip install voiceclonnx
 ```
 
-That single command installs **every engine** — no per-engine extras required.
 Core dependencies: `onnxruntime`, `numpy`, `soundfile`, `huggingface_hub`.
 ONNX models are downloaded on first use from Hugging Face Hub.
 
-For model conversion / export tooling only:
+For model conversion / export tooling:
 
 ```bash
-pip install "voiceclonnx[convert]"   # torch, onnx, transformers, librosa (conversion only)
-pip install "voiceclonnx[test]"      # pytest, faster-whisper, edge-tts (testing)
+pip install "voiceclonnx[convert]"   # torch, onnx, transformers, librosa (export only)
+pip install "voiceclonnx[test]"      # pytest, faster-whisper, edge-tts (test suite)
 ```
 
 ---
 
 ## Quick start
 
+### Python
+
 ```python
 from voiceclonnx import VoiceCloner
 
-cloner = VoiceCloner(engine="chatterbox")
+cloner = VoiceCloner(engine="facodec")
 out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
-print(cloner.sample_rate)   # 24000
+print(cloner.sample_rate)   # 16000
 ```
 
----
-
-## CLI
+### CLI
 
 ```bash
 # Convert a WAV file
-voiceclonnx clone --engine chatterbox \
+voiceclonnx clone --engine facodec \
              --audio source.wav \
              --voice reference.wav \
              --out converted.wav
 
-# With optional engine flags
-voiceclonnx clone --engine chatterbox \
-             --audio source.wav \
-             --voice reference.wav \
-             --out converted.wav \
-             --exaggeration 0.5 \
-             --max-new-tokens 1024
-
-# List registered engines
+# List all registered engines
 voiceclonnx list
 ```
 
 ---
 
-## Engine matrix
+## Engine comparison
 
-All engines ship with `pip install voiceclonnx` — no per-engine extras needed.
+All engines are included in `pip install voiceclonnx` — no per-engine extras.
+WER is measured with faster-whisper `base.en` against the source transcript
+(lower is better; 0% = perfectly intelligible). Full data: [demo/VERIFICATION.md](demo/VERIFICATION.md).
 
-| Alias | Sample rate | Model repo | License |
-|---|---|---|---|
-| `chatterbox` | 24 kHz | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | Apache-2.0 |
-| `facodec` | 16 kHz | [TigreGotico/voiceclonnx-facodec](https://huggingface.co/TigreGotico/voiceclonnx-facodec) | Apache-2.0 |
-| `focalcodec` | 16 kHz | [TigreGotico/voiceclonnx-focalcodec](https://huggingface.co/TigreGotico/voiceclonnx-focalcodec) | Apache-2.0 |
-| `freevc` | 16 kHz | [TigreGotico/voiceclonnx-freevc](https://huggingface.co/TigreGotico/voiceclonnx-freevc) | MIT |
-| `knnvc` | 16 kHz | [TigreGotico/voiceclonnx-knn-vc](https://huggingface.co/TigreGotico/voiceclonnx-knn-vc) | MIT |
-| `mimi` | 24 kHz | [TigreGotico/voiceclonnx-mimi](https://huggingface.co/TigreGotico/voiceclonnx-mimi) | CC BY 4.0 |
-| `openvoice` | 22 kHz | [TigreGotico/voiceclonnx-openvoice-v2](https://huggingface.co/TigreGotico/voiceclonnx-openvoice-v2) | MIT |
-| `rvc` | 40/48 kHz | [TigreGotico/voiceclonnx-rvc](https://huggingface.co/TigreGotico/voiceclonnx-rvc) | MIT |
-| `speechtokenizer` | 16 kHz | [TigreGotico/voiceclonnx-speechtokenizer](https://huggingface.co/TigreGotico/voiceclonnx-speechtokenizer) | Apache-2.0 |
-| `bicodec` | 16 kHz | [TigreGotico/voiceclonnx-bicodec](https://huggingface.co/TigreGotico/voiceclonnx-bicodec) | CC BY-NC-SA 4.0 |
-| `cosyvoice` | 22 kHz | [TigreGotico/voiceclonnx-cosyvoice](https://huggingface.co/TigreGotico/voiceclonnx-cosyvoice) | Apache-2.0 |
-| `quickvc` | 16 kHz | [TigreGotico/voiceclonnx-quickvc](https://huggingface.co/TigreGotico/voiceclonnx-quickvc) | MIT |
-| `triaan` | 16 kHz | [TigreGotico/voiceclonnx-triaan-vc](https://huggingface.co/TigreGotico/voiceclonnx-triaan-vc) | MIT |
-| `linacodec` | **48 kHz** | [TigreGotico/voiceclonnx-linacodec](https://huggingface.co/TigreGotico/voiceclonnx-linacodec) | Llama 3 Community / BSD-2-Clause (see model card) |
+| Engine | Family | Sample rate | WER | INT8 | Model | Best for |
+|--------|--------|-------------|-----|------|-------|----------|
+| `facodec` | Factorized codec | 16 kHz | **0%** | ✅ | [TigreGotico/voiceclonnx-facodec](https://huggingface.co/TigreGotico/voiceclonnx-facodec) | Best overall quality |
+| `mimi` | RVQ token-swap | 24 kHz | **0%** | ✅ | [TigreGotico/voiceclonnx-mimi](https://huggingface.co/TigreGotico/voiceclonnx-mimi) | 24 kHz, zero WER |
+| `openvoice` | Tone-color transfer | 22 kHz | **0%** | ✅ | [TigreGotico/voiceclonnx-openvoice-v2](https://huggingface.co/TigreGotico/voiceclonnx-openvoice-v2) | Broadest style range |
+| `quickvc` | HuBERT-soft + VITS | 16 kHz | **0%** | ✅ | [TigreGotico/voiceclonnx-quickvc](https://huggingface.co/TigreGotico/voiceclonnx-quickvc) | Fastest CPU (0.14× RTF) |
+| `chatterbox` | AR codec-LM | 24 kHz | 4–8% | fp32 only | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | Natural prosody, expressive style |
+| `triaan` | Triple-AAN | 16 kHz | 4% | ✅ | [TigreGotico/voiceclonnx-triaan-vc](https://huggingface.co/TigreGotico/voiceclonnx-triaan-vc) | Good quality, small footprint |
+| `speechtokenizer` | RVQ token-swap | 16 kHz | 4–12% | ✅ | [TigreGotico/voiceclonnx-speechtokenizer](https://huggingface.co/TigreGotico/voiceclonnx-speechtokenizer) | HuBERT-distilled content fidelity |
+| `cosyvoice` | Flow-matching | 22 kHz | 8% | ⚠ int8 degrades | [TigreGotico/voiceclonnx-cosyvoice](https://huggingface.co/TigreGotico/voiceclonnx-cosyvoice) | Cross-lingual conversion |
+| `linacodec` | Codec + Transformer | **48 kHz** | 8–15% | ⚠ int8 degrades | [TigreGotico/voiceclonnx-linacodec](https://huggingface.co/TigreGotico/voiceclonnx-linacodec) | Highest sample rate (48 kHz) |
+| `bicodec` | Semantic + global tokens | 16 kHz | 12% | ✅ | [TigreGotico/voiceclonnx-bicodec](https://huggingface.co/TigreGotico/voiceclonnx-bicodec) | SparkTTS zero-shot VC |
+| `freevc` | WavLM + VITS | 16 kHz | 12% | ⚠ int8 degrades | [TigreGotico/voiceclonnx-freevc](https://huggingface.co/TigreGotico/voiceclonnx-freevc) | No text annotations needed |
+| `knnvc` | kNN feature-swap | 16 kHz | 12–15% | ✅ | [TigreGotico/voiceclonnx-knn-vc](https://huggingface.co/TigreGotico/voiceclonnx-knn-vc) | Lightweight (123 MB int8) |
+| `focalcodec` | kNN feature-swap | 16 kHz | 15–19% | ⚠ int8 degrades | [TigreGotico/voiceclonnx-focalcodec](https://huggingface.co/TigreGotico/voiceclonnx-focalcodec) | NeurIPS 2025 architecture |
+| `rvc` | ContentVec + VITS | 40/48 kHz | 38%† | ✅ (base only) | [TigreGotico/voiceclonnx-rvc](https://huggingface.co/TigreGotico/voiceclonnx-rvc) | Any-to-ONE, community voices |
 
-### bicodec
-
-Zero-shot any-to-any voice conversion via explicit semantic / global token
-factorization (SparkAudio/Spark-TTS, 2025, Apache-2.0 code, CC BY-NC-SA 4.0
-weights).
-
-Architecture:
-- **Semantic tokens** (content): Wav2Vec2-XLSR-53 (hidden layers 11, 14, 16
-  averaged) → convolutional encoder → FactorizedVQ → (1, T) int64
-- **Global tokens** (speaker): mel-spectrogram (128-bin, Slaney) → ECAPA-TDNN
-  + Perceiver resampler → FSQ → (1, 1, 32) int32 (fixed-length per utterance)
-
-Voice conversion is a direct token swap: source semantic tokens + reference
-global tokens → decoder → waveform.  No auto-regressive LM, single forward
-pass per segment.
-
-```python
-from voiceclonnx import VoiceCloner
-
-cloner = VoiceCloner(engine="bicodec")
-out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
-print(cloner.sample_rate)   # 16000
-```
-
-ONNX artifacts: [`TigreGotico/voiceclonnx-bicodec`](https://huggingface.co/TigreGotico/voiceclonnx-bicodec)
-(public, **CC BY-NC-SA 4.0 — non-commercial use only**).
-
-See [docs/engines/bicodec.md](docs/engines/bicodec.md) for config keys,
-parity results, and troubleshooting.
+> †`rvc` WER reflects a sample community model. Any-to-ONE semantics differ from
+> all other engines — see [Choosing an engine](#choosing-an-engine).
 
 ---
 
-### rvc
+## Choosing an engine
 
-Any-to-ONE voice conversion based on
-[RVC](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI)
-(RVC-Project, MIT license).  Architecture: ContentVec-768 encoder → RMVPE
-pitch estimator → VITS-based synthesizer (``net_g``).  **Any-to-ONE**: the
-target speaker is baked into the voice model; thousands of community-trained
-voices are available on Hugging Face.
+**Best intelligibility (0% WER):** `facodec`, `mimi`, `openvoice`, `quickvc` —
+start here unless you have a specific constraint.
 
-**Semantics note:** ``reference_voice`` is the **path to an RVC voice model**
-(local ``.onnx`` or HF repo ID ``owner/repo``), not a reference audio file.
-The target speaker identity is encoded in the model weights.  Use
-``default_model`` in the constructor to set a fallback.
+**Fastest CPU inference:** `quickvc` at ~0.14× RTF — the clear choice for
+latency-sensitive or embedded use.
+
+**Highest output sample rate:** `linacodec` at 48 kHz — for downstream
+processing that requires full-bandwidth audio.
+
+**Natural prosody / expressive style:** `chatterbox` — AR codec-LM that
+transfers speaking style along with voice timbre.
+
+**Smallest INT8 footprint:** `knnvc` at ~123 MB; `quickvc` at ~130 MB.
+
+**Any-to-ONE voice models (RVC ecosystem):** `rvc` uses a voice model rather than
+a reference audio clip. `reference_voice` is a path to an `.onnx` RVC model
+(local file or HF repo ID). Thousands of community-trained voices exist on HF.
 
 ```python
-from voiceclonnx import VoiceCloner
-
-# reference_voice = path to RVC .onnx voice model, NOT audio
+# rvc: reference_voice = path to an RVC .onnx model, NOT an audio file
 cloner = VoiceCloner(engine="rvc")
 out = cloner.clone_voice("source.wav", "/path/to/myvoice.onnx", "out.wav")
-print(cloner.sample_rate)   # 40000 (v2 40k) or 48000 (v2 48k)
 ```
 
-```bash
-voiceclonnx clone --engine rvc \
-             --audio source.wav \
-             --voice /path/to/myvoice.onnx \
-             --out converted.wav
-```
-
-Base ONNX artifacts (ContentVec + RMVPE): [`TigreGotico/voiceclonnx-rvc`](https://huggingface.co/TigreGotico/voiceclonnx-rvc) (public, MIT).
-
-Convert a community ``.pth`` voice model to ONNX:
-
-```bash
-python -m conversion.convert_rvc_model myvoice.pth myvoice.onnx
-```
+**Non-commercial only:** `bicodec` weights are CC BY-NC-SA 4.0 — verify before
+deploying commercially.
 
 ---
 
 ## Quantized models
 
-All engines except `chatterbox` support `quantized=True`, which loads the
-`*_q8.onnx` INT8 variants — 45–75% smaller on disk and faster on CPU:
+All engines except `chatterbox` support `quantized=True`, which loads `*_q8.onnx`
+INT8 variants: 45–75% smaller on disk and faster on CPU at a measured quality cost.
 
 ```python
 cloner = VoiceCloner(engine="knnvc", quantized=True)
 out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
 ```
 
-See [docs/QUANTS.md](docs/QUANTS.md) for the full fp32 vs INT8 WER and size
-comparison across all engines, including which are recommended in INT8 mode.
+Some engines degrade significantly in INT8: `freevc`, `focalcodec`, `cosyvoice`,
+and `linacodec` should be used in fp32 for production.
 
-**chatterbox** is fp32-only: `onnx-community/chatterbox-onnx` does not publish
-INT8 variants. `quantized=True` is accepted for API uniformity but silently
-ignored.
+`chatterbox` is fp32-only: `onnx-community/chatterbox-onnx` does not publish
+INT8 variants. `quantized=True` is accepted for API uniformity but silently ignored.
+
+See [docs/QUANTS.md](docs/QUANTS.md) for the full WER and size comparison.
 
 ---
 
@@ -185,28 +171,21 @@ ignored.
 3. Call `register_engine(EngineEntry(alias=..., adapter_class=...))`.
 4. Add the auto-import to `voiceclonnx/__init__.py`.
 
-See [docs/api.md](docs/api.md) for the full API reference.
+See [docs/converting.md](docs/converting.md) for the full export → parity →
+quantize → push → adapter workflow, and [CONTRIBUTING.md](CONTRIBUTING.md) for
+the contribution checklist.
 
 ---
 
 ## Documentation
 
-- [docs/index.md](docs/index.md) — overview, install matrix, engine table
-- [docs/QUANTS.md](docs/QUANTS.md) — fp32 vs INT8 WER and size comparison across all engines
-- [docs/api.md](docs/api.md) — VoiceCloner facade, VoiceClonerBase, registry
-- [docs/engines/chatterbox.md](docs/engines/chatterbox.md) — config keys, troubleshooting
-- [docs/engines/freevc.md](docs/engines/freevc.md) — config keys, model sizes, WavLM note, troubleshooting
-- [docs/engines/knnvc.md](docs/engines/knnvc.md) — config keys, model sizes, troubleshooting
-- [docs/engines/bicodec.md](docs/engines/bicodec.md) — config keys, parity, ONNX sizes, export notes
-- [docs/engines/openvoice.md](docs/engines/openvoice.md) — config keys, mel params, troubleshooting
+- [demo/README.md](demo/README.md) — listen to every engine, no install
+- [docs/index.md](docs/index.md) — engine families, install matrix, navigation
+- [docs/QUANTS.md](docs/QUANTS.md) — fp32 vs INT8 WER and size comparison
+- [docs/api.md](docs/api.md) — VoiceCloner, VoiceClonerBase, registry
+- [docs/engines/](docs/engines/) — per-engine guides (config, model, WER, CLI)
 - [docs/converting.md](docs/converting.md) — ONNX export / parity / quantize / push toolchain
-
-## Examples
-
-- [examples/basic_clone.py](examples/basic_clone.py) — knnvc demo with edge-tts
-- [examples/cli_batch.sh](examples/cli_batch.sh) — batch convert a folder via CLI
-- [examples/quantized_low_memory.py](examples/quantized_low_memory.py) — INT8 vs fp32 comparison
-- [examples/local_only_engine.md](examples/local_only_engine.md) — local-only weights walkthrough
+- [examples/](examples/) — Python and shell examples
 
 ---
 
@@ -214,6 +193,6 @@ See [docs/api.md](docs/api.md) for the full API reference.
 
 Apache 2.0 — see [LICENSE](LICENSE).
 
-Model weights are governed by their upstream licenses. See
-[docs/converting.md](docs/converting.md) for the weight-license policy (distributable
-vs local-only).
+Model weights are governed by their upstream licenses (MIT, Apache-2.0, CC BY 4.0,
+CC BY-NC-SA 4.0 for bicodec). See [docs/converting.md](docs/converting.md) for
+the weight-license policy (distributable vs local-only).

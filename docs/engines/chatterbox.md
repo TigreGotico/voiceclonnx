@@ -1,91 +1,91 @@
 # Engine: chatterbox
 
-Chatterbox AR codec-LM (Resemble AI) — the default voiceclonnx engine.
-
-ONNX export via [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx).
-Voice conversion runs at **24 kHz**.
-
----
-
-## Install
-
-```bash
-pip install voiceclonnx
-```
-
-No per-engine extras required. ONNX models are downloaded on first use from
-[onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx).
+**Family:** AR codec-LM
+**Sample rate:** 24 kHz
+**WER:** 4–8%
+**INT8:** fp32 only (no upstream INT8 variants)
+**License:** Apache-2.0
+**Model:** [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx)
 
 ---
 
-## Config keys
+## Overview
+
+Chatterbox (Resemble AI) is an autoregressive codec language model that transfers
+both voice timbre and speaking style (prosody, expressiveness) from a reference
+clip. The VC path uses only the speech encoder and conditional decoder — the TTS
+text conditioning path is bypassed entirely.
+
+## How it works
+
+1. **Speech encoder** (`speech_encoder.onnx`) — encodes source and reference
+   waveforms to codec token embeddings at 24 kHz.
+2. **Conditional decoder** (`conditional_decoder.onnx`) — autoregressive
+   generation of target codec tokens conditioned on the reference speaker embedding.
+3. Codec tokens → waveform via the HiFi-GAN decoder embedded in the graph.
+
+The `exaggeration` parameter scales the reference conditioning strength.
+
+## Config / params
 
 | Key | Type | Default | Description |
-|---|---|---|---|
-| `quantized` | `bool` | `False` | Accepted for API uniformity but **ignored** — no INT8 variants exist in `onnx-community/chatterbox-onnx`. Chatterbox is fp32-only. |
-| `exaggeration` | `float` | `0.6` | Voice exaggeration factor. Higher values produce a more pronounced voice style; `0.5` is a neutral starting point. |
+|-----|------|---------|-------------|
+| `quantized` | `bool` | `False` | Accepted for API uniformity but **ignored** — no INT8 variants exist. Chatterbox is fp32-only. |
+| `exaggeration` | `float` | `0.6` | Voice exaggeration factor. `0.5` = neutral; higher = more pronounced style transfer. |
 
-### INT8 availability
+## Model and license
+
+| File | Source | License |
+|------|--------|---------|
+| `speech_encoder.onnx` | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | Apache-2.0 |
+| `conditional_decoder.onnx` | same | Apache-2.0 |
+
+Models download automatically on first use via `huggingface_hub`.
+
+## Sample rate
+
+**24 kHz.**
+
+## INT8 note
 
 Chatterbox is **fp32-only**. The `onnx-community/chatterbox-onnx` repository
 does not publish INT8 variants of `speech_encoder.onnx` or
-`conditional_decoder.onnx`. Passing `quantized=True` is silently ignored —
-fp32 files are always loaded. See [QUANTS.md](../QUANTS.md) for context.
+`conditional_decoder.onnx`. `quantized=True` is silently ignored.
+See [QUANTS.md](../QUANTS.md) for context.
 
----
+## WER
 
-## Usage
+**4–8%** — measured with faster-whisper `base.en` on demo clips.
+See [demo/VERIFICATION.md](../../demo/VERIFICATION.md).
 
-### Python
-
-```python
-from voiceclonnx import VoiceCloner
-
-# Default (fp32, exaggeration=0.6)
-cloner = VoiceCloner(engine="chatterbox")
-out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
-print(cloner.sample_rate)   # 24000
-
-# quantized=True accepted but has no effect (fp32-only engine)
-cloner = VoiceCloner(engine="chatterbox", quantized=True, exaggeration=0.5)
-out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
-```
-
-### CLI
+## CLI example
 
 ```bash
-voiceclonnx clone --engine chatterbox \
-             --audio source.wav \
-             --voice reference.wav \
-             --out out.wav
-
-# With optional flags
 voiceclonnx clone --engine chatterbox \
              --audio source.wav \
              --voice reference.wav \
              --out out.wav \
-             --exaggeration 0.5 \
-             --max-new-tokens 1024
+             --exaggeration 0.5
 ```
 
----
+## Python example
 
-## Model source
+```python
+from voiceclonnx import VoiceCloner
 
-| Artifact | HF repo | License |
-|---|---|---|
-| ONNX model files | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | Apache-2.0 |
+cloner = VoiceCloner(engine="chatterbox")
+out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
+print(cloner.sample_rate)   # 24000
 
-Models are downloaded automatically on first use via `huggingface_hub`.
-
----
+# Tuned exaggeration
+cloner = VoiceCloner(engine="chatterbox", exaggeration=0.5)
+```
 
 ## Troubleshooting
 
-**Quality is robotic / artefact-heavy**
-Try `exaggeration=0.5` (lower value).
+**Output sounds robotic or has heavy artefacts** — try `exaggeration=0.5`
+(lower value reduces the conditioning strength).
 
-**Slow on CPU**
-The two ONNX sessions (speech_encoder + conditional_decoder) run on CPU via
-onnxruntime. On a typical laptop CPU expect 5–30 s depending on utterance length.
-The VC path does not use the LLM, so it is faster than TTS with the same models.
+**Slow on CPU** — the AR decoder generates tokens sequentially. On a typical
+laptop expect 5–30 s per utterance. The VC path is faster than TTS with the same
+models (no text conditioning path is exercised).
