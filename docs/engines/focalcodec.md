@@ -1,116 +1,96 @@
 # Engine: focalcodec
 
-FocalCodec (Della Libera et al., NeurIPS 2025) — zero-shot any-to-any voice conversion
-using a kNN feature-space swap on continuous pre-quantisation features.
-
-Architecture:
-1. **WavLM encoder** (inside FocalCodec) — converts 16 kHz audio to 1024-dim feature frames at 50 Hz.
-2. **kNN cosine matching** (pure numpy) — replaces each source feature frame with the weighted mean of its k nearest reference frames (cosine distance).
-3. **Vocos backbone + proj** — maps matched 1024-dim features to STFT coefficients (n_fft+2 dim).
-4. **numpy ISTFT** — pure numpy Hann-window overlap-add vocoder; no ONNX needed.
-
-No separate speaker encoder is required; no discrete tokenisation during VC (all operations are in continuous feature space before the quantiser).
-
-ONNX artifacts: [TigreGotico/voiceclonnx-focalcodec](https://huggingface.co/TigreGotico/voiceclonnx-focalcodec) (Apache-2.0 license).
-
-Output sample rate: **16 kHz**.
+**Family:** kNN feature-swap
+**Sample rate:** 16 kHz
+**WER:** 15–19%
+**INT8:** ⚠ degrades (WER 31% in INT8 vs 15% fp32 — use fp32)
+**License:** Apache-2.0
+**Model:** [TigreGotico/voiceclonnx-focalcodec](https://huggingface.co/TigreGotico/voiceclonnx-focalcodec)
 
 ---
 
-## Install
+## Overview
 
-```bash
-pip install voiceclonnx
-```
+FocalCodec (Della Libera et al., NeurIPS 2025) performs zero-shot any-to-any
+voice conversion using a kNN feature-space swap on continuous pre-quantization
+features from the WavLM encoder. No discrete tokenization during VC — all
+operations are in continuous feature space before the quantizer.
 
-Dependencies pulled in: `onnxruntime`, `numpy`, `soundfile`.
-Models are downloaded from HF Hub on first use (~659 MB fp32 or ~358 MB int8 combined).
+## How it works
 
----
+1. **WavLM encoder** (inside FocalCodec) — 16 kHz audio → 1024-dim feature
+   frames at 50 Hz.
+2. **kNN cosine matching** (pure numpy) — replaces each source feature frame
+   with the weighted mean of its k nearest reference frames (cosine distance).
+3. **Vocos backbone + proj** — maps matched 1024-dim features to STFT
+   coefficients (n_fft+2 dim).
+4. **numpy ISTFT** — Hann-window overlap-add vocoder; no ONNX needed.
 
-## Config keys
+No separate speaker encoder required.
+
+## Config / params
 
 | Key | Type | Default | Description |
-|---|---|---|---|
-| `quantized` | `bool` | `False` | Use INT8 quantized ONNX models. Reduces total footprint to ~358 MB. **int8 not recommended: WER 31% vs fp32 15% in benchmark** — use fp32 for production. See [QUANTS.md](../QUANTS.md) for full comparison. |
+|-----|------|---------|-------------|
+| `quantized` | `bool` | `False` | Load INT8 models. **Not recommended**: INT8 WER is 31% vs fp32 15%. Use fp32 for production. |
 | `k` | `int` | `4` | Number of nearest neighbours to average in the cosine matching step. |
 
----
+## Model and license
 
-## Model sizes
+**Apache-2.0.**
 
-| File | Size | Variant |
-|---|---|---|
-| `focalcodec_encoder.onnx` | 594.6 MB | fp32 |
-| `focalcodec_encoder_q8.onnx` | 341.2 MB | INT8 (42.6% reduction) |
-| `focalcodec_vocoder.onnx` | 64.3 MB | fp32 |
-| `focalcodec_vocoder_q8.onnx` | 16.3 MB | INT8 (74.7% reduction) |
+| File | fp32 | INT8 |
+|------|------|------|
+| `focalcodec_encoder.onnx` | 594.6 MB | 341.2 MB (−42.6%) |
+| `focalcodec_vocoder.onnx` | 64.3 MB | 16.3 MB (−74.7%) |
 
----
+Total: ~659 MB fp32 / ~358 MB INT8.
 
-## Parity vs torch
+## Sample rate
 
-| Component | max abs | mean abs |
-|---|---|---|
-| encoder fp32 | 4.2e-4 | 1.8e-5 |
-| vocoder backbone fp32 | 2.7e-5 | 2.1e-6 |
-| numpy ISTFT vs torch | 1.3e-5 | 3.3e-7 |
+**16 kHz.**
 
----
+## INT8 note
 
-## Usage
+**INT8 is not recommended for this engine.** WER increases from 15% (fp32) to
+31% (INT8). Use `quantized=False` (the default) for production.
+See [QUANTS.md](../QUANTS.md).
 
-### Python
+## WER
 
-```python
-from voiceclonnx import VoiceCloner
+**15–19%** — measured with faster-whisper `base.en` on demo clips.
+See [demo/VERIFICATION.md](../../demo/VERIFICATION.md).
 
-# Default (fp32, k=4)
-cloner = VoiceCloner(engine="focalcodec")
-out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
-print(cloner.sample_rate)   # 16000
-
-# Quantized
-cloner = VoiceCloner(engine="focalcodec", quantized=True)
-out = cloner.clone_voice("source.wav", "reference.wav", "out_q8.wav")
-
-# Wider neighbourhood
-cloner = VoiceCloner(engine="focalcodec", k=8)
-```
-
-### CLI
+## CLI example
 
 ```bash
-pip install voiceclonnx
-
 voiceclonnx clone --engine focalcodec \
              --audio source.wav \
              --voice reference.wav \
              --out out.wav
 ```
 
----
+## Python example
 
-## References
+```python
+from voiceclonnx import VoiceCloner
 
-- Paper: [FocalCodec (Della Libera et al., NeurIPS 2025)](https://arxiv.org/abs/2502.04465)
-- Upstream code: [lucadellalib/focalcodec](https://github.com/lucadellalib/focalcodec)
-- Upstream checkpoint: [lucadellalib/focalcodec_50hz](https://huggingface.co/lucadellalib/focalcodec_50hz)
+cloner = VoiceCloner(engine="focalcodec")
+out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
+print(cloner.sample_rate)   # 16000
 
----
+# More neighbours — smoother conversion at slightly higher compute cost
+cloner = VoiceCloner(engine="focalcodec", k=8)
+```
 
 ## Troubleshooting
 
-**`ImportError: onnxruntime is required`**
-Install the extras group: `pip install voiceclonnx`.
+**High WER on short clips** — the cosine kNN matching requires a dense reference
+feature set. Use reference clips of at least 5 s for best matching.
 
-**Output sounds noisy or garbled**
-Ensure the reference clip is clean, at least 5 s long, and recorded at 16 kHz (or
-the adapter will resample). Cosine kNN is sensitive to short reference pools.
+**Slow on first run** — ~659 MB encoder downloads from HF Hub; cached in
+`~/.cache/huggingface/hub`.
 
-**Out-of-memory on large files**
-Use `quantized=True` — footprint drops from ~659 MB to ~358 MB.
-For very long utterances, chunk the source audio.
+## References
 
-**First run is slow**
-Models are downloaded from HF Hub on first use and cached in `~/.cache/huggingface/hub`.
+- Paper: [FocalCodec: Low-Bitrate Speech Coding via Focal Tokens](https://arxiv.org/abs/2410.23265)
