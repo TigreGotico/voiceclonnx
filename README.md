@@ -97,7 +97,7 @@ WER is measured with faster-whisper `base.en` against the source transcript
 | `mimi` | RVQ token-swap | 24 kHz | **0%** | ✅ | [TigreGotico/voiceclonnx-mimi](https://huggingface.co/TigreGotico/voiceclonnx-mimi) | 24 kHz, zero WER |
 | `openvoice` | Tone-color transfer | 22 kHz | **0%** | ✅ | [TigreGotico/voiceclonnx-openvoice-v2](https://huggingface.co/TigreGotico/voiceclonnx-openvoice-v2) | Broadest style range |
 | `quickvc` | HuBERT-soft + VITS | 16 kHz | **0%** | ✅ | [TigreGotico/voiceclonnx-quickvc](https://huggingface.co/TigreGotico/voiceclonnx-quickvc) | Fastest CPU (0.14× RTF) |
-| `chatterbox` | AR codec-LM | 24 kHz | 4–8% | fp32 only | [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx) | Natural prosody, expressive style |
+| `chatterbox` | AR codec-LM | 24 kHz | 4–8% | ✅ (8% WER) | [TigreGotico/voiceclonnx-chatterbox](https://huggingface.co/TigreGotico/voiceclonnx-chatterbox) | Natural prosody, expressive style |
 | `triaan` | Triple-AAN | 16 kHz | 4% | ✅ | [TigreGotico/voiceclonnx-triaan-vc](https://huggingface.co/TigreGotico/voiceclonnx-triaan-vc) | Good quality, small footprint |
 | `speechtokenizer` | RVQ token-swap | 16 kHz | 4–12% | ✅ | [TigreGotico/voiceclonnx-speechtokenizer](https://huggingface.co/TigreGotico/voiceclonnx-speechtokenizer) | HuBERT-distilled content fidelity |
 | `cosyvoice` | Flow-matching | 22 kHz | 8% | ⚠ int8 degrades | [TigreGotico/voiceclonnx-cosyvoice](https://huggingface.co/TigreGotico/voiceclonnx-cosyvoice) | Cross-lingual conversion |
@@ -157,8 +157,8 @@ out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
 Some engines degrade significantly in INT8: `freevc`, `focalcodec`, `cosyvoice`,
 and `linacodec` should be used in fp32 for production.
 
-`chatterbox` is fp32-only: `onnx-community/chatterbox-onnx` does not publish
-INT8 variants. `quantized=True` is accepted for API uniformity but silently ignored.
+`chatterbox` INT8 matches fp32 quality (8% WER, 57% smaller) — we quantize
+and host it at `TigreGotico/voiceclonnx-chatterbox` since upstream ships fp32 only.
 
 See [docs/QUANTS.md](docs/QUANTS.md) for the full WER and size comparison.
 

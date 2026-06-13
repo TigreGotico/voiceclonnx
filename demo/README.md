@@ -1,5 +1,8 @@
 # Engine comparison demos
 
+> 🔊 **Listen with inline players:** open [`index.html`](index.html) (via GitHub Pages or locally) for embedded `<audio>` controls — no downloads. GitHub's markdown view only offers download links for the `.wav` files below.
+
+
 Same source speech, same reference voices, every engine — listen and compare
 without running any code (GitHub renders the players inline).
 

@@ -4,17 +4,12 @@ WER measured with faster-whisper `base.en` against the known source text.
 Sizes are ONNX model totals from the TigreGotico HF repos (fp32 + INT8).
 Gate: int8 flagged ⚠ when WER > 25% **and** > 15 points worse than fp32.
 
-## chatterbox — fp32 only
-
-The upstream `onnx-community/chatterbox-onnx` repository does not publish
-INT8 variants of `speech_encoder.onnx` or `conditional_decoder.onnx`.
-The `quantized=True` parameter is accepted (uniform API) but silently
-ignored; chatterbox always runs fp32 until upstream ships q8 exports.
 
 ## Engine comparison
 
 | Engine | fp32 WER | int8 WER | fp32 size (MB) | int8 size (MB) | Saving | Verdict |
 |--------|----------|----------|----------------|----------------|--------|---------|
+| `chatterbox` | 8% | 8% | 1080 | 467 | −57% | ✅ int8 recommended |
 | `cosyvoice` | 8% | 100% | 0.0 | 0.0 | 0% | ⚠ int8 degraded (100% vs fp32 8%) |
 | `linacodec` | 12% | ~100% | 694 | 186 | −73% | ⚠ int8 degraded (AdaLN+attention sensitive to weight-only INT8) |
 
