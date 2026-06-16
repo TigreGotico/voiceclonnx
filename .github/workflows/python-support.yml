@@ -1,0 +1,14 @@
+name: Python Support
+
+on:
+  pull_request:
+    branches: [dev, master]
+  workflow_dispatch:
+
+jobs:
+  python_support:
+    uses: OpenVoiceOS/gh-automations/.github/workflows/python-support.yml@dev
+    with:
+      package_name: 'voiceclonnx'
+      version_file: 'voiceclonnx/version.py'
+      python_versions: '["3.10", "3.11", "3.12", "3.13"]'

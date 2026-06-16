@@ -1,0 +1,12 @@
+name: Pip Audit
+
+on:
+  pull_request:
+    branches: [dev, master]
+  workflow_dispatch:
+
+jobs:
+  pip_audit:
+    uses: OpenVoiceOS/gh-automations/.github/workflows/pip-audit.yml@dev
+    with:
+      install_extras: '[convert,test]'

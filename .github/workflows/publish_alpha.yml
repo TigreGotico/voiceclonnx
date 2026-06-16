@@ -1,0 +1,23 @@
+name: Publish Alpha Build
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [dev]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish_alpha:
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+    uses: OpenVoiceOS/gh-automations/.github/workflows/publish-alpha.yml@dev
+    secrets:
+      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+      MATRIX_TOKEN: ${{ secrets.MATRIX_TOKEN }}
+    with:
+      version_file: 'voiceclonnx/version.py'
+      publish_pypi: true
+      propose_release: true
+      notify_matrix: true
