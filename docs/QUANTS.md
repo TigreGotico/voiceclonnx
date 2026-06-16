@@ -12,6 +12,8 @@ Gate: int8 flagged ⚠ when WER > 25% **and** > 15 points worse than fp32.
 | `chatterbox` | 8% | 8% | 1080 | 467 | −57% | ✅ int8 recommended |
 | `cosyvoice` | 8% | 100% | 0.0 | 0.0 | 0% | ⚠ int8 degraded (100% vs fp32 8%) |
 | `linacodec` | 12% | ~100% | 694 | 186 | −73% | ⚠ int8 degraded (AdaLN+attention sensitive to weight-only INT8) |
+| `vec2wav` | 127% | — | 526 | 206 | −61% | ⚠ vocoder fp32-only; demo WER reflects OOD TTS source |
+
 
 ## Notes
 
@@ -19,4 +21,9 @@ Gate: int8 flagged ⚠ when WER > 25% **and** > 15 points worse than fp32.
   (ContentVec-768 + RMVPE); the per-voice synthesizer is user-supplied.
 - Shared numpy artifacts (codebooks, mel filterbanks, mel stats) are never
   quantized — they are not ONNX models.
+- **vec2wav**: `vqwav2vec_codebook.npy` is never quantized (numpy array, not ONNX).
+  The BigVGAN vocoder (alias_free_torch ops) cannot be INT8-quantized due to
+  shape-inference conflicts; vocoder stays fp32 in both `quantized=False` and
+  `quantized=True` modes. fp32 size = encoder(23.1)+WavLM(338.7)+frontend(73.2)+vocoder(91.1).
+  int8 size = encoder_q8(5.8)+WavLM_q8(85.4)+frontend_q8(24.1)+vocoder_fp32(91.1).
 - Sizes include only ONNX model files from the respective HF repo.

@@ -236,6 +236,7 @@ Each supported engine has a dedicated GitHub issue with engine-specific notes:
 - [#13 knn-vc](https://github.com/TigreGotico/voiceclonnx/issues/13)
 - [#14 rvc](https://github.com/TigreGotico/voiceclonnx/issues/14)
 - [#15 freevc](https://github.com/TigreGotico/voiceclonnx/issues/15)
+- [#37 vec2wav](https://github.com/TigreGotico/voiceclonnx/issues/37)
 
 Follow the contract in this guide; the per-engine issue records any deviations
 (e.g. custom opset, extra quantization exclusions, multi-component manifests).
@@ -1053,6 +1054,8 @@ Upstream reference:
 - https://github.com/quickvc/QuickVC-VoiceConversion (MIT)
 - https://github.com/bshall/hubert (MIT, HuBERT-soft checkpoint)
 
+---
+
 ## Appendix: CosyVoice export notes
 
 ### Non-AR VC path
@@ -1199,6 +1202,163 @@ representative dataset and is out of scope for this release.
 
 ---
 
+## Engine: vec2wav 2.0
+
+### Architecture reality vs. issue description
+
+The GitHub issue (#37) describes vec2wav 2.0 as using "WavLM discrete content tokens".
+The actual implementation uses **vq-wav2vec** (Facebook AI, fairseq) for content
+discretisation, not WavLM. WavLM-Large (layer 6) is used only for the **speaker**
+(prompt) side. This distinction matters for the ONNX export design:
+
+- **Content path**: vq-wav2vec CNN feature extractor → numpy VQ nearest-neighbour
+  (2 groups × 320 vocab × 256 dims, concatenated to 512 dims) → (L, 512) VQ-vectors.
+- **Speaker path**: WavLM-Large layer-6 → (T, 1024) features → cross-attention inside
+  Conformer + temporal mean for BigVGAN conditioning.
+
+The WavLM exported here (`wavlm_speaker.onnx`) is **not interchangeable** with the
+kNN-VC WavLM (`wavlm_layer6.onnx` in `TigreGotico/voiceclonnx-knn-vc`). Although
+both extract layer-6 hidden states, the vec2wav weights are the original Microsoft
+WavLM-Large `.pt` format (loaded via a bundled `WavLM.py` class), while kNN-VC uses
+the HuggingFace transformers API. The numerical outputs differ.
+
+### VQ discretisation — KmeansVectorQuantizer projection (critical)
+
+The vq-wav2vec uses a `KmeansVectorQuantizer` (not GumbelVQ).  Before the codebook
+argmin, the checkpoint applies `self.projection(x)` — a grouped `Conv1d(512, 512,
+kernel_size=1, groups=2, bias=False)` followed by `Fp32GroupNorm(groups=2, dim=512)`.
+The quantisation argmin is computed on these **projected** features, not the raw CNN
+output.
+
+**Bug that was fixed**: the original export omitted this projection entirely.  On real
+speech the VQ token indices had 0% agreement with the upstream fairseq model.  After
+fixing, agreement is ≈92% (the remaining 8% is from numerical precision differences
+between the ONNX CNN export and the fairseq PyTorch CNN — boundary cases where the
+nearest codeword distance differs by less than the ONNX/torch floating-point gap).
+
+The projection weights are saved as `vqwav2vec_projection.npz` (conv_weight, gn_weight,
+gn_bias, totalling ~530 KB) and applied in pure numpy at inference.  The codebook
+(`vqwav2vec_codebook.npy`) is used only for the final lookup after projection; the
+argmin is also done on projected features.
+
+### License
+
+The GitHub repository (cantabile-kwok/vec2wav2.0) is Apache-2.0.
+The HuggingFace weights repo (cantabile-kwok/vec2wav2.0) is **GPL-3.0**.
+The ONNX artifacts in `TigreGotico/voiceclonnx-vec2wav` are derived from the
+GPL-3.0 weights and therefore inherit that term. The adapter code itself is
+Apache-2.0. Users of `quantized=True` or `quantized=False` are bound by GPL-3.0
+for the model artifacts.
+
+### Export
+
+```bash
+python -m conversion.export_vec2wav --output-dir /tmp/vec2wav-out --no-push
+```
+
+Downloads ~162 MB generator + ~1.3 GB vq-wav2vec + ~1.8 GB WavLM-Large on first run.
+Exports 4 ONNX components + codebook npy + 4 INT8 quantized variants.
+
+### ONNX export notes
+
+- **BigVGAN conditioned snakebeta**: the `Activation1dWithCondition` module passes a
+  `cond` tensor through `alias_free_torch` upsample/downsample layers. These are
+  pure Conv1d chains and export cleanly. The `cond` input is the mean speaker
+  embedding broadcast to each activation layer by `SnakeBetaWithCondition`.
+- **Conformer cross-attention**: the ESPnet-style Conformer decoder uses relative
+  positional encoding. This traces successfully at fixed sequence lengths used in
+  the dummy input but uses dynamic axes so it runs on variable-length sequences.
+- **Weight norm removal**: call `generator.backend.remove_weight_norm()` before
+  `torch.onnx.export`. Tracing through `weight_norm` wrappers introduces
+  spurious Mul/Div pairs; removing it produces a cleaner graph.
+
+### INT8 quantization
+
+The vocoder and frontend both quantize well (see QUANTS.md for measured WER).
+The WavLM speaker encoder degrades similarly to other WavLM exports in this
+collection.
+
+### WavLM-Large.pt: GREP attention and correct checkpoint
+
+The vec2wav 2.0 model requires `WavLM-Large.pt` from Microsoft's original distribution,
+loaded via the bundled `vec2wav2.ssl_models.WavLM.WavLM` class.  This checkpoint
+contains GREP (Gated Relative Position) attention parameters (`grep_a`, `grep_linear`)
+in each self-attention layer — 77 keys that have no counterpart in the HuggingFace
+`microsoft/wavlm-large` checkpoint.
+
+The HF checkpoint uses `gru_rel_pos_linear`/`gru_rel_pos_const` instead.  Exporting
+from the HF model leaves 77 parameters uninitialized, producing out-of-distribution
+speaker features that cause the BigVGAN vocoder to output near-silence.
+
+**Resolved**: `WavLM-Large.pt` was obtained from the Google Drive mirror
+(`https://drive.google.com/file/d/12-cB34qCTvByWT-QtOcZaqwwO21FLSqU/view`) and
+re-exported using `vec2wav2.ssl_models.WavLM.WavLM` with strict weight loading
+(0 uninitialized parameters).  Parity: max_abs diff between PyTorch and ONNX
+layer-6 output = 1.87e-04.  The corrected `wavlm_speaker.onnx` (339.2 MB fp32,
+121.7 MB INT8) is in `TigreGotico/voiceclonnx-vec2wav` (snapshot `83b73f3b`).
+
+**Export recipe for re-export**:
+
+```python
+# Load with the vec2wav bundled WavLM class (not HuggingFace transformers)
+from vec2wav2.ssl_models.WavLM import WavLM, WavLMConfig
+
+checkpoint = torch.load("WavLM-Large.pt", map_location="cpu")
+cfg = WavLMConfig(checkpoint["cfg"])
+model = WavLM(cfg)
+model.load_state_dict(checkpoint["model"])  # strict=True, 0 missing keys
+model.eval()
+
+# Export layer-6 features (shape: [B, T, 1024])
+# The dynamo exporter produces .onnx + .onnx.data; merge before uploading:
+import onnx
+from onnx.external_data_helper import load_external_data_for_model
+load_external_data_for_model(proto, base_dir)
+onnx.save(proto, "wavlm_speaker.onnx", save_as_external_data=False)
+```
+
+### CNN feature extractor layer order
+
+The fairseq `ConvFeatureExtractionModel` uses the layer order
+`Conv1d → Dropout → GroupNorm → activation` in each block.  At inference with
+`dropout=0` this reduces to `Conv → GroupNorm → GELU`.  The export script must
+construct `nn.Sequential(conv, gn, nn.GELU())` and map state_dict keys accordingly:
+
+- original `conv_layers.N.0.*` → Sequential index 0 (Conv1d)
+- original `conv_layers.N.2.*` → Sequential index 1 (GroupNorm)
+- original `conv_layers.N.1` (Dropout) — omitted (identity at inference)
+
+Reversing the order to `Conv → GELU → GroupNorm` causes the VQ projection to receive
+wrong normalisation, reducing unique VQ tokens from ~370 to ~5 on real speech.
+
+### GroupNorm normalization scope
+
+`nn.GroupNorm(G, C)` applied to a `(B, C, T)` tensor normalises each group over **all**
+`(C/G) × T` elements jointly — one scalar mean and variance per `(batch, group)`, not
+per time step.  The numpy replica in `vec2wav.py` (`_group_norm`) must use:
+
+```python
+mean = xg.mean()   # scalar over all L × C_per_group elements
+var  = xg.var()
+```
+
+not `xg.mean(axis=1, keepdims=True)` (which gives per-time-step normalisation and
+produces ~4% token error rate even after the CNN layer-order fix).
+
+After all three fixes, token agreement between the numpy pipeline and the upstream
+PyTorch pipeline is ≥ 99.5% on real speech.
+
+### Domain mismatch: model quality on TTS-generated source
+
+The vec2wav 2.0 checkpoint was trained on natural LibriSpeech-style speech.  When the
+source audio is TTS-generated (e.g., edge-tts `en-US-GuyNeural`), the vq-wav2vec CNN
+and the BigVGAN vocoder receive out-of-training-distribution features.  The ONNX
+pipeline correctly replicates the PyTorch model (mean output diff = 9.6e-04), but both
+produce garbled speech on TTS sources (WER ≈ 100–142% for the demo sentence).
+
+The engine works as designed; the quality limitation is inherent to the upstream
+checkpoint and source domain.  For best results use naturally-recorded source audio
+rather than synthesized speech.
 ## Appendix E: External-checkout pattern (LinaCodec / future engines)
 
 Some upstream model codebases carry licenses that are incompatible with
