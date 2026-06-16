@@ -3,22 +3,13 @@
 ## Unreleased
 
 - **Added `lscodec`** ([LSCodec](https://github.com/X-LANCE/LSCodec-Inference),
-  Interspeech 2025) — a speaker-decoupled discrete codec. It passed the
-  speaker-similarity gate (target-sim 0.54, the strongest timbre transfer in the
-  codec family) with a moderate ~35% WER tradeoff. The 3-model ONNX export
-  (encoder + WavLM-prompt + CTXVEC2WAV vocoder) was validated against the
-  upstream torch model (ONNX↔torch cosine 0.97). Weights: MIT.
-
-- **Curated the engine roster to 9** (`facodec`, `openvoice`, `chatterbox`,
-  `triaan`, `cosyvoice`, `bicodec`, `knnvc`, `focalcodec`, `rvc`). Removed
-  `freevc`, `speechtokenizer`, `mimi`, `linacodec`, `quickvc`, `vec2wav`, and
-  `seedvc`: a speakeronnx speaker-similarity audit found they sat at the
-  no-conversion floor (kept the *source* voice), were neural codecs repurposed
-  for VC, or were unbenchmarked/garbled ports. Export-parity gates confirmed the
-  weakness was the model/recipe, not the ONNX export. See
-  [demo/SPEAKER_SIMILARITY.md](demo/SPEAKER_SIMILARITY.md).
-- Added `demo/speaker_similarity.py` — ranks engines by speaker similarity to the
-  target voice (not just WER).
+  Interspeech 2025) — a speaker-decoupled discrete codec with the strongest
+  timbre transfer of the codec family (speaker similarity 0.54) at a moderate
+  ~35% WER. Pure-ONNX: encoder + WavLM prompt + CTXVEC2WAV vocoder, 24 kHz.
+  Weights: MIT.
+- Added `demo/speaker_similarity.py` and the
+  [speaker-similarity benchmark](demo/SPEAKER_SIMILARITY.md) — ranks engines by
+  how closely the output matches the target voice, not just WER.
 
 ## 0.0.1a1
 

@@ -40,7 +40,7 @@ One command installs every engine. ONNX models are downloaded on first use.
 
 ## Engine families
 
-The 9 built-in engines fall into five architectural families. Understanding the
+The 10 built-in engines fall into six architectural families. Understanding the
 family determines which tradeoffs apply.
 
 ### kNN feature-swap (`knnvc`, `focalcodec`)
@@ -85,6 +85,16 @@ timbre and speaking style (prosody, expressiveness).
 - **chatterbox** — Resemble AI Chatterbox AR codec-LM. 24 kHz. INT8 available
   (no INT8 variants published upstream). Configurable exaggeration factor.
 
+### Speaker-decoupled codec (`lscodec`)
+
+A discrete codec whose content tokens are trained to be speaker-agnostic, so
+resynthesis with a different speaker prompt performs the conversion directly.
+Single codebook, no multi-stream token swap.
+
+- **lscodec** — encoder (raw audio → 64-d tokens) + numpy VQ (300 codebook) +
+  WavLM-prompt CTXVEC2WAV vocoder at 24 kHz. Strongest timbre transfer of the
+  codec engines; trades ~35% WER for it.
+
 ### Any-to-ONE (`rvc`)
 
 The target speaker identity is baked into a per-voice model; `reference_voice`
@@ -108,6 +118,7 @@ community-trained RVC voice models exist on Hugging Face.
 | `bicodec` | Factorized codec | 16 kHz | 12% | ✅ | CC BY-NC-SA 4.0 |
 | `knnvc` | kNN feature-swap | 16 kHz | 12–15% | ✅ | MIT |
 | `focalcodec` | kNN feature-swap | 16 kHz | 15–19% | ⚠ degrades | Apache-2.0 |
+| `lscodec` | Speaker-decoupled codec | 24 kHz | ~35% | ✅ | MIT |
 | `rvc` | Any-to-ONE | 40/48 kHz | 38%† | ✅ (base) | MIT |
 
 †rvc WER is model-dependent; value from sample community model.

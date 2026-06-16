@@ -12,11 +12,11 @@ bitrate degrades some words)
 
 ---
 
-> **Strong timbre, moderate intelligibility.** LSCodec is the *inverse* tradeoff
-> from the engines that were removed in the roster curation: it transfers the
-> **target voice** better than any other engine here (cosine ≈ 0.54 vs the
-> no-conversion floor of 0.09), at the cost of moderate WER. Reach for it when
-> *who is speaking* matters more than perfect transcription.
+> **Strong timbre, moderate intelligibility.** LSCodec prioritises voice
+> identity over transcription: it transfers the **target voice** better than any
+> other any-to-any engine here (cosine ≈ 0.54 against a no-conversion baseline of
+> 0.09), at the cost of moderate WER. Reach for it when *who is speaking* matters
+> more than perfect transcription.
 
 ## Overview
 
