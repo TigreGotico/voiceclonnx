@@ -29,6 +29,7 @@ the source utterance spoken in the reference voice, as that engine hears it.
 | bicodec | 12% | [`outputs/bicodec__aria.wav`](outputs/bicodec__aria.wav) | [`outputs/bicodec__sonia.wav`](outputs/bicodec__sonia.wav) |
 | knnvc | 12–15% | [`outputs/knnvc__aria.wav`](outputs/knnvc__aria.wav) | [`outputs/knnvc__sonia.wav`](outputs/knnvc__sonia.wav) |
 | focalcodec | 15–19% | [`outputs/focalcodec__aria.wav`](outputs/focalcodec__aria.wav) | [`outputs/focalcodec__sonia.wav`](outputs/focalcodec__sonia.wav) |
+| lscodec | ~35% | [`outputs/lscodec__aria.wav`](outputs/lscodec__aria.wav) | [`outputs/lscodec__sonia.wav`](outputs/lscodec__sonia.wav) |
 
 Any-to-ONE engines convert to a fixed voice model instead of a reference wav
 (one column per demo model):

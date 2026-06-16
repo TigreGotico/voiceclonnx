@@ -11,7 +11,7 @@ Run::
 
     python examples/basic_clone.py
 
-Output (actual run 2026-06-11)::
+Example output::
 
     Source   : /tmp/voiceclonnx_demo/source.wav  (sr=16000, samples=55680)
     Reference: /tmp/voiceclonnx_demo/reference.wav  (sr=16000, samples=63744)

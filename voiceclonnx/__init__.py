@@ -81,6 +81,7 @@ import voiceclonnx.engines.triaan  # noqa: F401
 import voiceclonnx.engines.bicodec  # noqa: F401
 import voiceclonnx.engines.facodec  # noqa: F401
 import voiceclonnx.engines.cosyvoice  # noqa: F401
+import voiceclonnx.engines.lscodec  # noqa: F401
 
 __all__ = [
     "VoiceCloner",
