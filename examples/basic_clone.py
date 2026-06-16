@@ -45,8 +45,6 @@ def _synth_wav(text: str, voice: str, path: Path) -> None:
     async def _run():
         communicate = edge_tts.Communicate(text, voice)
         # edge-tts writes MP3; soundfile can't read MP3, so we convert via wave module
-        import io
-        import wave
 
         chunks = []
         async for chunk in communicate.stream():

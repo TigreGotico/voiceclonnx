@@ -32,11 +32,10 @@ Typical usage
 from __future__ import annotations
 
 import json
-import os
 import subprocess
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -310,8 +309,8 @@ def write_provenance(
     lines = [
         "# PROVENANCE",
         "",
-        f"| Field | Value |",
-        f"|-------|-------|",
+        "| Field | Value |",
+        "|-------|-------|",
         f"| upstream_repo | {upstream_repo_url} |",
         f"| upstream_ref | {upstream_ref} |",
         f"| export_script_sha | {export_sha} |",

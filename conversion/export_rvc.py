@@ -89,7 +89,6 @@ def _build_contentvec():
     import torch.nn as nn
     from transformers import HubertModel
     from huggingface_hub import hf_hub_download
-    import json
     from pathlib import Path
 
     class ContentVecEncoder(nn.Module):
@@ -122,7 +121,7 @@ def _build_contentvec():
             return out.last_hidden_state
 
     print(f"[export] Downloading ContentVec (transformers format) from {CONTENTVEC_HF_REPO} ...")
-    config_path = hf_hub_download(repo_id=CONTENTVEC_HF_REPO, filename=CONTENTVEC_CONFIG_FILE)
+    hf_hub_download(repo_id=CONTENTVEC_HF_REPO, filename=CONTENTVEC_CONFIG_FILE)
     weights_path = hf_hub_download(repo_id=CONTENTVEC_HF_REPO, filename=CONTENTVEC_WEIGHTS_FILE)
     print(f"[export] ContentVec weights: {weights_path}")
 
@@ -347,7 +346,6 @@ def _build_rmvpe(ckpt_path: Path):
 def export_rvc(output_dir: str, cache_dir: Optional[str] = None) -> Path:
     """Export RVC base models and return the engine output directory."""
     import torch
-    from huggingface_hub import hf_hub_download
     from conversion.export_base import OutputLayout, export_model, write_manifest, write_provenance
     from conversion.parity import compare_outputs, check_tolerance, run_ort
     from conversion.quantize import quantize_model

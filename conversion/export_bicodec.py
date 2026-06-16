@@ -36,7 +36,6 @@ from __future__ import annotations
 
 import argparse
 import sys
-import warnings
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -134,7 +133,6 @@ def _build_wav2vec2_wrapper(feature_extractor_model):
     Applies tracing patches (sdpa_mask IndexError fix) before wrapping,
     consistent with the Mimi export approach documented in docs/converting.md.
     """
-    import torch
     import torch.nn as nn
 
     # Apply tracing patches BEFORE building the wrapper so the patched
@@ -169,7 +167,6 @@ def _build_semantic_encoder_wrapper(bicodec_model):
     (B, D, T) channel-first output.  The quantizer.tokenize also expects (B, D, T).
     We transpose the Wav2Vec2 features (B, T, 1024) → (B, 1024, T) before the encoder.
     """
-    import torch
     import torch.nn as nn
 
     class SemanticEncoderWrapper(nn.Module):
@@ -199,7 +196,6 @@ def _build_global_encoder_wrapper(bicodec_model):
     matching how BiCodec.tokenize calls it: self.speaker_encoder.tokenize(mel.transpose(1, 2)).
     We accept the channel-first mel (1, 128, T_mel) and transpose internally.
     """
-    import torch
     import torch.nn as nn
 
     class GlobalEncoderWrapper(nn.Module):
@@ -225,7 +221,6 @@ def _build_decoder_wrapper(bicodec_model):
 
     This wraps BiCodec.detokenize directly to keep exact parity.
     """
-    import torch
     import torch.nn as nn
 
     class DecoderWrapper(nn.Module):
@@ -252,7 +247,6 @@ def _build_mel_wrapper(bicodec_model):
     Input : waveform (1, 1, N) float32
     Output: mel (1, 128, T_mel) float32
     """
-    import torch
     import torch.nn as nn
 
     class MelWrapper(nn.Module):
@@ -316,7 +310,7 @@ def export_bicodec(output_dir: str, no_push: bool = False) -> None:
     # 3. Load Wav2Vec2
     # ------------------------------------------------------------------
     print("[export] loading Wav2Vec2-XLSR-53 ...")
-    from transformers import Wav2Vec2Model, Wav2Vec2FeatureExtractor
+    from transformers import Wav2Vec2Model
 
     wav2vec2_model = Wav2Vec2Model.from_pretrained(str(wav2vec2_dir))
     wav2vec2_model.config.output_hidden_states = True
@@ -334,7 +328,7 @@ def export_bicodec(output_dir: str, no_push: bool = False) -> None:
     # 1 second of audio at 16 kHz
     N_DUMMY = 16000
     dummy_wav_1d = torch.zeros(1, N_DUMMY)          # for Wav2Vec2: (1, N)
-    dummy_wav_3d = dummy_wav_1d.unsqueeze(0)        # (1, 1, N) — unused directly
+    dummy_wav_1d.unsqueeze(0)        # (1, 1, N) — unused directly
 
     # Run Wav2Vec2 forward to get feature shape
     with torch.no_grad():

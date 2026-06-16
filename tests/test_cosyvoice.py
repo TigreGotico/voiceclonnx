@@ -206,7 +206,7 @@ class _MockBackboneSess:
         return [mag, phase]
 
 
-def _inject_mocks(adapter) -> "CosyVoiceAdapter":
+def _inject_mocks(adapter):
     adapter._tok_sess = _MockTokenizerSess()
     adapter._spk_sess = _MockCAMPlussSess()
     adapter._fe_sess = _MockFlowEncoderSess()
@@ -382,7 +382,6 @@ def test_e2e_cosyvoice_clone_edge_tts_voices(tmp_path):
     import re
     import subprocess
 
-    import soundfile as sf
 
     try:
         import edge_tts

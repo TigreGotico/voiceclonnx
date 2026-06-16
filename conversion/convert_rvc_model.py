@@ -53,7 +53,6 @@ def _build_net_g(checkpoint: dict):
     """
     import torch
     import torch.nn as nn
-    import torch.nn.functional as F
 
     config = checkpoint.get("config", [])
     weight = checkpoint.get("weight", checkpoint)
@@ -166,7 +165,7 @@ def _build_net_g(checkpoint: dict):
             ds: "torch.Tensor",             # (1,)
             rnd: "torch.Tensor",            # (1, 192, T)
         ) -> "torch.Tensor":
-            T = phone.shape[1]
+            phone.shape[1]
             x = self.phone_enc(phone).transpose(1, 2)         # (1, H, T)
             f0_h = self.f0_emb(pitch).transpose(1, 2)         # (1, H, T)
             spk_h = self.spk_emb(ds)                          # (1, gin_ch)

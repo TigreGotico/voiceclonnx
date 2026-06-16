@@ -27,7 +27,6 @@ from __future__ import annotations
 
 import argparse
 import sys
-import warnings
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -71,7 +70,6 @@ def _build_encoder_wrapper(model):
     Input : audio (1, 1, N) float32
     Output: codes (Q, 1, T) int64
     """
-    import torch
     import torch.nn as nn
 
     class STEncoder(nn.Module):
@@ -94,7 +92,6 @@ def _build_decoder_wrapper(model):
     Input : codes (Q, 1, T) int64
     Output: waveform (1, 1, N) float32
     """
-    import torch
     import torch.nn as nn
 
     class STDecoder(nn.Module):
@@ -163,7 +160,6 @@ def _parity_decoder(torch_model, ort_dec_path: Path, codes_np):
 
 def export_speechtokenizer(output_dir: str, no_push: bool = False) -> None:
     import torch
-    import numpy as np
     from huggingface_hub import snapshot_download
 
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -271,7 +267,7 @@ def export_speechtokenizer(output_dir: str, no_push: bool = False) -> None:
     dec_wrapper = _build_decoder_wrapper(model)
 
     # Dummy codes for tracing: (Q, 1, T)
-    T_dummy = torch_codes.shape[2]
+    torch_codes.shape[2]
     dummy_codes = torch_codes.clone()
 
     dec_path = export_model(

@@ -221,7 +221,6 @@ def _build_postnet_wrapper(net_g):
     Wraps the updown_filter interpolation + multistream_conv_post.
     This is a learned 1-D mixing conv — fully traceable.
     """
-    import torch
     import torch.nn as nn
     import torch.nn.functional as F
 

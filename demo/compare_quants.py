@@ -114,7 +114,8 @@ def _synth_if_missing(name: str, voice: str, text: str) -> Path:
     wav = DEMO_DIR / f"{name}.wav"
     if wav.exists():
         return wav
-    import asyncio, subprocess
+    import asyncio
+    import subprocess
     import edge_tts  # type: ignore
 
     mp3 = DEMO_DIR / f"{name}.mp3"
