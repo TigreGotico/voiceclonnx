@@ -1,0 +1,90 @@
+# Speaker-similarity ranking & export-parity audit
+
+WER tells you whether the words are intelligible. It says **nothing** about
+whether the converted voice actually sounds like the *target speaker*. This
+report ranks every engine by **speaker similarity to the target voice** using
+[speakeronnx](https://github.com/TigreGotico/speakeronnx), and then checks the
+suspicious low-similarity engines against their **original pre-export PyTorch
+model** to separate "the model/recipe is weak" from "the ONNX export is broken".
+
+Reproduce:
+
+```bash
+pip install voiceclonnx speakeronnx soxr
+python demo/speaker_similarity.py                 # ranking (3-model ensemble)
+python demo/speaker_similarity.py wespeaker-resnet34   # single, most discriminative
+# parity gates (need the convert extra + torch):
+python demo/parity_mimi.py
+python demo/parity_speechtokenizer.py
+python demo/parity_freevc.py
+```
+
+## How it's measured
+
+- For each engine output `<engine>__{aria,sonia}.wav` we take its speaker
+  embedding and compute **cosine similarity to the target reference**
+  (`reference_aria.wav` / `reference_sonia.wav`). Higher = closer to the
+  intended voice.
+- We also measure **source similarity** (cosine to `source.wav`). A high
+  source-similarity with low target-similarity means the engine barely changed
+  the speaker — it leaked the source voice through.
+- Primary model: `wespeaker-resnet34` (clearest separation — the
+  source→target "no-conversion floor" is only **0.090**, so anything well above
+  that is doing real conversion). Cross-checked with a 3-model ensemble
+  (`+ titanet-large + campplus`); the top and bottom groups are stable.
+
+## Ranking (wespeaker-resnet34, target-similarity)
+
+`rvc` is excluded — it is any-to-ONE and its demo targets a different community
+voice (`woman1`), not aria/sonia.
+
+| Rank | Engine | Target-sim | WER | Read |
+|---|---|---|---|---|
+| 1 | `focalcodec` | **0.606** | 15–19% | Best timbre transfer |
+| 2 | `chatterbox` | **0.538** | 4–8% | Best all-rounder (also moves *away* from source) |
+| 3 | `knnvc` | 0.490 | 12–15% | Strong timbre |
+| 4 | `facodec` | 0.444 | **0%** | Excellent balance (0% WER + good timbre) |
+| 5 | `openvoice` | 0.372 | **0%** | Good balance |
+| 6 | `vec2wav` | 0.322 | 119–127% | Transfers timbre but destroys content |
+| 7 | `bicodec` | 0.290 | 12% | Moderate |
+| 8 | `triaan` | 0.286 | 4% | Moderate |
+| 9 | `cosyvoice` | 0.210 | 8% | Weak timbre |
+| 10 | `freevc` | 0.105 | 12% | Weak — leans toward source |
+| 11 | `speechtokenizer` | 0.092 | 4–12% | At the no-conversion floor |
+| 12 | `mimi` | 0.054 | **0%** | Perfect words, **wrong voice** (≈ source) |
+| 13 | `linacodec` | 0.032 | 8–15% | Near-floor |
+| 14 | `quickvc_q8` | 0.032 | **0%** | Perfect words, almost no conversion |
+| 15 | `quickvc` | 0.011 | **0%** | Perfect words, almost no conversion |
+
+### The WER paradox
+
+`mimi`, `quickvc`, `facodec`, `openvoice` all score **0% WER**, but they split
+into two very different groups:
+
+- `facodec` / `openvoice` — 0% WER **and** good timbre transfer. These are the
+  engines to reach for.
+- `mimi` / `quickvc` — 0% WER but the output still sounds like the **source**
+  speaker (`mimi` source-similarity ≈ 0.89). They reproduce the words perfectly
+  while barely adopting the target voice. A WER-only table makes these look
+  top-tier; on the actual VC task they are near the bottom.
+
+## Export-parity audit — does the model suck, or did the export break it?
+
+For the most suspicious engines we ran the **original PyTorch model** through
+the *same* conversion recipe and compared it to the shipped ONNX output. If
+torch ≈ ONNX but **both** miss the target, the export is fine and the
+model/recipe is the limit. If they diverge, the export is the culprit.
+
+| Engine | torch ↔ onnx agreement | torch → target | Verdict |
+|---|---|---|---|
+| `mimi` | decoder corr **0.99**, full-VC corr **0.96**, roundtrip 0.95 | low (≈ source) | **Export faithful.** RVQ stream-swap keeps the source's acoustic streams (1–31), so the source *timbre* is retained by design. Recipe limitation, not export. |
+| `speechtokenizer` | embedding **0.89**, wav-corr 0.73 | low (0.08–0.13) | **Export faithful.** The original torch model *also* fails to reach the target — content RVQ layers (kept from source) carry speaker identity. Recipe/model limit. |
+| `freevc` | embedding 0.72–0.77, wav-corr 0.49 | low (−0.00 to 0.12, leans source) | **Model-limited.** Original torch FreeVC also leans toward the source on this pair. Export is mostly faithful but shows more numeric drift than the codec engines — worth a closer look, but it is *not* why the VC is weak. |
+
+**Bottom line:** none of the bad-sounding suspects are bad because of the ONNX
+export. `mimi`/`quickvc`/`speechtokenizer` are RVQ/token-swap codecs whose
+"content" streams already encode the source speaker, so swapping only the
+residual streams leaves the source voice largely intact — they ace WER and miss
+the voice. `freevc` simply doesn't transfer this particular timbre well even in
+PyTorch. For genuine target-voice fidelity, prefer `focalcodec`, `chatterbox`,
+`facodec`, `knnvc`, or `openvoice`.
