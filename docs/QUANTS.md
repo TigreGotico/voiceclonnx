@@ -11,6 +11,7 @@ Gate: int8 flagged ⚠ when WER > 25% **and** > 15 points worse than fp32.
 |--------|----------|----------|----------------|----------------|--------|---------|
 | `chatterbox` | 8% | 8% | 1080 | 467 | −57% | ✅ int8 recommended |
 | `cosyvoice` | 8% | 100% | 0.0 | 0.0 | 0% | ⚠ int8 degraded (100% vs fp32 8%) |
+| `lscodec` | ~35% | — | 555 | 154 | −72% | fp32 recommended (codebook never quantized) |
 
 
 ## Notes

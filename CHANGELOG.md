@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- **Added `lscodec`** ([LSCodec](https://github.com/X-LANCE/LSCodec-Inference),
+  Interspeech 2025) — a speaker-decoupled discrete codec. It passed the
+  speaker-similarity gate (target-sim 0.54, the strongest timbre transfer in the
+  codec family) with a moderate ~35% WER tradeoff. The 3-model ONNX export
+  (encoder + WavLM-prompt + CTXVEC2WAV vocoder) was validated against the
+  upstream torch model (ONNX↔torch cosine 0.97). Weights: MIT.
+
 - **Curated the engine roster to 9** (`facodec`, `openvoice`, `chatterbox`,
   `triaan`, `cosyvoice`, `bicodec`, `knnvc`, `focalcodec`, `rvc`). Removed
   `freevc`, `speechtokenizer`, `mimi`, `linacodec`, `quickvc`, `vec2wav`, and

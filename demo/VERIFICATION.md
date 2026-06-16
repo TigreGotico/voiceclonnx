@@ -23,3 +23,5 @@ against the known source text (gate: WER ≤ 40%).
 | [`outputs/rvc__woman1.wav`](outputs/rvc__woman1.wav) | 38% | ✅ | The quick round five jumps on the lazy dog. Moiscan Christian changes with speaking, but n |
 | [`outputs/triaan__aria.wav`](outputs/triaan__aria.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who was speaking, bu |
 | [`outputs/triaan__sonia.wav`](outputs/triaan__sonia.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog voice conversion changes who was speaking but  |
+| [`outputs/lscodec__aria.wav`](outputs/lscodec__aria.wav) | 35% | ✅ | but quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
+| [`outputs/lscodec__sonia.wav`](outputs/lscodec__sonia.wav) | 35% | ✅ | but quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |

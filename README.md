@@ -4,7 +4,7 @@
 ![Python](https://img.shields.io/pypi/pyversions/voiceclonnx)
 ![License](https://img.shields.io/pypi/l/voiceclonnx)
 
-**Pure-ONNX voice conversion. 9 curated engines. Zero PyTorch at runtime.**
+**Pure-ONNX voice conversion. 10 curated engines. Zero PyTorch at runtime.**
 
 Audio-to-audio only — voiceclonnx converts the voice in an existing speech file
 to sound like a reference speaker. Text-driven synthesis (text → cloned audio) is
@@ -17,11 +17,12 @@ a TTS concern and is out of scope.
 - **Zero PyTorch at runtime.** Every engine runs on `onnxruntime`, `numpy`,
   `soundfile`, and `huggingface_hub` only. No torch, no CUDA driver required
   for inference.
-- **One install, every engine.** `pip install voiceclonnx` activates all 9
+- **One install, every engine.** `pip install voiceclonnx` activates all 10
   engines immediately — no per-engine extras, no optional groups for inference.
-- **Curated, not padded.** 9 distinct architectures in a single unified API
+- **Curated, not padded.** 10 distinct architectures in a single unified API
   (kNN feature-swap, factorized codec, flow-matching, tone-color, AR codec-LM,
-  and any-to-ONE) — each one actually transfers the target voice. Engines that
+  speaker-decoupled codec, and any-to-ONE) — each one actually transfers the
+  target voice. Engines that
   only reconstructed the source speaker were removed, not shipped for the
   headline count.
 - **Every engine STT- and speaker-verified.** Each demo clip is transcribed with
@@ -38,7 +39,7 @@ a TTS concern and is out of scope.
 
 **[demo/README.md](demo/README.md)** — every engine converts the same sentence
 to two reference voices (Aria and Sonia). GitHub renders the audio players inline.
-Compare all 9 engines by ear, zero code required.
+Compare all 10 engines by ear, zero code required.
 
 ---
 
@@ -103,6 +104,7 @@ WER is measured with faster-whisper `base.en` against the source transcript
 | `bicodec` | Semantic + global tokens | 16 kHz | 12% | ✅ | [TigreGotico/voiceclonnx-bicodec](https://huggingface.co/TigreGotico/voiceclonnx-bicodec) | SparkTTS zero-shot VC |
 | `knnvc` | kNN feature-swap | 16 kHz | 12–15% | ✅ | [TigreGotico/voiceclonnx-knn-vc](https://huggingface.co/TigreGotico/voiceclonnx-knn-vc) | Lightweight (123 MB int8), strong timbre |
 | `focalcodec` | kNN feature-swap | 16 kHz | 15–19% | ⚠ int8 degrades | [TigreGotico/voiceclonnx-focalcodec](https://huggingface.co/TigreGotico/voiceclonnx-focalcodec) | Best timbre similarity (NeurIPS 2025) |
+| `lscodec` | Speaker-decoupled codec | 24 kHz | ~35% | ✅ | [TigreGotico/voiceclonnx-lscodec](https://huggingface.co/TigreGotico/voiceclonnx-lscodec) | **Best timbre transfer**; trades some WER (Interspeech 2025) |
 | `rvc` | ContentVec + VITS | 40/48 kHz | 38%† | ✅ (base only) | [TigreGotico/voiceclonnx-rvc](https://huggingface.co/TigreGotico/voiceclonnx-rvc) | Any-to-ONE, community voices |
 
 
@@ -123,10 +125,13 @@ WER is measured with faster-whisper `base.en` against the source transcript
 **Best all-rounders (0% WER + strong timbre):** `facodec`, `openvoice` —
 start here unless you have a specific constraint.
 
-**Best target-voice fidelity (speaker similarity):** `focalcodec`, `chatterbox`,
-`facodec`, `knnvc`, `openvoice`. WER ≠ timbre transfer — see the ranked
-[speaker-similarity & export-parity audit](demo/SPEAKER_SIMILARITY.md), which
-also documents why several engines were removed (they kept the *source* voice).
+**Best target-voice fidelity (speaker similarity):** `focalcodec`, `lscodec`,
+`chatterbox`, `facodec`, `knnvc`, `openvoice`. WER ≠ timbre transfer — see the
+ranked [speaker-similarity & export-parity audit](demo/SPEAKER_SIMILARITY.md),
+which also documents why several engines were removed (they kept the *source*
+voice). `lscodec` has the strongest timbre transfer of the codec family but
+trades ~35% WER for it — pick it when voice identity matters more than perfect
+transcription.
 
 **Highest output sample rate:** `rvc` at up to 48 kHz (any-to-ONE); `chatterbox`
 at 24 kHz for any-to-any.

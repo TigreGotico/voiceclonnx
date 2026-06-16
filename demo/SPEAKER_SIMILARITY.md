@@ -125,4 +125,16 @@ codecs repurposed for VC:
 
 The curated roster keeps only engines that measurably move the converted voice
 toward the target: `focalcodec`, `chatterbox`, `knnvc`, `facodec`, `openvoice`,
-`bicodec`, `triaan`, `cosyvoice`, and `rvc` (any-to-ONE).
+`bicodec`, `triaan`, `cosyvoice`, `lscodec`, and `rvc` (any-to-ONE).
+
+## Added: lscodec (the gate working as intended)
+
+`lscodec` ([LSCodec](https://github.com/X-LANCE/LSCodec-Inference), Interspeech
+2025) was the one backlog engine that passed this gate and was **added**. It is a
+*speaker-decoupled* codec — built for VC — and it shows: target-similarity
+**0.54** (would rank #3 here), source-similarity only 0.19. The ONNX export was
+validated against the upstream torch model the same way (ONNX↔torch cosine
+**0.97**) before shipping. It is the inverse tradeoff from the removed engines —
+strongest timbre transfer in the codec family, but a moderate ~35% WER. Every
+other open porting request was blocked (non-commercial weights, unreleased, or
+no license) — see the issue tracker.
