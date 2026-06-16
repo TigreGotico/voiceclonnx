@@ -216,7 +216,7 @@ class _MockDecoderSession:
         return [wav]
 
 
-def _inject_mock_sessions(adapter) -> "BiCodecAdapter":
+def _inject_mock_sessions(adapter):
     """Inject mock ORT sessions and a dummy mel filterbank into the adapter."""
     adapter._w2v_sess = _MockW2VSession()
     adapter._sem_sess = _MockSemanticSession()
@@ -397,7 +397,6 @@ def test_e2e_bicodec_clone_edge_tts_voices(tmp_path):
     import re
     import subprocess
 
-    import soundfile as sf
 
     try:
         import edge_tts

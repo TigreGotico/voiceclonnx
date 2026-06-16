@@ -50,7 +50,6 @@ from __future__ import annotations
 import argparse
 import subprocess
 import sys
-import os
 import json
 from pathlib import Path
 
@@ -272,8 +271,6 @@ class _LengthRegulatorWrapper(object):
     """
 
     def __init__(self, lr_module, embedding):
-        import torch
-        import torch.nn as nn
         self.lr = lr_module
         self.embedding = embedding
 
@@ -284,7 +281,6 @@ class _LengthRegulatorWrapper(object):
 
         Returns: conditioned (1, T_mel, 512) float32
         """
-        import torch
         import torch.nn.functional as F
 
         # Embed discrete tokens
@@ -652,7 +648,7 @@ def _quantize_components(output_dir: Path) -> dict:
         fp32_size = fp32_path.stat().st_size
         sizes[onnx_name] = fp32_size
         try:
-            report = quantize_model(str(fp32_path), output_path=str(q8_path))
+            quantize_model(str(fp32_path), output_path=str(q8_path))
             q8_size = q8_path.stat().st_size
             sizes[q8_name] = q8_size
             reduction = (1 - q8_size / fp32_size) * 100
@@ -684,7 +680,6 @@ def main() -> None:
     _ensure_seedvc_clone()
     _add_seedvc_to_path()
 
-    import torch
 
     # Load all models
     config, model_params, model, campplus, bigvgan_model = _load_config_and_models()

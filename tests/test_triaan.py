@@ -13,7 +13,6 @@ from __future__ import annotations
 import os
 import wave
 from pathlib import Path
-from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
@@ -202,7 +201,6 @@ def test_adapter_clone_voice_mock(tmp_path):
 
 def test_adapter_output_is_16khz(tmp_path):
     """Output WAV must be 16 kHz regardless of input sample rate."""
-    from voiceclonnx.engines.triaan import TriAANVCAdapter
 
     # Write a 44100 Hz source
     src_path = str(tmp_path / "src44.wav")
@@ -247,7 +245,6 @@ def test_adapter_lazy_load_raises_without_onnxruntime(tmp_path, monkeypatch):
 def test_adapter_lf0_alignment(tmp_path):
     """lf0 length is aligned to CPC frame count — pipeline does not crash on
     mismatch between acoustic F0 frame count and CPC frame count."""
-    from voiceclonnx.engines.triaan import TriAANVCAdapter
 
     # Use a short clip; alignment handles truncation/padding
     src = _make_wav(str(tmp_path / "src.wav"), duration_s=0.5)
@@ -264,7 +261,6 @@ def test_adapter_lf0_alignment(tmp_path):
 def test_adapter_stereo_source_mixed_down(tmp_path):
     """Stereo source is mixed to mono before processing."""
     import soundfile as sf
-    from voiceclonnx.engines.triaan import TriAANVCAdapter
 
     # Write stereo WAV
     src_path = str(tmp_path / "stereo.wav")

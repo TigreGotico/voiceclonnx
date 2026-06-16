@@ -13,14 +13,12 @@ Strategy:
 
 from __future__ import annotations
 
-import importlib
 import sys
 import wave
 from pathlib import Path
 from typing import Optional
 
 import numpy as np
-import pytest
 
 
 # ---------------------------------------------------------------------------
@@ -102,10 +100,7 @@ def test_basic_clone_smoke(tmp_path, monkeypatch):
     monkeypatch.setattr(tempfile, "gettempdir", lambda: str(tmp_path))
 
     # 6. Patch VoiceCloner to use _SmokeKNNVCAdapter
-    import voiceclonnx as voiceclonnx_mod
-    from voiceclonnx.engines.base import ENGINE_REGISTRY, EngineEntry, register_engine
 
-    original_get_engine = voiceclonnx_mod.get_engine
 
     class _SmokeCloner:
         def __init__(self, engine="knnvc", **cfg):

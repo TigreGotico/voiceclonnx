@@ -262,7 +262,7 @@ def _make_mock_sessions(T_ssl: int = 50, T_tokens: int = 12):
     ])
 
     # Mel decoder: → (1, 100, T_mel)
-    n_fft, hop = 1024, 256
+    n_fft, _hop = 1024, 256
     T_mel = 94  # ~1 second at hop=256
 
     def _mel_fn(inp):
@@ -397,7 +397,7 @@ def test_adapter_uses_source_content_ref_global(tmp_path):
 
     class _TrackingGlobalSession:
         def run(self, output_names, inputs):
-            rng = np.random.default_rng(999)
+            np.random.default_rng(999)
             # Return distinct embeddings for src (call 1) vs ref (call 2)
             return [np.full((1, 128), len(received_globals), dtype=np.float32)]
 

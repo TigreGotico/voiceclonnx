@@ -1,84 +1,100 @@
-# SpeechTokenizer engine
+# Engine: speechtokenizer
 
-**Alias:** `speechtokenizer`
+**Family:** RVQ token-swap
 **Sample rate:** 16 kHz
+**WER:** 4–12%
+**INT8:** available (slight quality cost)
 **License:** Apache-2.0
-**Model repo:** [TigreGotico/voiceclonnx-speechtokenizer](https://huggingface.co/TigreGotico/voiceclonnx-speechtokenizer)
-**Paper:** Zhang et al., ACL 2024 — [arXiv:2308.16692](https://arxiv.org/abs/2308.16692)
+**Model:** [TigreGotico/voiceclonnx-speechtokenizer](https://huggingface.co/TigreGotico/voiceclonnx-speechtokenizer)
 
-## Architecture
+---
 
-SpeechTokenizer is an EnCodec-style hierarchical RVQ codec trained at 16 kHz with 8 quantizers
-at 50 Hz (320-sample hop).  The first quantizer (RVQ-1) is semantically distilled via HuBERT
-and captures linguistic content.  Quantizers RVQ-2 through RVQ-8 carry speaker-dependent acoustic
-residuals — timbre, prosody fine-grain, and recording conditions.
+## Overview
 
-## Voice-conversion recipe
+SpeechTokenizer (Zhang et al., ACL 2024) is an EnCodec-style hierarchical RVQ
+codec trained at 16 kHz with 8 quantizers at 50 Hz. The first quantizer (RVQ-1)
+is semantically distilled via HuBERT and captures linguistic content; quantizers
+RVQ-2 through RVQ-8 carry speaker-dependent acoustic residuals (timbre, prosody
+fine-grain, recording conditions). Voice conversion swaps RVQ-1 from source with
+RVQ-2..8 from reference.
+
+## How it works
 
 ```
-source audio  ──► encode ──► [S₁ | S₂ … S₈]
-reference audio ──► encode ──► [R₁ | R₂ … R₈]
+source audio  → encode → [S₁ | S₂ … S₈]
+reference audio → encode → [R₁ | R₂ … R₈]
 
 mixed codes = [S₁ | R₂ … R₈]   ← source content + reference timbre
 
-mixed codes ──► decode ──► converted audio
+mixed codes → decode → converted audio
 ```
 
-1. Both source and reference are encoded with `encoder.onnx` to obtain 8-layer token sequences.
-2. The RVQ-1 (content) tokens from source are kept; RVQ-2 through RVQ-8 tokens are taken from
-   the reference.  When source and reference lengths differ, reference tokens are truncated or
-   tiled to match the source sequence length.
-3. The mixed token sequence is decoded with `decoder.onnx` to produce the converted waveform.
+The token swap is pure numpy — no additional ONNX graph required. When source
+and reference lengths differ, reference tokens are truncated or tiled to match
+the source sequence length.
 
-The token swap is pure numpy — no additional ONNX graph is required.
+## Config / params
 
-**Layer split justification:** RVQ-1 is the semantic distillation target (trained to match HuBERT
-representations), making it a reliable proxy for linguistic content.  Replacing RVQ-2..8 with
-reference tokens transfers timbre while preserving the source transcription.  Swapping
-additional layers towards the content layer reduces speaker similarity; the RVQ-1/RVQ-2..8
-boundary gives the best measured intelligibility vs. timbre-transfer tradeoff.
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `quantized` | `bool` | `False` | Load INT8 `*_q8.onnx` models. Reduces footprint from ~485 MB to ~150 MB; slight quality cost. |
 
-## ONNX components
+## Model and license
 
-| File | Role | Size |
-|---|---|---|
-| `encoder.onnx` | waveform (1, 1, N) → codes (8, 1, T) | 318.4 MB |
-| `encoder_q8.onnx` | INT8 quantized encoder | 80.0 MB (−74.9 %) |
-| `decoder.onnx` | codes (8, 1, T) → waveform (1, 1, N) | 166.3 MB |
-| `decoder_q8.onnx` | INT8 quantized decoder | 70.4 MB (−57.7 %) |
+**Apache-2.0.** Paper: [arXiv:2308.16692](https://arxiv.org/abs/2308.16692).
 
-## Parity results
+| File | fp32 | INT8 |
+|------|------|------|
+| `encoder.onnx` | 318.4 MB | 80.0 MB (−74.9%) |
+| `decoder.onnx` | 166.3 MB | 70.4 MB (−57.7%) |
 
-| Component | Metric | Value | Pass |
-|---|---|---|---|
-| Encoder | exact integer match (codes) | True | ✓ |
-| Decoder | max abs Δ (waveform) | 1.53e-08 | ✓ |
-| Decoder | mean abs Δ (waveform) | 2.89e-09 | ✓ |
+Total: ~485 MB fp32 / ~150 MB INT8.
 
-## Usage
+## Sample rate
+
+**16 kHz.**
+
+## INT8 note
+
+`quantized=True` reduces footprint from ~485 MB to ~150 MB. Slight quality
+degradation expected. See [QUANTS.md](../QUANTS.md).
+
+## WER
+
+**4–12%** — measured with faster-whisper `base.en` on demo clips.
+See [demo/VERIFICATION.md](../../demo/VERIFICATION.md).
+
+## CLI example
+
+```bash
+voiceclonnx clone --engine speechtokenizer \
+             --audio source.wav \
+             --voice reference.wav \
+             --out out.wav
+```
+
+## Python example
 
 ```python
 from voiceclonnx import VoiceCloner
 
 cloner = VoiceCloner(engine="speechtokenizer")
-out = cloner.clone_voice("source.wav", "reference.wav", "converted.wav")
+out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
+print(cloner.sample_rate)   # 16000
+
+# INT8 — smaller footprint
+cloner = VoiceCloner(engine="speechtokenizer", quantized=True)
 ```
 
-### Constructor options
+## Troubleshooting
 
-| Parameter | Default | Description |
-|---|---|---|
-| `quantized` | `False` | **Not supported** — raises `NotImplementedError`. The INT8 exports in `TigreGotico/voiceclonnx-speechtokenizer` use a different interface incompatible with this adapter's pipeline. Always use fp32. |
-| `content_layers` | `1` | Number of leading RVQ layers treated as content (default 1 = RVQ-1 only) |
+**Voice timbre not transferring well** — use a longer reference clip (5–10 s)
+so RVQ-2..8 tokens cover more speaker variation.
 
-## CPU performance
-
-Approximate RTF on a modern CPU: 0.2–0.4x (similar to EnCodec 24kHz, ~74M encoder params).
-The fp32 encoder is the bottleneck; the INT8 variant reduces it by ~4×.
+**First run is slow** — ~485 MB downloads from HF Hub on first use; cached in
+`~/.cache/huggingface/hub`.
 
 ## References
 
-- GitHub: <https://github.com/ZhangXInFD/SpeechTokenizer>
-- Paper: <https://arxiv.org/abs/2308.16692>
-- HF weights: <https://huggingface.co/fnlp/SpeechTokenizer>
-- voiceclonnx ONNX: <https://huggingface.co/TigreGotico/voiceclonnx-speechtokenizer>
+- Paper: [SpeechTokenizer: Unified Speech Tokenizer for Speech Language Models](https://arxiv.org/abs/2308.16692)
+- Upstream: [ZhangXInFD/SpeechTokenizer](https://github.com/ZhangXInFD/SpeechTokenizer)

@@ -17,8 +17,6 @@ Covered:
 from __future__ import annotations
 
 import json
-import os
-import tempfile
 from pathlib import Path
 
 import numpy as np
@@ -169,7 +167,7 @@ class TestParityCompare:
         check_tolerance(report)  # should not raise
 
     def test_within_tolerance_pass(self):
-        from conversion.parity import check_tolerance, compare_outputs
+        from conversion.parity import compare_outputs
 
         ref = np.ones((2, 4), dtype=np.float32)
         ort = ref + 5e-4  # below 1e-3
@@ -455,7 +453,6 @@ class TestSyntheticEndToEnd:
 class TestDistributablePolicy:
     def test_manifest_distributable_default_true(self, tmp_path):
         from conversion.export_base import OutputLayout, write_manifest
-        import json
         layout = OutputLayout(base_dir=tmp_path, engine_name="eng")
         layout.engine_dir.mkdir(parents=True, exist_ok=True)
         p = write_manifest(layout, {"m": "m.onnx"}, {"output": 16000})

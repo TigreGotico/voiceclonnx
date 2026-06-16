@@ -11,7 +11,7 @@ Usage::
 
 Notes
 -----
-- Chatterbox is skipped (fp32-only: no INT8 variants in onnx-community/chatterbox-onnx).
+- Chatterbox INT8 from TigreGotico/voiceclonnx-chatterbox (we host the quantized models).
 - RVC base models (ContentVec + RMVPE) have INT8 variants; the voice model is
   user-supplied.  RVC's int8 flag quantizes only the shared base models; the
   demo uses the bundled ``woman_1.onnx`` voice model.
@@ -114,7 +114,8 @@ def _synth_if_missing(name: str, voice: str, text: str) -> Path:
     wav = DEMO_DIR / f"{name}.wav"
     if wav.exists():
         return wav
-    import asyncio, subprocess
+    import asyncio
+    import subprocess
     import edge_tts  # type: ignore
 
     mp3 = DEMO_DIR / f"{name}.mp3"

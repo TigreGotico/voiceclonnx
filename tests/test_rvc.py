@@ -326,13 +326,13 @@ def test_adapter_f0_pitch_shift_direct():
     Test directly via _extract_f0 with a mocked RMVPE session to avoid
     frame-count mismatches from the full pipeline mock.
     """
-    from voiceclonnx.engines.rvc import RVCAdapter, _rmvpe_decode
+    from voiceclonnx.engines.rvc import RVCAdapter
 
     # Build a synthetic F0 trace: 50 voiced frames at 220 Hz, 10 unvoiced
     base_f0 = np.array([220.0] * 50 + [0.0] * 10, dtype=np.float32)
 
     # With f0_up_key=12, voiced frames should be doubled
-    adapter = RVCAdapter(f0_up_key=12)
+    RVCAdapter(f0_up_key=12)
 
     f0_shifted = base_f0.copy()
     voiced = f0_shifted > 0

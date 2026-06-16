@@ -35,3 +35,5 @@ against the known source text (gate: WER ≤ 40%).
 | [`outputs/speechtokenizer__sonia.wav`](outputs/speechtokenizer__sonia.wav) | 12% | ✅ | The quick brown fox jumps over the lazy dog. Those conversion changes are with speaking, b |
 | [`outputs/triaan__aria.wav`](outputs/triaan__aria.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who was speaking, bu |
 | [`outputs/triaan__sonia.wav`](outputs/triaan__sonia.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog voice conversion changes who was speaking but  |
+| [`outputs/vec2wav__aria.wav`](outputs/vec2wav__aria.wav) | 127% | ❌ | but they're from a pot, and also from what they do not. Or it's a very good energy generat |
+| [`outputs/vec2wav__sonia.wav`](outputs/vec2wav__sonia.wav) | 119% | ❌ | but first I applied and I said, I want to do it all. For it to break and I said, I don't w |

@@ -4,20 +4,17 @@ WER measured with faster-whisper `base.en` against the known source text.
 Sizes are ONNX model totals from the TigreGotico HF repos (fp32 + INT8).
 Gate: int8 flagged ⚠ when WER > 25% **and** > 15 points worse than fp32.
 
-## chatterbox — fp32 only
-
-The upstream `onnx-community/chatterbox-onnx` repository does not publish
-INT8 variants of `speech_encoder.onnx` or `conditional_decoder.onnx`.
-The `quantized=True` parameter is accepted (uniform API) but silently
-ignored; chatterbox always runs fp32 until upstream ships q8 exports.
 
 ## Engine comparison
 
 | Engine | fp32 WER | int8 WER | fp32 size (MB) | int8 size (MB) | Saving | Verdict |
 |--------|----------|----------|----------------|----------------|--------|---------|
+| `chatterbox` | 8% | 8% | 1080 | 467 | −57% | ✅ int8 recommended |
 | `cosyvoice` | 8% | 100% | 0.0 | 0.0 | 0% | ⚠ int8 degraded (100% vs fp32 8%) |
 | `linacodec` | 12% | ~100% | 694 | 186 | −73% | ⚠ int8 degraded (AdaLN+attention sensitive to weight-only INT8) |
+| `vec2wav` | 127% | — | 526 | 206 | −61% | ⚠ vocoder fp32-only; demo WER reflects OOD TTS source |
 | `seedvc` | pending E2E | pending E2E | ~424 | ~110 | −74% est. | ⚠ flow_estimator WaveNet final layer likely sensitive to weight-only INT8; verify WER before using quantized=True |
+
 
 ## Notes
 
@@ -25,4 +22,9 @@ ignored; chatterbox always runs fp32 until upstream ships q8 exports.
   (ContentVec-768 + RMVPE); the per-voice synthesizer is user-supplied.
 - Shared numpy artifacts (codebooks, mel filterbanks, mel stats) are never
   quantized — they are not ONNX models.
+- **vec2wav**: `vqwav2vec_codebook.npy` is never quantized (numpy array, not ONNX).
+  The BigVGAN vocoder (alias_free_torch ops) cannot be INT8-quantized due to
+  shape-inference conflicts; vocoder stays fp32 in both `quantized=False` and
+  `quantized=True` modes. fp32 size = encoder(23.1)+WavLM(338.7)+frontend(73.2)+vocoder(91.1).
+  int8 size = encoder_q8(5.8)+WavLM_q8(85.4)+frontend_q8(24.1)+vocoder_fp32(91.1).
 - Sizes include only ONNX model files from the respective HF repo.

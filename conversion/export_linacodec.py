@@ -35,12 +35,9 @@ Usage::
 from __future__ import annotations
 
 import argparse
-import math
 import subprocess
 import sys
-import os
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 
@@ -123,7 +120,6 @@ def _patch_transformer_rope(transformer_module):
     Monkey-patch the Transformer to use real-valued RoPE.
     Patches each Attention.forward to use cos/sin instead of complex freqs_cis.
     """
-    import torch
     import torch.nn.functional as F
     import types
 
@@ -328,7 +324,8 @@ class _ContentEncoderWrapper(object):
 
 def _build_ssl_acoustic_module(model):
     """Return a traceable module for acoustic SSL branch (global encoder input)."""
-    import torch, torch.nn as nn
+    import torch
+    import torch.nn as nn
 
     class AcousticSSL(nn.Module):
         """
@@ -355,7 +352,8 @@ def _build_content_module_parts(model):
     Input: local_ssl_features (1, T, 768) float32 (from distill_wavlm)
     Output: content_embedding (1, T//factor, 768), content_tokens (1, T//factor) int64
     """
-    import torch, torch.nn as nn
+    import torch
+    import torch.nn as nn
 
     class ContentEncoder(nn.Module):
         """
@@ -420,7 +418,8 @@ def _build_mel_decoder_module(model):
     We bake mel_length as a Python int (traced constant) — which is correct
     because audio_len is proportional to T_tokens for any input duration.
     """
-    import torch, torch.nn as nn
+    import torch
+    import torch.nn as nn
 
     # Precompute constants
     # audio_len ≈ T_tokens * downsample_factor * ssl_hop * model_sr / ssl_sr
@@ -486,7 +485,8 @@ def _build_vocos_module(vocos):
     Output (24kHz path): mag24 (1, n_fft//2+1, T), phase24 (1, n_fft//2+1, T)
     Output (48kHz path): mag48 (1, n_fft//2+1, T*2), phase48 (1, n_fft//2+1, T*2)
     """
-    import torch, torch.nn as nn
+    import torch
+    import torch.nn as nn
 
     class VocosExportModule(nn.Module):
         """
@@ -538,7 +538,8 @@ def _build_distill_wavlm_module(model):
     Input: waveform_16k (1, N) float32 at 16kHz (SSL sample rate)
     Output: semantic_features (1, T, 768) float32 — average of layers 6 and 9
     """
-    import torch, torch.nn as nn
+    import torch
+    import torch.nn as nn
 
     class DistillWavLMEncoder(nn.Module):
         def __init__(self, wavlm_model, distilled_layers):
@@ -628,7 +629,7 @@ def export(output_dir: str, push: bool = False, no_push: bool = False) -> None:
     # -----------------------------------------------------------------------
     # 1 second at 24kHz
     dummy_wav_24k = torch.randn(1, 24000)
-    dummy_wav_16k = resampler_24_to_16(dummy_wav_24k)  # (1, 16000) approximately
+    resampler_24_to_16(dummy_wav_24k)  # (1, 16000) approximately
 
     # Run forward to get typical shapes
     with torch.no_grad():
@@ -676,7 +677,7 @@ def export(output_dir: str, push: bool = False, no_push: bool = False) -> None:
         T_content = dummy_content_emb.shape[1]
         target_audio_len = model._calculate_original_audio_length(T_content)
         mel_length = model._calculate_target_mel_length(target_audio_len)
-        mel_length_tensor = torch.tensor(mel_length, dtype=torch.long)
+        torch.tensor(mel_length, dtype=torch.long)
         dummy_mel = model.forward_mel(dummy_content_emb, dummy_global_emb, mel_length)
         print(f"[linacodec] Mel spectrogram shape: {dummy_mel.shape}")
 
@@ -938,7 +939,7 @@ def export(output_dir: str, push: bool = False, no_push: bool = False) -> None:
         p = Path(onnx_path)
         fp32_size = p.stat().st_size / (1024 ** 2)
         try:
-            qrpt = quantize_model(onnx_path)
+            quantize_model(onnx_path)
             q8_path = p.with_name(p.stem + "_q8.onnx")
             q8_size = q8_path.stat().st_size / (1024 ** 2) if q8_path.exists() else 0
             size_report[p.name] = (fp32_size, q8_size)

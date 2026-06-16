@@ -56,6 +56,15 @@ engines ship alongside this package and are auto-imported here.
     TriAAN-VC: CPC encoder + Triple Adaptive Attention Normalization decoder
     + ParallelWaveGAN vocoder. Zero-shot any-to-any VC at 16 kHz. MIT.
 
+``"quickvc"``:
+    QuickVC: HuBERT-soft content encoder + VITS-style decoder + MS-iSTFT
+    vocoder (pure-numpy ISTFT). Zero-shot any-to-any VC at 16 kHz. MIT.
+
+``"vec2wav"``:
+    vec2wav 2.0: vq-wav2vec content tokens + WavLM-Large layer-6 speaker
+    features + CTXVEC2WAV Conformer frontend + BigVGAN vocoder.
+    Any-to-any VC at 24 kHz. Code Apache-2.0; weights GPL-3.0.
+
 Usage
 -----
 ::
@@ -91,6 +100,7 @@ import voiceclonnx.engines.facodec  # noqa: F401
 import voiceclonnx.engines.cosyvoice  # noqa: F401
 import voiceclonnx.engines.quickvc  # noqa: F401
 import voiceclonnx.engines.linacodec  # noqa: F401
+import voiceclonnx.engines.vec2wav  # noqa: F401
 import voiceclonnx.engines.seedvc  # noqa: F401
 
 __all__ = [

@@ -278,7 +278,6 @@ def _build_parser() -> argparse.ArgumentParser:
 def main(argv: Optional[List[str]] = None) -> int:
     args = _build_parser().parse_args(argv)
 
-    sess_inputs = []
     import onnxruntime as ort
 
     sess = ort.InferenceSession(args.onnx, providers=["CPUExecutionProvider"])

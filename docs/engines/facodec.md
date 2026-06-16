@@ -1,105 +1,112 @@
-# FACodec engine
+# Engine: facodec
+
+**Family:** Factorized codec
+**Sample rate:** 16 kHz
+**WER:** 0%
+**INT8:** available (slight quality cost)
+**License:** Apache-2.0
+**Model:** [TigreGotico/voiceclonnx-facodec](https://huggingface.co/TigreGotico/voiceclonnx-facodec)
+
+---
+
+## Overview
 
 FACodec (Factorized Audio Codec) is the core speech representation model from
-NaturalSpeech 3 (Microsoft Research / Amphion, ICML 2024).  It disentangles
-speech into four independently controllable subspaces: **content, prosody,
-timbre, acoustic detail**.
+NaturalSpeech 3 (Microsoft Research / Amphion, ICML 2024). It disentangles
+speech into four independently controllable subspaces: content, prosody, timbre,
+and acoustic detail. Voice conversion is zero-shot: encode source and reference,
+swap only the timbre component from the reference, decode the combination.
+No per-speaker fine-tuning required.
 
-Voice conversion is zero-shot: encode source and reference, extract source
-content/prosody tokens and reference timbre embedding, decode the combination.
-No per-speaker fine-tuning or adaptation is required.
+WER 0% — **recommended as the default engine for highest quality**.
 
-## Architecture
+## How it works
 
 | Component | Description |
-|---|---|
-| Encoder (V2) | Convolutional downsampler (2×4×5×5 = 200× hop, 16 kHz → 80 Hz) |
-| Timbre extractor | 4-layer Transformer encoder → mean-pool over time → 256-d speaker embedding |
-| Quantizer | Hierarchical factorised VQ: prosody (1 codebook) + content (2) + residual (3) = 6 total |
+|-----------|-------------|
+| Encoder (V2) | Convolutional downsampler (200× hop, 16 kHz → 80 Hz) |
+| Timbre extractor | 4-layer Transformer encoder → mean-pool → 256-d speaker embedding |
+| Quantizer | Hierarchical factorized VQ: prosody (1 codebook) + content (2) + residual (3) = 6 total |
 | Decoder (V2) | Upsampling convolutional synthesizer with AdaIN timbre conditioning |
 
-## VC recipe (V2 path)
+VC recipe:
 
 ```
-1. enc_feats_src = encoder(wav_src)       # (1, 256, T_src)
-2. enc_feats_ref = encoder(wav_ref)       # (1, 256, T_ref)
-3. mel_src       = prosody_mel(wav_src)   # (1, 20, T_src) — numpy, see below
-4. vq_ids_src    = quantize(enc_feats_src, mel_src)   # (6, 1, T_src) int64
-5. spk_embs_ref  = timbre(enc_feats_ref)  # (1, 256)
-6. wav_out       = decode(vq_ids_src, spk_embs_ref)   # prosody+content from src, timbre from ref
+enc_feats_src = encoder(wav_src)         # (1, 256, T_src)
+enc_feats_ref = encoder(wav_ref)         # (1, 256, T_ref)
+mel_src       = prosody_mel(wav_src)     # (1, 20, T_src) — pure numpy
+vq_ids_src    = quantize(enc_feats_src, mel_src)   # (6, 1, T_src) int64
+spk_embs_ref  = timbre(enc_feats_ref)    # (1, 256)
+wav_out       = decode(vq_ids_src, spk_embs_ref)   # prosody+content from src, timbre from ref
 ```
 
-The prosody mel (step 3) is computed in pure numpy (no ONNX component): standard
-STFT mel spectrogram with n_fft=1024, hop=200, win=800, n_mels=80, sr=16000,
-fmin=0, fmax=8000, log-compressed; the adapter uses the first 20 bins.
+The prosody mel (step 3) is computed in pure numpy — standard STFT mel (n_fft=1024,
+hop=200, win=800, n_mels=80, sr=16000); first 20 bins used.
 
-## Parameters
+## Config / params
 
-| Parameter | Default | Description |
-|---|---|---|
-| `quantized` | `False` | Use INT8 quantized ONNX models. Reduces footprint from ~156 MB to ~69 MB; slight quality cost. See [QUANTS.md](../QUANTS.md) for the measured WER comparison. |
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `quantized` | `bool` | `False` | Load INT8 `*_q8.onnx` models. Footprint drops from ~156 MB to ~69 MB; slight quality cost. |
 
-## Parity results (fp32 torch vs ORT, 1 s dummy input)
+## Model and license
 
-| Component | max_abs Δ | mean_abs Δ | Verdict |
-|---|---|---|---|
-| facodec_encoder | 1.62e-05 | 2.36e-06 | PASS |
-| facodec_timbre | 1.43e-06 | 6.40e-08 | PASS |
-| facodec_quantize | exact int64 match | — | PASS |
-| facodec_decoder | 7.50e-09 | 1.46e-09 | PASS |
+**Apache-2.0.** Upstream: NaturalSpeech 3 / Amphion.
 
-## Model sizes
+| File | fp32 | INT8 |
+|------|------|------|
+| `facodec_encoder.onnx` | — | — |
+| `facodec_timbre.onnx` | — | — |
+| `facodec_quantize.onnx` | — | — |
+| `facodec_decoder.onnx` | — | — |
 
-| File | Size |
-|---|---|
-| `facodec_encoder.onnx` (fp32) | 16.5 MB |
-| `facodec_encoder_q8.onnx` (INT8) | 4.7 MB |
-| `facodec_timbre.onnx` (fp32) | 33.0 MB |
-| `facodec_timbre_q8.onnx` (INT8) | 12.1 MB |
-| `facodec_quantize.onnx` (fp32) | 33.4 MB |
-| `facodec_quantize_q8.onnx` (INT8) | 12.5 MB |
-| `facodec_decoder.onnx` (fp32) | 66.2 MB |
-| `facodec_decoder_q8.onnx` (INT8) | 36.8 MB |
+Total: ~156 MB fp32 / ~69 MB INT8.
 
-## Intelligibility (WER gate)
+## Sample rate
 
-| Reference voice | WER | Gate |
-|---|---|---|
-| en-US-AriaNeural | 0% | PASS |
-| en-GB-SoniaNeural | 0% | PASS |
+**16 kHz.**
 
-## ONNX components
+## INT8 note
 
-| File | I/O | Description |
-|---|---|---|
-| `facodec_encoder.onnx` | wav(1,1,N) → enc_feats(1,256,T) | Convolutional encoder |
-| `facodec_timbre.onnx` | enc_feats(1,256,T) → spk_embs(1,256) | Timbre TransformerEncoder |
-| `facodec_quantize.onnx` | (enc_feats,mel_20) → vq_ids(6,1,T) | Hierarchical VQ (6 codebooks) |
-| `facodec_decoder.onnx` | (vq_ids,spk_embs) → wav(1,1,N) | vq2emb + AdaIN + conv decoder |
+`quantized=True` reduces footprint from ~156 MB to ~69 MB. Slight quality
+degradation expected. See [QUANTS.md](../QUANTS.md) for the WER comparison.
 
-HF repo: [TigreGotico/voiceclonnx-facodec](https://huggingface.co/TigreGotico/voiceclonnx-facodec)
+## WER
 
-## License
+**0%** — perfectly intelligible on demo clips.
+See [demo/VERIFICATION.md](../../demo/VERIFICATION.md).
 
-Weights: **Apache-2.0** (verified on [amphion/naturalspeech3_facodec](https://huggingface.co/amphion/naturalspeech3_facodec) HF card).  
-Code: Amphion (open-mmlab/Amphion) — Apache-2.0 (repository header) / MIT (per-module header).  
-ONNX artifacts inherit the upstream Apache-2.0 license.
+## CLI example
 
-## Export notes
+```bash
+voiceclonnx clone --engine facodec \
+             --audio source.wav \
+             --voice reference.wav \
+             --out out.wav
+```
 
-See [`conversion/export_facodec.py`](../../conversion/export_facodec.py) for the
-full export script.
+## Python example
 
-The export clones Amphion from GitHub (sparse checkout of `models/codec/ns3_codec`)
-and installs the `einops` dependency.  The four components export cleanly with
-the legacy TorchScript ONNX exporter (opset 14, `dynamo=False`).
+```python
+from voiceclonnx import VoiceCloner
 
-The quantizer's `CNNLSTM` modules (used for F0/phone predictors during training)
-are not traced — the quantize wrapper traces only the VQ code-assignment path
-(nearest-neighbour lookup), which is fully convolutional.
+cloner = VoiceCloner(engine="facodec")
+out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
+print(cloner.sample_rate)   # 16000
+
+# INT8 — smaller footprint
+cloner = VoiceCloner(engine="facodec", quantized=True)
+```
+
+## Troubleshooting
+
+**Output timbre not changing** — ensure the reference clip is clean and at least
+2–3 s long. The timbre extractor mean-pools over the full utterance.
+
+**First run is slow** — models download from HF Hub on first use; cached in
+`~/.cache/huggingface/hub`.
 
 ## References
 
-- https://arxiv.org/abs/2403.03100 (NaturalSpeech 3)
-- https://huggingface.co/amphion/naturalspeech3_facodec
-- https://github.com/open-mmlab/Amphion
+- Paper: [NaturalSpeech 3: Zero-Shot Polyglot Speech Synthesis](https://arxiv.org/abs/2403.03100)
+- Upstream: [amphion/Amphion](https://github.com/open-mmlab/Amphion)

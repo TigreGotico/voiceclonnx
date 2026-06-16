@@ -669,12 +669,10 @@ class SeedVCAdapter(VoiceClonerBase):
         src_22k = _load_wav(str(audio), target_sr=_SEEDVC_SR)
         ref_22k = _load_wav(str(reference_voice), target_sr=_SEEDVC_SR)
 
-        src_16k = _resample_linear(src_22k, _SEEDVC_SR, _CONTENT_SR)
         ref_16k = _resample_linear(ref_22k, _SEEDVC_SR, _SPEAKER_SR)
 
-        # Source mel spectrogram (to determine target_mel_len)
+        # Source mel spectrogram (used directly as flow conditioning, see below)
         src_mel = _source_mel_spectrogram(src_22k)   # (1, 80, T_src_mel)
-        T_src_mel = src_mel.shape[2]
 
         # Reference mel spectrogram (prompt for flow estimator)
         # Cap reference at 25 s (matching upstream ref_audio[:sr*25])
@@ -685,9 +683,14 @@ class SeedVCAdapter(VoiceClonerBase):
         # Speaker embedding
         style = self._encode_speaker(ref_16k)  # (1, 192)
 
-        # Content encoding → mu (1, 512, T_src_mel)
-        mu_512 = self._encode_content(src_16k, T_src_mel)  # (1, 512, T_src_mel)
-
+        # KNOWN LIMITATION: the Seed-VC content path (Whisper encoder +
+        # length-regulator → 512-d mu) is currently bypassed. The cfm 512→80
+        # projection is not exported, so we cannot feed the content-encoded mu
+        # to the flow estimator and instead condition directly on the source
+        # mel below (see _encode_content / whisper_encoder.onnx, unused for now).
+        # This is an approximation and degrades conversion quality — exporting
+        # the cfm projection is required to use the real content path.
+        #
         # The flow estimator expects mu in 80-d mel space, not 512-d LR space.
         # The LR model outputs the conditioned features in 512-d; these are fed
         # as "cond" input in the upstream pipeline via cfm.inference().
