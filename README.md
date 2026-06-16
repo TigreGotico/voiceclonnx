@@ -90,6 +90,8 @@ voiceclonnx list
 ## Engine comparison
 
 All engines are included in `pip install voiceclonnx` — no per-engine extras.
+The ONNX models live in the
+[voiceclonnx HF collection](https://huggingface.co/collections/TigreGotico/voiceclonnx-pure-onnx-voice-conversion).
 WER is measured with faster-whisper `base.en` against the source transcript
 (lower is better; 0% = perfectly intelligible). Full data: [demo/VERIFICATION.md](demo/VERIFICATION.md).
 
