@@ -131,6 +131,14 @@ WER is measured with faster-whisper `base.en` against the source transcript
 **Best intelligibility (0% WER):** `facodec`, `mimi`, `openvoice`, `quickvc` —
 start here unless you have a specific constraint.
 
+**Best target-voice fidelity (speaker similarity):** `focalcodec`, `chatterbox`,
+`facodec`, `knnvc`, `openvoice`. WER ≠ timbre transfer: `mimi` and `quickvc`
+score 0% WER but barely change the speaker (the output still sounds like the
+*source* voice). See the ranked
+[speaker-similarity & export-parity audit](demo/SPEAKER_SIMILARITY.md) —
+`facodec` and `openvoice` are the strongest all-rounders (0% WER **and** good
+timbre).
+
 **Fastest CPU inference:** `quickvc` at ~0.14× RTF — the clear choice for
 latency-sensitive or embedded use.
 
