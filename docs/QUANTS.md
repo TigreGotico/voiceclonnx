@@ -13,6 +13,7 @@ Gate: int8 flagged ⚠ when WER > 25% **and** > 15 points worse than fp32.
 | `cosyvoice` | 8% | 100% | 0.0 | 0.0 | 0% | ⚠ int8 degraded (100% vs fp32 8%) |
 | `linacodec` | 12% | ~100% | 694 | 186 | −73% | ⚠ int8 degraded (AdaLN+attention sensitive to weight-only INT8) |
 | `vec2wav` | 127% | — | 526 | 206 | −61% | ⚠ vocoder fp32-only; demo WER reflects OOD TTS source |
+| `seedvc` | pending E2E | pending E2E | ~424 | ~110 | −74% est. | ⚠ flow_estimator WaveNet final layer likely sensitive to weight-only INT8; verify WER before using quantized=True |
 
 
 ## Notes

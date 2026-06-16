@@ -108,6 +108,8 @@ WER is measured with faster-whisper `base.en` against the source transcript
 | `focalcodec` | kNN feature-swap | 16 kHz | 15–19% | ⚠ int8 degrades | [TigreGotico/voiceclonnx-focalcodec](https://huggingface.co/TigreGotico/voiceclonnx-focalcodec) | NeurIPS 2025 architecture |
 | `rvc` | ContentVec + VITS | 40/48 kHz | 38%† | ✅ (base only) | [TigreGotico/voiceclonnx-rvc](https://huggingface.co/TigreGotico/voiceclonnx-rvc) | Any-to-ONE, community voices |
 | `vec2wav` | vq-wav2vec + WavLM + BigVGAN | 24 kHz | 119–127%‡ | ⚠ vocoder fp32-only | [TigreGotico/voiceclonnx-vec2wav](https://huggingface.co/TigreGotico/voiceclonnx-vec2wav) | Discrete-token VC research (GPL-3.0 weights) |
+| `seedvc` | Flow-matching (Seed-VC) | 22 kHz | not benchmarked§ | ⚠ flow INT8 risk | [TigreGotico/voiceclonnx-seedvc](https://huggingface.co/TigreGotico/voiceclonnx-seedvc) | Zero-shot any-to-any (GPL-3.0 external checkout) |
+
 
 
 > †`rvc` WER reflects a sample community model. Any-to-ONE semantics differ from
@@ -117,6 +119,10 @@ WER is measured with faster-whisper `base.en` against the source transcript
 > agreement); the high demo WER comes from TTS-generated source audio being
 > out-of-distribution for the LibriSpeech-trained checkpoint, not an adapter bug.
 > Weights are GPL-3.0 — see [docs/engines/vec2wav.md](docs/engines/vec2wav.md).
+>
+> §`seedvc` is merged with component-level parity verified (fp32 torch vs
+> ORT all PASS), but its end-to-end WER gate and demo clips are not yet
+> generated — treat it as available-but-unbenchmarked for now.
 
 ---
 
