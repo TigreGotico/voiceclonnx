@@ -16,24 +16,10 @@ against the known source text (gate: WER ≤ 40%).
 | [`outputs/facodec__sonia.wav`](outputs/facodec__sonia.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/focalcodec__aria.wav`](outputs/focalcodec__aria.wav) | 15% | ✅ | The quit-brown fox jumps over the lazy dog. Voice conversion changes always speedy, but no |
 | [`outputs/focalcodec__sonia.wav`](outputs/focalcodec__sonia.wav) | 19% | ✅ | that what brown fox jumps over the lazy dog. Voice conversion changes always speeding, but |
-| [`outputs/freevc__aria.wav`](outputs/freevc__aria.wav) | 12% | ✅ | The quick brown fox jumps and the lazy dog. Voice conversion changes who is f***ing, but n |
-| [`outputs/freevc__sonia.wav`](outputs/freevc__sonia.wav) | 12% | ✅ | the quick brown fox jumps in the lazy dog. Voice conversion changes who was making, but no |
 | [`outputs/knnvc__aria.wav`](outputs/knnvc__aria.wav) | 12% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes was sticky, but not  |
 | [`outputs/knnvc__sonia.wav`](outputs/knnvc__sonia.wav) | 15% | ✅ | The quick brown fights jumps over the lazy dart. Voice conversion changes so is speedy, bu |
-| [`outputs/linacodec__aria.wav`](outputs/linacodec__aria.wav) | 8% | ✅ | The clip band Fox jumps over the lazy dog. Voice conversion changes who is speaking, but n |
-| [`outputs/linacodec__sonia.wav`](outputs/linacodec__sonia.wav) | 15% | ✅ | The clock-brand fox jumps over the lazy dog. Voice conversion changes who was thinking, bu |
-| [`outputs/mimi__aria.wav`](outputs/mimi__aria.wav) | 0% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
-| [`outputs/mimi__sonia.wav`](outputs/mimi__sonia.wav) | 0% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/openvoice__aria.wav`](outputs/openvoice__aria.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/openvoice__sonia.wav`](outputs/openvoice__sonia.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
-| [`outputs/quickvc__reference_aria.wav`](outputs/quickvc__reference_aria.wav) | 0% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
-| [`outputs/quickvc__reference_sonia.wav`](outputs/quickvc__reference_sonia.wav) | 0% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
-| [`outputs/quickvc_q8__reference_aria.wav`](outputs/quickvc_q8__reference_aria.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog voice conversion changes who is speaking but n |
-| [`outputs/quickvc_q8__reference_sonia.wav`](outputs/quickvc_q8__reference_sonia.wav) | 4% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but |
 | [`outputs/rvc__woman1.wav`](outputs/rvc__woman1.wav) | 38% | ✅ | The quick round five jumps on the lazy dog. Moiscan Christian changes with speaking, but n |
-| [`outputs/speechtokenizer__aria.wav`](outputs/speechtokenizer__aria.wav) | 4% | ✅ | The quick brown fox jumps over the lazy dog. Voice conversion changes who was speaking, bu |
-| [`outputs/speechtokenizer__sonia.wav`](outputs/speechtokenizer__sonia.wav) | 12% | ✅ | The quick brown fox jumps over the lazy dog. Those conversion changes are with speaking, b |
 | [`outputs/triaan__aria.wav`](outputs/triaan__aria.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog. Voice conversion changes who was speaking, bu |
 | [`outputs/triaan__sonia.wav`](outputs/triaan__sonia.wav) | 4% | ✅ | the quick brown fox jumps over the lazy dog voice conversion changes who was speaking but  |
-| [`outputs/vec2wav__aria.wav`](outputs/vec2wav__aria.wav) | 127% | ❌ | but they're from a pot, and also from what they do not. Or it's a very good energy generat |
-| [`outputs/vec2wav__sonia.wav`](outputs/vec2wav__sonia.wav) | 119% | ❌ | but first I applied and I said, I want to do it all. For it to break and I said, I don't w |

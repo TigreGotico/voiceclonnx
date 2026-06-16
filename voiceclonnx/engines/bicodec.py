@@ -193,7 +193,7 @@ def _extract_features_chunked(
 
     BiCodec's Wav2Vec2 encoder (300 MB+) degrades on long sequences as an
     ONNX model; processing in 2-second chunks (0.25 s overlap) avoids the
-    quality degradation pattern documented for FreeVC and Mimi engines.
+    quality degradation pattern common to large WavLM/Wav2Vec2-based encoders.
 
     Parameters
     ----------

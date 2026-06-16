@@ -11,7 +11,6 @@ from __future__ import annotations
 from unittest.mock import MagicMock, patch
 
 import numpy as np
-import pytest
 
 
 # ---------------------------------------------------------------------------
@@ -148,27 +147,6 @@ class TestFocalcodecFilenames:
 
 
 # ---------------------------------------------------------------------------
-# Tests: freevc
-# ---------------------------------------------------------------------------
-
-
-class TestFreevcFilenames:
-    @staticmethod
-    def _filenames(quantized: bool) -> list[str]:
-        from voiceclonnx.engines.freevc import FreeVCAdapter
-        return _simple_filenames(FreeVCAdapter)(quantized)
-
-    def test_fp32_uses_no_q8(self):
-        names = self._filenames(False)
-        assert not any("q8" in n for n in names)
-
-    def test_int8_uses_q8_for_all_onnx(self):
-        names = self._filenames(True)
-        onnx_names = [n for n in names if n.endswith(".onnx")]
-        assert all("q8" in n for n in onnx_names), f"not all q8: {onnx_names}"
-
-
-# ---------------------------------------------------------------------------
 # Tests: knnvc
 # ---------------------------------------------------------------------------
 
@@ -178,25 +156,6 @@ class TestKnnvcFilenames:
     def _filenames(quantized: bool) -> list[str]:
         from voiceclonnx.engines.knnvc import KNNVCAdapter
         return _simple_filenames(KNNVCAdapter)(quantized)
-
-    def test_fp32_uses_no_q8(self):
-        assert not any("q8" in n for n in self._filenames(False))
-
-    def test_int8_uses_q8_for_all_onnx(self):
-        names = self._filenames(True)
-        assert all("q8" in n for n in names), f"not all q8: {names}"
-
-
-# ---------------------------------------------------------------------------
-# Tests: mimi
-# ---------------------------------------------------------------------------
-
-
-class TestMimiFilenames:
-    @staticmethod
-    def _filenames(quantized: bool) -> list[str]:
-        from voiceclonnx.engines.mimi import MimiAdapter
-        return _simple_filenames(MimiAdapter)(quantized)
 
     def test_fp32_uses_no_q8(self):
         assert not any("q8" in n for n in self._filenames(False))
@@ -248,30 +207,6 @@ class TestRvcFilenames:
         assert all("q8" in n for n in onnx_names), (
             f"expected q8 base models, got: {onnx_names}"
         )
-
-
-# ---------------------------------------------------------------------------
-# Tests: speechtokenizer
-# ---------------------------------------------------------------------------
-
-
-class TestSpeechtokenizerFilenames:
-    @staticmethod
-    def _filenames(quantized: bool) -> list[str]:
-        from voiceclonnx.engines.speechtokenizer import SpeechTokenizerAdapter
-        return _simple_filenames(SpeechTokenizerAdapter)(quantized)
-
-    def test_fp32_uses_no_q8(self):
-        names = self._filenames(False)
-        onnx_names = [n for n in names if n.endswith(".onnx")]
-        assert not any("q8" in n for n in onnx_names)
-
-    def test_int8_raises_not_implemented(self):
-        """speechtokenizer INT8 export has incompatible interface — must raise NotImplementedError."""
-        from voiceclonnx.engines.speechtokenizer import SpeechTokenizerAdapter
-
-        with pytest.raises(NotImplementedError, match="quantized=True is not supported"):
-            SpeechTokenizerAdapter(quantized=True)
 
 
 # ---------------------------------------------------------------------------
