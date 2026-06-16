@@ -82,7 +82,7 @@ Commercial use requires separate permission from the copyright holders.
 def _patch_wav2vec2_for_tracing(wav2vec2_model):
     """Patch transformers Wav2Vec2 to work with TorchScript ONNX tracing.
 
-    Applies the same class of patches documented for MimiModel export:
+    Applies the standard transformers TorchScript-tracing patches:
 
     1. ``sdpa_mask`` IndexError — ``create_bidirectional_mask`` passes a 0-d
        Tensor as ``q_length``; ``sdpa_mask`` then tries ``q_length.shape[0]``
@@ -131,7 +131,7 @@ def _build_wav2vec2_wrapper(feature_extractor_model):
     Output: features (1, T, 1024) float32
 
     Applies tracing patches (sdpa_mask IndexError fix) before wrapping,
-    consistent with the Mimi export approach documented in docs/converting.md.
+    consistent with the export approach documented in docs/converting.md.
     """
     import torch.nn as nn
 

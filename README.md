@@ -4,7 +4,7 @@
 ![Python](https://img.shields.io/pypi/pyversions/voiceclonnx)
 ![License](https://img.shields.io/pypi/l/voiceclonnx)
 
-**Pure-ONNX voice conversion. 14 engines. Zero PyTorch at runtime.**
+**Pure-ONNX voice conversion. 9 curated engines. Zero PyTorch at runtime.**
 
 Audio-to-audio only — voiceclonnx converts the voice in an existing speech file
 to sound like a reference speaker. Text-driven synthesis (text → cloned audio) is
@@ -17,14 +17,16 @@ a TTS concern and is out of scope.
 - **Zero PyTorch at runtime.** Every engine runs on `onnxruntime`, `numpy`,
   `soundfile`, and `huggingface_hub` only. No torch, no CUDA driver required
   for inference.
-- **One install, every engine.** `pip install voiceclonnx` activates all 14
+- **One install, every engine.** `pip install voiceclonnx` activates all 9
   engines immediately — no per-engine extras, no optional groups for inference.
-- **Widest pure-ONNX VC collection available.** 14 distinct architectures in a
-  single unified API: kNN feature-swap, factorized codec, flow-matching,
-  RVQ token-swap, and AR codec-LM families.
-- **Every engine STT-verified.** Each demo clip is transcribed with
-  faster-whisper and scored against the source text. WER is published and
-  gated — no engine ships without a passing intelligibility score.
+- **Curated, not padded.** 9 distinct architectures in a single unified API
+  (kNN feature-swap, factorized codec, flow-matching, tone-color, AR codec-LM,
+  and any-to-ONE) — each one actually transfers the target voice. Engines that
+  only reconstructed the source speaker were removed, not shipped for the
+  headline count.
+- **Every engine STT- and speaker-verified.** Each demo clip is transcribed with
+  faster-whisper (WER, intelligibility) **and** scored for speaker similarity to
+  the target voice. Both are published; no engine ships without passing both.
 - **INT8 quantization with measured tradeoffs.** Most engines ship `*_q8.onnx`
   variants: 45–75% smaller, faster on CPU, with documented WER cost per engine.
 - **Documented conversion toolchain.** A step-by-step guide covers
@@ -36,7 +38,7 @@ a TTS concern and is out of scope.
 
 **[demo/README.md](demo/README.md)** — every engine converts the same sentence
 to two reference voices (Aria and Sonia). GitHub renders the audio players inline.
-Compare all 14 engines by ear, zero code required.
+Compare all 9 engines by ear, zero code required.
 
 ---
 
@@ -93,62 +95,46 @@ WER is measured with faster-whisper `base.en` against the source transcript
 
 | Engine | Family | Sample rate | WER | INT8 | Model | Best for |
 |--------|--------|-------------|-----|------|-------|----------|
-| `facodec` | Factorized codec | 16 kHz | **0%** | ✅ | [TigreGotico/voiceclonnx-facodec](https://huggingface.co/TigreGotico/voiceclonnx-facodec) | Best overall quality |
-| `mimi` | RVQ token-swap | 24 kHz | **0%** | ✅ | [TigreGotico/voiceclonnx-mimi](https://huggingface.co/TigreGotico/voiceclonnx-mimi) | 24 kHz, zero WER |
-| `openvoice` | Tone-color transfer | 22 kHz | **0%** | ✅ | [TigreGotico/voiceclonnx-openvoice-v2](https://huggingface.co/TigreGotico/voiceclonnx-openvoice-v2) | Broadest style range |
-| `quickvc` | HuBERT-soft + VITS | 16 kHz | **0%** | ✅ | [TigreGotico/voiceclonnx-quickvc](https://huggingface.co/TigreGotico/voiceclonnx-quickvc) | Fastest CPU (0.14× RTF) |
-| `chatterbox` | AR codec-LM | 24 kHz | 4–8% | ✅ (8% WER) | [TigreGotico/voiceclonnx-chatterbox](https://huggingface.co/TigreGotico/voiceclonnx-chatterbox) | Natural prosody, expressive style |
+| `facodec` | Factorized codec | 16 kHz | **0%** | ✅ | [TigreGotico/voiceclonnx-facodec](https://huggingface.co/TigreGotico/voiceclonnx-facodec) | Best overall quality (0% WER + strong timbre) |
+| `openvoice` | Tone-color transfer | 22 kHz | **0%** | ✅ | [TigreGotico/voiceclonnx-openvoice-v2](https://huggingface.co/TigreGotico/voiceclonnx-openvoice-v2) | Broadest style range, 0% WER |
+| `chatterbox` | AR codec-LM | 24 kHz | 4–8% | ✅ (8% WER) | [TigreGotico/voiceclonnx-chatterbox](https://huggingface.co/TigreGotico/voiceclonnx-chatterbox) | Natural prosody; strongest source→target shift |
 | `triaan` | Triple-AAN | 16 kHz | 4% | ✅ | [TigreGotico/voiceclonnx-triaan-vc](https://huggingface.co/TigreGotico/voiceclonnx-triaan-vc) | Good quality, small footprint |
-| `speechtokenizer` | RVQ token-swap | 16 kHz | 4–12% | ✅ | [TigreGotico/voiceclonnx-speechtokenizer](https://huggingface.co/TigreGotico/voiceclonnx-speechtokenizer) | HuBERT-distilled content fidelity |
 | `cosyvoice` | Flow-matching | 22 kHz | 8% | ⚠ int8 degrades | [TigreGotico/voiceclonnx-cosyvoice](https://huggingface.co/TigreGotico/voiceclonnx-cosyvoice) | Cross-lingual conversion |
-| `linacodec` | Codec + Transformer | **48 kHz** | 8–15% | ⚠ int8 degrades | [TigreGotico/voiceclonnx-linacodec](https://huggingface.co/TigreGotico/voiceclonnx-linacodec) | Highest sample rate (48 kHz) |
 | `bicodec` | Semantic + global tokens | 16 kHz | 12% | ✅ | [TigreGotico/voiceclonnx-bicodec](https://huggingface.co/TigreGotico/voiceclonnx-bicodec) | SparkTTS zero-shot VC |
-| `freevc` | WavLM + VITS | 16 kHz | 12% | ⚠ int8 degrades | [TigreGotico/voiceclonnx-freevc](https://huggingface.co/TigreGotico/voiceclonnx-freevc) | No text annotations needed |
-| `knnvc` | kNN feature-swap | 16 kHz | 12–15% | ✅ | [TigreGotico/voiceclonnx-knn-vc](https://huggingface.co/TigreGotico/voiceclonnx-knn-vc) | Lightweight (123 MB int8) |
-| `focalcodec` | kNN feature-swap | 16 kHz | 15–19% | ⚠ int8 degrades | [TigreGotico/voiceclonnx-focalcodec](https://huggingface.co/TigreGotico/voiceclonnx-focalcodec) | NeurIPS 2025 architecture |
+| `knnvc` | kNN feature-swap | 16 kHz | 12–15% | ✅ | [TigreGotico/voiceclonnx-knn-vc](https://huggingface.co/TigreGotico/voiceclonnx-knn-vc) | Lightweight (123 MB int8), strong timbre |
+| `focalcodec` | kNN feature-swap | 16 kHz | 15–19% | ⚠ int8 degrades | [TigreGotico/voiceclonnx-focalcodec](https://huggingface.co/TigreGotico/voiceclonnx-focalcodec) | Best timbre similarity (NeurIPS 2025) |
 | `rvc` | ContentVec + VITS | 40/48 kHz | 38%† | ✅ (base only) | [TigreGotico/voiceclonnx-rvc](https://huggingface.co/TigreGotico/voiceclonnx-rvc) | Any-to-ONE, community voices |
-| `vec2wav` | vq-wav2vec + WavLM + BigVGAN | 24 kHz | 119–127%‡ | ⚠ vocoder fp32-only | [TigreGotico/voiceclonnx-vec2wav](https://huggingface.co/TigreGotico/voiceclonnx-vec2wav) | Discrete-token VC research (GPL-3.0 weights) |
-| `seedvc` | Flow-matching (Seed-VC) | 22 kHz | not benchmarked§ | ⚠ flow INT8 risk | [TigreGotico/voiceclonnx-seedvc](https://huggingface.co/TigreGotico/voiceclonnx-seedvc) | Zero-shot any-to-any (GPL-3.0 external checkout) |
 
 
 
 > †`rvc` WER reflects a sample community model. Any-to-ONE semantics differ from
 > all other engines — see [Choosing an engine](#choosing-an-engine).
 >
-> ‡`vec2wav` matches its upstream PyTorch reference numerically (≥99.5% token
-> agreement); the high demo WER comes from TTS-generated source audio being
-> out-of-distribution for the LibriSpeech-trained checkpoint, not an adapter bug.
-> Weights are GPL-3.0 — see [docs/engines/vec2wav.md](docs/engines/vec2wav.md).
->
-> §`seedvc` is merged with component-level parity verified (fp32 torch vs
-> ORT all PASS), but its end-to-end WER gate and demo clips are not yet
-> generated — treat it as available-but-unbenchmarked for now.
+> **Curated roster.** WER measures intelligibility, not voice similarity. Engines
+> that scored at the no-conversion floor on speaker similarity — i.e. they kept
+> the *source* voice — or that were repurposed codecs / unbenchmarked ports have
+> been removed. See the [speaker-similarity & export-parity audit](demo/SPEAKER_SIMILARITY.md)
+> for the methodology and what was cut.
 
 ---
 
 ## Choosing an engine
 
-**Best intelligibility (0% WER):** `facodec`, `mimi`, `openvoice`, `quickvc` —
+**Best all-rounders (0% WER + strong timbre):** `facodec`, `openvoice` —
 start here unless you have a specific constraint.
 
 **Best target-voice fidelity (speaker similarity):** `focalcodec`, `chatterbox`,
-`facodec`, `knnvc`, `openvoice`. WER ≠ timbre transfer: `mimi` and `quickvc`
-score 0% WER but barely change the speaker (the output still sounds like the
-*source* voice). See the ranked
-[speaker-similarity & export-parity audit](demo/SPEAKER_SIMILARITY.md) —
-`facodec` and `openvoice` are the strongest all-rounders (0% WER **and** good
-timbre).
+`facodec`, `knnvc`, `openvoice`. WER ≠ timbre transfer — see the ranked
+[speaker-similarity & export-parity audit](demo/SPEAKER_SIMILARITY.md), which
+also documents why several engines were removed (they kept the *source* voice).
 
-**Fastest CPU inference:** `quickvc` at ~0.14× RTF — the clear choice for
-latency-sensitive or embedded use.
-
-**Highest output sample rate:** `linacodec` at 48 kHz — for downstream
-processing that requires full-bandwidth audio.
+**Highest output sample rate:** `rvc` at up to 48 kHz (any-to-ONE); `chatterbox`
+at 24 kHz for any-to-any.
 
 **Natural prosody / expressive style:** `chatterbox` — AR codec-LM that
 transfers speaking style along with voice timbre.
 
-**Smallest INT8 footprint:** `knnvc` at ~123 MB; `quickvc` at ~130 MB.
+**Smallest INT8 footprint:** `knnvc` at ~123 MB.
 
 **Any-to-ONE voice models (RVC ecosystem):** `rvc` uses a voice model rather than
 a reference audio clip. `reference_voice` is a path to an `.onnx` RVC model
@@ -175,8 +161,8 @@ cloner = VoiceCloner(engine="knnvc", quantized=True)
 out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
 ```
 
-Some engines degrade significantly in INT8: `freevc`, `focalcodec`, `cosyvoice`,
-and `linacodec` should be used in fp32 for production.
+Some engines degrade significantly in INT8: `focalcodec` and `cosyvoice` should
+be used in fp32 for production.
 
 `chatterbox` INT8 matches fp32 quality (8% WER, 57% smaller) — we quantize
 and host it at `TigreGotico/voiceclonnx-chatterbox` since upstream ships fp32 only.

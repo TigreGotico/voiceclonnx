@@ -11,19 +11,11 @@ INT8 variants of `speech_encoder.onnx` or `conditional_decoder.onnx`.
 The `quantized=True` parameter is accepted (uniform API) but silently
 ignored; chatterbox always runs fp32 until upstream ships q8 exports.
 
-## linacodec — fp32 only (INT8 unsupported)
-
-The INT8 quantized variants of linacodec degrade WER to ~27% (vs fp32 ≤15%)
-and are not suitable for production use.  `quantized=True` is accepted by the
-API for API uniformity but runs the INT8 artifacts — prefer `quantized=False`
-(default) for all linacodec inference.
-
 ## Engine comparison
 
 | Engine | fp32 WER | int8 WER | fp32 size (MB) | int8 size (MB) | Saving | Verdict |
 |--------|----------|----------|----------------|----------------|--------|---------|
 | `cosyvoice` | 8% | 100% | 0.0 | 0.0 | 0% | ⚠ int8 degraded (100% vs fp32 8%) |
-| `linacodec` | 15% | 27% | — | — | — | ⚠ int8 degraded (27% vs fp32 15%); fp32-only recommended |
 
 ## Notes
 

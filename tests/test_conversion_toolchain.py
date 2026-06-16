@@ -63,7 +63,7 @@ class TestOutputLayout:
     def test_makedirs_creates_dir(self, tmp_path):
         from conversion.export_base import OutputLayout
 
-        layout = OutputLayout.for_engine("freevc", tmp_path)
+        layout = OutputLayout.for_engine("facodec", tmp_path)
         assert not layout.engine_dir.exists()
         layout.makedirs()
         assert layout.engine_dir.is_dir()
@@ -71,7 +71,7 @@ class TestOutputLayout:
     def test_makedirs_idempotent(self, tmp_path):
         from conversion.export_base import OutputLayout
 
-        layout = OutputLayout.for_engine("freevc", tmp_path)
+        layout = OutputLayout.for_engine("facodec", tmp_path)
         layout.makedirs()
         layout.makedirs()  # should not raise
 
@@ -273,12 +273,12 @@ class TestPushModelsDryRun:
     def test_dry_run_missing_token_ok(self, tmp_path):
         from conversion.push_models import push_engine
 
-        eng_dir = tmp_path / "freevc"
+        eng_dir = tmp_path / "facodec"
         eng_dir.mkdir()
         (eng_dir / "x.onnx").write_bytes(b"\x00" * 8)
 
         # Should not raise even without HF_TOKEN in dry-run mode
-        push_engine(engine_dir=eng_dir, engine_name="freevc", dry_run=True)
+        push_engine(engine_dir=eng_dir, engine_name="facodec", dry_run=True)
 
 
 # ---------------------------------------------------------------------------

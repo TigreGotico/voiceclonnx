@@ -133,7 +133,7 @@ from voiceclonnx.engines.base import ENGINE_REGISTRY, register_engine, get_engin
 ### `ENGINE_REGISTRY`
 
 `Dict[str, EngineEntry]` — the live registry dict. Populated by importing engine
-adapter modules (done automatically in `voiceclonnx/__init__.py` for all 14
+adapter modules (done automatically in `voiceclonnx/__init__.py` for all 9
 built-in engines).
 
 ### `register_engine`

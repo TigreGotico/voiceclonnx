@@ -7,7 +7,7 @@ writes ``demo/QUANTS.md`` with the comparison table.
 
 Usage::
 
-    python demo/compare_quants.py [--engines knnvc mimi ...]
+    python demo/compare_quants.py [--engines knnvc facodec ...]
 
 Notes
 -----
@@ -37,12 +37,9 @@ INT8_CAPABLE = [
     "bicodec",
     "facodec",
     "focalcodec",
-    "freevc",
     "knnvc",
-    "mimi",
     "openvoice",
     "rvc",
-    "speechtokenizer",
     "triaan",
 ]
 
@@ -55,24 +52,18 @@ _FP32_MB = {
     "bicodec": 1390.7,
     "facodec": 156.3,
     "focalcodec": 690.9,
-    "freevc": 1390.7,
     "knnvc": 471.7,
-    "mimi": 515.2,
     "openvoice": 131.3,
     "rvc": 739.4,
-    "speechtokenizer": 411.6,
     "triaan": 294.0,
 }
 _INT8_MB = {
     "bicodec": 419.0,
     "facodec": 69.3,
     "focalcodec": 374.8,
-    "freevc": 358.8,
     "knnvc": 128.5,
-    "mimi": 309.0,
     "openvoice": 43.1,
     "rvc": 193.9,
-    "speechtokenizer": 157.7,
     "triaan": 84.1,
 }
 

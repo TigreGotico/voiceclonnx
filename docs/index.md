@@ -40,7 +40,7 @@ One command installs every engine. ONNX models are downloaded on first use.
 
 ## Engine families
 
-The 14 built-in engines fall into five architectural families. Understanding the
+The 9 built-in engines fall into five architectural families. Understanding the
 family determines which tradeoffs apply.
 
 ### kNN feature-swap (`knnvc`, `focalcodec`)
@@ -54,7 +54,7 @@ vocoder back to waveform. The matching step is pure numpy — no ONNX at match t
 - **focalcodec** — WavLM encoder + cosine-kNN + Vocos ISTFT vocoder. NeurIPS 2025
   architecture with continuous pre-quantization features.
 
-### Factorized codec (`facodec`, `bicodec`, `linacodec`)
+### Factorized codec (`facodec`, `bicodec`)
 
 Encode speech into factorized subspaces (content / prosody / timbre / speaker),
 swap the speaker or timbre component from the reference, decode the combination.
@@ -64,21 +64,8 @@ No AR generation — single forward pass per segment.
   recommended for quality.
 - **bicodec** — SparkTTS BiCodec: semantic tokens (content) + global tokens
   (speaker). CC BY-NC-SA 4.0 weights (non-commercial).
-- **linacodec** — LinaCodec: content FSQ tokens + global ConvNeXT speaker
-  embedding → Vocos at 48 kHz. Highest output sample rate of any engine.
 
-### RVQ token-swap (`mimi`, `speechtokenizer`)
-
-Encode both source and reference with a Residual Vector Quantizer codec, keep
-the content-bearing quantizer streams from source, replace the timbre-bearing
-streams with reference codes, decode.
-
-- **mimi** — Kyutai Moshi codec (32 RVQ streams at 12.5 Hz, 24 kHz). Stream 0
-  (WavLM-distilled) from reference; streams 1–31 from source. 0% WER.
-- **speechtokenizer** — hierarchical RVQ-8 (HuBERT-distilled RVQ-1 = content;
-  RVQ-2..8 = timbre). Swap RVQ-1 from source + RVQ-2..8 from reference.
-
-### Flow-matching (`cosyvoice`, `quickvc`, `freevc`, `openvoice`, `triaan`)
+### Flow-matching (`cosyvoice`, `openvoice`, `triaan`)
 
 Encoder–flow-decoder architectures that model the conditional distribution from
 content features and speaker embedding to waveform via normalizing flows or
@@ -86,10 +73,6 @@ flow-matching (ODE solver).
 
 - **cosyvoice** — FunAudioLLM CosyVoice non-AR VC via ODE flow-matching at
   22 kHz. STFT/ISTFT computed in numpy (opset limitation).
-- **quickvc** — HuBERT-soft + VITS + MS-iSTFT. 0% WER, 0.14× RTF — fastest
-  CPU engine.
-- **freevc** — WavLM-Large + GE2E speaker encoder + VITS decoder. Zero-shot
-  any-to-any VC at 16 kHz.
 - **openvoice** — MyShell OpenVoice v2 tone-color transfer. 0% WER, 22 kHz.
 - **triaan** — Triple Adaptive Attention Normalization (ICASSP 2023) + CPC
   encoder + ParallelWaveGAN vocoder.
@@ -118,16 +101,11 @@ community-trained RVC voice models exist on Hugging Face.
 | Alias | Family | Sample rate | WER | INT8 | License |
 |-------|--------|-------------|-----|------|---------|
 | `facodec` | Factorized codec | 16 kHz | 0% | ✅ | Apache-2.0 |
-| `mimi` | RVQ token-swap | 24 kHz | 0% | ✅ | CC BY 4.0 |
 | `openvoice` | Flow-matching | 22 kHz | 0% | ✅ | MIT |
-| `quickvc` | Flow-matching | 16 kHz | 0% | ✅ | MIT |
 | `chatterbox` | AR codec-LM | 24 kHz | 4–8% | ✅ INT8 | Apache-2.0 |
 | `triaan` | Flow-matching | 16 kHz | 4% | ✅ | MIT |
-| `speechtokenizer` | RVQ token-swap | 16 kHz | 4–12% | ✅ | Apache-2.0 |
 | `cosyvoice` | Flow-matching | 22 kHz | 8% | ⚠ degrades | Apache-2.0 |
-| `linacodec` | Factorized codec | 48 kHz | 8–15% | ⚠ degrades | Llama 3 / BSD-2 |
 | `bicodec` | Factorized codec | 16 kHz | 12% | ✅ | CC BY-NC-SA 4.0 |
-| `freevc` | Flow-matching | 16 kHz | 12% | ⚠ degrades | MIT |
 | `knnvc` | kNN feature-swap | 16 kHz | 12–15% | ✅ | MIT |
 | `focalcodec` | kNN feature-swap | 16 kHz | 15–19% | ⚠ degrades | Apache-2.0 |
 | `rvc` | Any-to-ONE | 40/48 kHz | 38%† | ✅ (base) | MIT |
