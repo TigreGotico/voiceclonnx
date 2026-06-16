@@ -13,7 +13,7 @@ from __future__ import annotations
 import os
 import wave
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
@@ -122,12 +122,12 @@ def test_vq_encode_selects_nearest():
     out = _vq_encode(cnn_feats, codebook)
 
     # Each half of the output vector must match one of the codebook rows exactly
-    for l in range(L):
+    for i in range(L):
         for g in range(G):
-            out_vec = out[l, g * D: (g + 1) * D]
+            out_vec = out[i, g * D: (g + 1) * D]
             # Must be in the codebook
             dists = np.sum((codebook[g] - out_vec) ** 2, axis=1)
-            assert np.min(dists) < 1e-10, f"frame {l} group {g} not matched to any codebook entry"
+            assert np.min(dists) < 1e-10, f"frame {i} group {g} not matched to any codebook entry"
 
 
 def test_vq_encode_is_deterministic():

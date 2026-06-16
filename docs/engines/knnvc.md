@@ -1,107 +1,99 @@
 # Engine: knnvc
 
-kNN-VC (Baas et al., Interspeech 2023) — zero-shot any-to-any voice conversion.
-
-Architecture:
-1. **WavLM-Large encoder** (layer 6) — converts 16 kHz audio to 1024-dim feature frames at 50 Hz.
-2. **k-nearest-neighbour matching** (pure numpy) — replaces each source feature frame with the average of its k nearest reference frames (L2 distance).
-3. **HiFi-GAN vocoder** — converts matched features back to waveform.
-
-All neural components run via onnxruntime. The kNN step is pure numpy — no ONNX at matching time. Fully non-autoregressive and CPU-friendly.
-
-ONNX artifacts: [TigreGotico/voiceclonnx-knn-vc](https://huggingface.co/TigreGotico/voiceclonnx-knn-vc) (MIT license).
-
-Output sample rate: **16 kHz**.
+**Family:** kNN feature-swap
+**Sample rate:** 16 kHz
+**WER:** 12–15%
+**INT8:** available (slight quality cost; recommended for memory-constrained use)
+**License:** MIT
+**Model:** [TigreGotico/voiceclonnx-knn-vc](https://huggingface.co/TigreGotico/voiceclonnx-knn-vc)
 
 ---
 
-## Install
+## Overview
 
-```bash
-pip install voiceclonnx
-```
+kNN-VC (Baas et al., Interspeech 2023) performs zero-shot any-to-any voice
+conversion. It extracts WavLM-Large layer-6 features from source and reference
+audio, replaces each source frame with the k-nearest-neighbour average from the
+reference feature set (L2 distance), then vocoders the matched features back to
+waveform with HiFi-GAN. The kNN step is pure numpy — no ONNX at match time.
 
-Dependencies pulled in: `onnxruntime`, `numpy`, `soundfile`.
-Models are downloaded from HF Hub on first use (~500 MB fp32 or ~123 MB int8).
+Smallest INT8 footprint of any engine: ~123 MB.
 
----
+## How it works
 
-## Config keys
+1. **WavLM-Large encoder** (layer 6, `wavlm_layer6.onnx`) — 16 kHz audio →
+   1024-dim feature frames at 50 Hz.
+2. **L2-kNN matching** (pure numpy) — replaces each source frame with the
+   average of its k nearest reference frames by L2 distance.
+3. **HiFi-GAN vocoder** (`hifigan_knnvc.onnx`) — matched features → waveform.
+
+## Config / params
 
 | Key | Type | Default | Description |
-|---|---|---|---|
-| `quantized` | `bool` | `False` | Use INT8 quantized ONNX models. Reduces memory to ~123 MB total; slight quality cost. See [QUANTS.md](../QUANTS.md) for the measured WER comparison. |
-| `k` | `int` | `4` | Number of nearest neighbours to average in the matching step. Higher values smooth the conversion; lower values preserve more source characteristics. |
+|-----|------|---------|-------------|
+| `quantized` | `bool` | `False` | Load INT8 `*_q8.onnx` models. Reduces memory to ~123 MB total; slight quality cost. |
+| `k` | `int` | `4` | Number of nearest neighbours to average. Higher values smooth the conversion; lower values preserve more source characteristics. |
 
----
+## Model and license
 
-## Model sizes
+**MIT.**
 
-| File | Size | Variant |
-|---|---|---|
-| `wavlm_layer6.onnx` | 386.8 MB | fp32 |
-| `wavlm_layer6_q8.onnx` | 97.5 MB | INT8 (75% reduction) |
-| `hifigan_knnvc.onnx` | 63.1 MB | fp32 |
-| `hifigan_knnvc_q8.onnx` | 25.1 MB | INT8 (60% reduction) |
+| File | fp32 | INT8 |
+|------|------|------|
+| `wavlm_layer6.onnx` | 386.8 MB | 97.5 MB (−74.8%) |
+| `hifigan_knnvc.onnx` | 63.1 MB | 25.1 MB (−60.2%) |
 
----
+Total: ~450 MB fp32 / ~123 MB INT8.
 
-## Usage
+## Sample rate
 
-### Python
+**16 kHz.**
 
-```python
-from voiceclonnx import VoiceCloner
+## INT8 note
 
-# Default (fp32, k=4)
-cloner = VoiceCloner(engine="knnvc")
-out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
-print(cloner.sample_rate)   # 16000
+`quantized=True` reduces footprint to ~123 MB — the smallest INT8 footprint
+among all voiceclonnx engines. Slight quality degradation expected.
+See [QUANTS.md](../QUANTS.md) for the WER comparison.
 
-# Quantized (low-memory)
-cloner = VoiceCloner(engine="knnvc", quantized=True)
-out = cloner.clone_voice("source.wav", "reference.wav", "out_q8.wav")
+## WER
 
-# Looser matching (k=8 averages more reference frames)
-cloner = VoiceCloner(engine="knnvc", k=8)
-```
+**12–15%** — measured with faster-whisper `base.en` on demo clips.
+See [demo/VERIFICATION.md](../../demo/VERIFICATION.md).
 
-### CLI
+## CLI example
 
 ```bash
-pip install voiceclonnx
-
 voiceclonnx clone --engine knnvc \
              --audio source.wav \
              --voice reference.wav \
              --out out.wav
 ```
 
----
+## Python example
 
-## References
+```python
+from voiceclonnx import VoiceCloner
 
-- Paper: [kNN-VC (Baas et al., Interspeech 2023)](https://arxiv.org/abs/2305.18975)
-- Original code: [bshall/knn-vc](https://github.com/bshall/knn-vc)
+cloner = VoiceCloner(engine="knnvc")
+out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
+print(cloner.sample_rate)   # 16000
 
----
+# INT8 — lowest memory footprint (~123 MB)
+cloner = VoiceCloner(engine="knnvc", quantized=True)
+
+# More neighbours — smoother conversion
+cloner = VoiceCloner(engine="knnvc", k=8)
+```
 
 ## Troubleshooting
 
-**`ImportError: onnxruntime is required`**
-Install the extras group: `pip install voiceclonnx`.
+**Noisy kNN matching** — use a longer reference clip (5–10 s) so the feature
+set covers more speaker variation. Increasing `k` also smooths results.
 
-**`ImportError: soundfile`**
-Same fix: `pip install voiceclonnx` pulls soundfile.
+**First run is slow** — WavLM (~387 MB) downloads from HF Hub on first use;
+cached in `~/.cache/huggingface/hub`.
 
-**Output sounds noisy or garbled**
-The conversion quality depends on having a reference clip that is clean and close to
-the target speaker's natural voice. Ensure the reference is at least 5 s long.
+## References
 
-**Out-of-memory on large files**
-Use `quantized=True` — total model footprint drops from ~450 MB to ~123 MB.
-For very long utterances, consider chunking the source audio.
-
-**First run is slow**
-Models are downloaded from HF Hub on first use. After the initial download they are
-cached in `~/.cache/huggingface/hub` and subsequent runs start quickly.
+- Paper: [Voice Conversion With Just Nearest Neighbours](https://arxiv.org/abs/2305.18975)
+- Upstream: [bshall/knn-vc](https://github.com/bshall/knn-vc)

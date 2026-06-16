@@ -35,7 +35,6 @@ initializer to hang.  The subgraph node names are enumerated and passed to
 from __future__ import annotations
 
 import argparse
-import copy
 import os
 import sys
 from pathlib import Path

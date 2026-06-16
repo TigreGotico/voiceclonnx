@@ -1,137 +1,94 @@
 # Engine: freevc
 
-FreeVC (Qian et al., ICASSP 2023) — zero-shot any-to-any voice conversion without
-text annotations.  Uses WavLM-Large content features and a VITS-based decoder
-conditioned on a GE2E speaker embedding.  Non-autoregressive and CPU-friendly.
-
-Architecture:
-1. **WavLM-Large encoder** (full final hidden states) — converts 16 kHz audio to
-   1024-dim feature frames at 50 Hz.  FreeVC uses `extract_features()[0]`, the
-   transformer's complete final output.  This differs from kNN-VC which extracts
-   only layer 6; `wavlm_freevc.onnx` is a separate artifact.
-2. **GE2E speaker encoder** (LSTM × 3 + linear) — produces a 256-dim d-vector from
-   a log-mel spectrogram of the reference audio.
-3. **VITS SynthesizerTrn** (prior encoder + normalising flow + HiFi-GAN generator)
-   — decodes content features conditioned on the d-vector to a 16 kHz waveform.
-
-All neural components run via onnxruntime.  Fully non-autoregressive; no diffusion
-steps; streaming-friendly.
-
-ONNX artifacts: [TigreGotico/voiceclonnx-freevc](https://huggingface.co/TigreGotico/voiceclonnx-freevc) (MIT license).
-
-Output sample rate: **16 kHz**.
+**Family:** Flow-matching (WavLM + VITS)
+**Sample rate:** 16 kHz
+**WER:** 12%
+**INT8:** ⚠ degrades (WER 62% in INT8 vs 12% fp32 — use fp32)
+**License:** MIT
+**Model:** [TigreGotico/voiceclonnx-freevc](https://huggingface.co/TigreGotico/voiceclonnx-freevc)
 
 ---
 
-## Install
+## Overview
 
-```bash
-pip install voiceclonnx
-```
+FreeVC (Qian et al., ICASSP 2023) performs zero-shot any-to-any voice conversion
+without text annotations. It uses WavLM-Large content features and a VITS-based
+decoder conditioned on a GE2E speaker embedding. Non-autoregressive and
+CPU-friendly.
 
-Core deps: `onnxruntime`, `numpy`, `soundfile`, `huggingface_hub` — no librosa at inference.
-Models are downloaded from HF Hub on first use (~1.2 GB fp32 or ~342 MB int8).
+## How it works
 
----
+1. **WavLM-Large encoder** (full final hidden states, `wavlm_freevc.onnx`) —
+   16 kHz audio → 1024-dim feature frames at 50 Hz. Uses `extract_features()[0]`
+   (final transformer output). This is a separate artifact from the kNN-VC
+   WavLM export (which extracts only layer 6).
+2. **GE2E speaker encoder** (LSTM × 3 + linear) — log-mel spectrogram of
+   reference audio → 256-dim d-vector.
+3. **VITS SynthesizerTrn** (prior encoder + normalising flow + HiFi-GAN
+   generator) — decodes content features conditioned on the d-vector to
+   a 16 kHz waveform.
 
-## Config keys
+All neural components run via onnxruntime. Fully non-autoregressive; no diffusion steps.
+
+## Config / params
 
 | Key | Type | Default | Description |
-|---|---|---|---|
-| `quantized` | `bool` | `False` | Use INT8 quantized ONNX models. Reduces memory from ~1.4 GB to ~359 MB total. **int8 not recommended: WER 62% vs fp32 12% in benchmark** — use fp32 for production. See [QUANTS.md](../QUANTS.md) for full comparison. |
+|-----|------|---------|-------------|
+| `quantized` | `bool` | `False` | Load INT8 `*_q8.onnx` models. **Not recommended**: WER jumps from 12% to 62% in INT8. Use fp32 for production. |
 
----
+## Model and license
 
-## Model sizes
+**MIT.**
 
-| File | Size | Variant |
-|---|---|---|
-| `wavlm_freevc.onnx` | 1204.4 MB | fp32 |
-| `wavlm_freevc_q8.onnx` | 303.5 MB | INT8 (74.8% reduction) |
-| `speaker_encoder.onnx` | 5.4 MB | fp32 |
-| `speaker_encoder_q8.onnx` | 1.4 MB | INT8 (74.5% reduction) |
-| `freevc_decoder.onnx` | 116.4 MB | fp32 |
-| `freevc_decoder_q8.onnx` | 37.3 MB | INT8 (68.0% reduction) |
+| File | fp32 | INT8 |
+|------|------|------|
+| `wavlm_freevc.onnx` | 1204.4 MB | 303.5 MB (−74.8%) |
+| (VITS decoder + speaker encoder) | varies | varies |
 
----
+Total: ~1.2 GB fp32 / ~342 MB INT8.
 
-## Parity (fp32 torch vs ORT on synthetic input)
+## Sample rate
 
-| Component | max_abs | mean_abs | Pass |
-|---|---|---|---|
-| WavLM-Large last_hidden_state | 4.05e-05 | 3.96e-06 | ✓ |
-| Speaker encoder embedding | 2.53e-07 | 3.80e-08 | ✓ |
-| VITS decoder waveform | 6.80e-06 | 4.48e-07 | ✓ |
+**16 kHz.**
 
----
+## INT8 note
 
-## Usage
+**INT8 is not recommended for this engine.** WER increases from 12% (fp32) to
+62% (INT8) — the WavLM-Large encoder is sensitive to INT8 quantization. Use
+fp32 for production. See [QUANTS.md](../QUANTS.md).
 
-### Python
+## WER
 
-```python
-from voiceclonnx import VoiceCloner
+**12%** — measured with faster-whisper `base.en` on demo clips.
+See [demo/VERIFICATION.md](../../demo/VERIFICATION.md).
 
-# Default (fp32)
-cloner = VoiceCloner(engine="freevc")
-out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
-print(cloner.sample_rate)   # 16000
-
-# Quantized (low-memory)
-cloner = VoiceCloner(engine="freevc", quantized=True)
-out = cloner.clone_voice("source.wav", "reference.wav", "out_q8.wav")
-```
-
-### CLI
+## CLI example
 
 ```bash
-pip install voiceclonnx
-
 voiceclonnx clone --engine freevc \
              --audio source.wav \
              --voice reference.wav \
              --out out.wav
 ```
 
----
+## Python example
 
-## WavLM artifact note
+```python
+from voiceclonnx import VoiceCloner
 
-FreeVC and kNN-VC both use WavLM-Large but extract different outputs:
-
-| Engine | Extraction | File |
-|---|---|---|
-| kNN-VC | Layer-6 hidden states (`hidden_states[7]`) | `TigreGotico/voiceclonnx-knn-vc / wavlm_layer6.onnx` |
-| FreeVC | Final transformer output (`last_hidden_state`) | `TigreGotico/voiceclonnx-freevc / wavlm_freevc.onnx` |
-
-These are **not interchangeable**.  The adapter downloads `wavlm_freevc.onnx` from
-its own repo; the kNN-VC file is not referenced.
-
----
-
-## References
-
-- Paper: [FreeVC (Qian et al., ICASSP 2023)](https://arxiv.org/abs/2210.15418)
-- Original code: [OlaWod/FreeVC](https://github.com/OlaWod/FreeVC)
-- Export reference: [OpenVINO notebooks — FreeVC](https://docs.openvino.ai/2024/notebooks/freevc-voice-conversion-with-output.html)
-
----
+cloner = VoiceCloner(engine="freevc")
+out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
+print(cloner.sample_rate)   # 16000
+```
 
 ## Troubleshooting
 
-**`ImportError: onnxruntime is required`**
-Install the extras group: `pip install voiceclonnx`.
+**WER degrades with INT8** — this is expected; see INT8 note above. Use fp32.
 
+**First run is slow** — WavLM-Large (~1.2 GB) downloads from HF Hub on first
+use; cached in `~/.cache/huggingface/hub`.
 
-Same fix: `pip install voiceclonnx` pulls librosa.
+## References
 
-**Output sounds muffled or robotic**
-The conversion quality depends on having a clean reference clip that is at least
-3–5 seconds long.  Ensure the reference has minimal background noise.
-
-**Out-of-memory on large files**
-Use `quantized=True` — total model footprint drops from ~1.3 GB to ~342 MB.
-
-**First run is slow**
-Models are downloaded from HF Hub on first use (~1.2 GB for fp32).  After the
-initial download they are cached in `~/.cache/huggingface/hub`.
+- Paper: [FreeVC: Towards High-Quality Text-Free One-Shot Voice Conversion](https://arxiv.org/abs/2210.15418)
+- Upstream: [OlaWod/FreeVC](https://github.com/OlaWod/FreeVC)

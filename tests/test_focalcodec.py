@@ -12,10 +12,8 @@ Structure
 from __future__ import annotations
 
 import os
-import struct
 import wave
 from pathlib import Path
-from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
@@ -322,7 +320,6 @@ def test_e2e_focalcodec_clone_edge_tts_voices(tmp_path):
     - File size > 0 bytes.
     """
     import asyncio
-    import soundfile as sf
 
     try:
         import edge_tts

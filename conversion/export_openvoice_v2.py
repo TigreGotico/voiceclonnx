@@ -32,9 +32,11 @@ from __future__ import annotations
 
 import argparse
 import sys
-import tempfile
 from pathlib import Path
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
+
+if TYPE_CHECKING:
+    import torch
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -264,8 +266,8 @@ def export_openvoice_v2(
     import numpy as np
     import torch
 
-    from conversion.export_base import OutputLayout, export_model, write_manifest, write_provenance
-    from conversion.parity import compare_outputs, run_ort
+    from conversion.export_base import OutputLayout, write_manifest, write_provenance
+    from conversion.parity import run_ort
     from conversion.quantize import quantize_model
 
     output_dir = Path(output_dir)

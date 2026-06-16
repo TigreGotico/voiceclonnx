@@ -1,7 +1,41 @@
 # Converting a voice-conversion model to ONNX
 
-This guide walks an engine-issue implementer through the full pipeline:
+This guide covers the full pipeline for adding a new engine:
 **export → parity → quantize → push → adapter**.
+
+## Quick recipe
+
+```bash
+pip install -e ".[convert]"
+python -m conversion.export_<engine> --output-dir /tmp/<engine>-out
+python -m conversion.parity --onnx /tmp/<engine>-out/encoder.onnx ...
+python -m conversion.quantize /tmp/<engine>-out/encoder.onnx
+python -m conversion.push_models /tmp/<engine>-out --dry-run
+python -m conversion.push_models /tmp/<engine>-out
+```
+
+Then write the adapter (subclass `VoiceClonerBase`), add the auto-import, add
+`docs/engines/<engine>.md`, update the engine table in `README.md` and
+`docs/index.md`, run `demo/generate_demos.py --engines <engine>` and
+`demo/verify_demos.py`.
+
+---
+
+## Contents
+
+| Section | What it covers |
+|---------|---------------|
+| [0. Prerequisites](#0-prerequisites) | Install `[convert]` extras |
+| [1. Export](#1-export) | `conversion/export_<engine>.py` contract |
+| [2. Parity check](#2-parity-check) | Tolerance verification vs torch |
+| [3. Quantize](#3-quantize) | Produce `*_q8.onnx` INT8 variants |
+| [4. Push to HF](#4-push-to-hf) | Upload to `TigreGotico/voiceclonnx-<engine>` |
+| [5. Write the adapter](#5-write-the-voiceclonnx-adapter) | Subclass + register |
+| [Output directory layout](#output-directory-layout) | File naming conventions |
+| [Weight-license policy](#weight-license-policy-publish-with-the-license-stated) | Distributable vs local-only |
+| Per-engine appendices | rvc, freevc, triaan-vc, focalcodec, speechtokenizer, mimi, facodec, bicodec, chatterbox, quickvc, cosyvoice, linacodec |
+
+---
 
 All toolchain scripts live under `conversion/` and require the
 `voiceclonnx[convert]` extras group (PyTorch, onnxruntime, transformers, librosa,
@@ -1325,3 +1359,128 @@ produce garbled speech on TTS sources (WER ≈ 100–142% for the demo sentence)
 The engine works as designed; the quality limitation is inherent to the upstream
 checkpoint and source domain.  For best results use naturally-recorded source audio
 rather than synthesized speech.
+## Appendix E: External-checkout pattern (LinaCodec / future engines)
+
+Some upstream model codebases carry licenses that are incompatible with
+vendoring into the MIT-licensed voiceclonnx repository.  LinaCodec is the
+first engine to use this pattern:
+
+- The LinaCodec Transformer backbone derives from Meta's Llama-3
+  (Llama 3 Community License).
+- The distill_wavlm module derives from torchaudio (BSD-2-Clause).
+
+Neither license prohibits *export* or *distribution of ONNX weights*, but
+vendoring the source code into a MIT repository would misrepresent the
+licensing of the resulting library.
+
+### Pattern: external clone at export time
+
+```
+conversion/
+  export_linacodec.py        ← export script; clones upstream at runtime
+voiceclonnx/
+  engines/linacodec.py       ← runtime adapter; ZERO upstream code
+```
+
+The export script (`export_linacodec.py`) does:
+
+1. Clones the upstream repository to a **throwaway path** (`/tmp/LinaCodec`)
+   using `git clone`.  The clone is never committed to voiceclonnx.
+2. Adds `<clone>/src` to `sys.path` at runtime.
+3. Imports and instantiates the upstream models.
+4. Exports ONNX artifacts.
+5. The clone is discarded after export.
+
+```python
+def _ensure_linacodec_clone(dest: str = "/tmp/LinaCodec") -> None:
+    import subprocess, sys
+    if not Path(dest).exists():
+        subprocess.run(
+            ["git", "clone", "--depth=1",
+             "https://github.com/ysharma3501/LinaCodec", dest],
+            check=True,
+        )
+    sys.path.insert(0, str(Path(dest) / "src"))
+```
+
+The runtime adapter (`voiceclonnx/engines/linacodec.py`) contains:
+- Pure `onnxruntime` + `numpy` — no imports from the upstream repository.
+- No upstream source code whatsoever.
+
+### ONNX weight licensing
+
+The exported ONNX artifacts ARE published to HF Hub
+(`TigreGotico/voiceclonnx-linacodec`).  The model card states the upstream
+licenses plainly: Llama 3 Community License (Transformer backbone) + BSD-2-Clause
+(distill_wavlm).  Users who download the weights should review those licenses.
+
+### Adapting this pattern for other engines
+
+Use this pattern whenever an upstream codebase carries a license that is
+incompatible with the MIT-labeled voiceclonnx source, but the ONNX weights
+may be re-distributed under their upstream license:
+
+1. Create `conversion/export_<engine>.py` with a `_ensure_<engine>_clone()`
+   helper that clones to `/tmp/`.
+2. Keep `voiceclonnx/engines/<engine>.py` free of all upstream source code.
+3. State the upstream license(s) explicitly in the adapter module docstring
+   and in the HF model card.
+4. Document the pattern in this appendix so future maintainers understand why
+   the export script clones externally.
+
+This pattern is also appropriate for SeedVC (planned as issue #25), which
+uses a similar Transformer architecture under a research license.
+
+## Appendix F: LinaCodec onset artifact — root cause and fix (issue #24)
+
+### Symptom
+
+`linacodec` scored 27%/27% WER on both demo clips.  The body of each sentence
+transcribed correctly, but the onset was garbled: "The quick brown fox" →
+"But the plot-bound fox" / "The clip brushbox".
+
+### Root cause: two interacting artifacts
+
+**1. WavLM left-context starvation at chunk boundaries.**
+WavLM Base Plus uses a convolutional front-end with hop=320 at 16 kHz.  When
+audio starts at sample 0 with no left-context, the first analysis windows are
+computed over incomplete frames.  The distill_wavlm_encoder ONNX was exported
+with symmetric zero-padding applied on both sides (upstream
+`_calculate_waveform_padding`), so the model expects valid left-context
+even at the nominal t=0.  Without this padding the first 2–3 content tokens
+are wrong, corrupting the sentence onset.
+
+**2. mel_decoder self-attention quality degrades for long sequences.**
+The mel_decoder is a full-sequence self-attention Transformer.  When the
+content sequence exceeds ~3 seconds (~37 tokens), quality of later tokens
+degrades because the attention distributes over a much longer key–value
+matrix.  This produced the systematic "Voice conversion" → "Those conversion"
+confusion at the start of the second sentence in the 10.7 s source clip.
+The effect is distinct from the first artifact: it appears mid-utterance at
+every location where a new chunk boundary would naturally fall.
+
+### Fix
+
+Two complementary changes in `voiceclonnx/engines/linacodec.py`:
+
+1. **Chunked processing (3 s chunks, 0.5 s crossfade).**
+   Source audio is split into 3-second chunks processed independently through
+   the full SSL → content_encoder → mel_decoder → Vocos pipeline.  Consecutive
+   decoded chunks are crossfaded with a 0.5-second linear fade.  This keeps
+   each content sequence short enough for the mel_decoder to maintain quality.
+
+2. **Per-chunk reflect-padding (8 token onset pad).**
+   Each chunk's 16 kHz waveform is reflect-padded by
+   `_ONSET_PAD_TOKENS × 4 × 320 = 10240 samples (≈ 0.64 s)` before SSL
+   extraction.  After content encoding, the leading `_ONSET_PAD_TOKENS = 8`
+   content tokens are discarded.  This gives the WavLM convolutional extractor
+   sufficient left-context at each chunk boundary.
+
+### Verification
+
+Before fix: 27%/27% WER (both clips).
+After fix: 8% (aria) / 15% (sonia) WER — both well under the ≤25% gate.
+
+The INT8 quantized variants are unaffected by this fix but degrade to ~27%
+WER regardless; `quantized=False` (default fp32) is the supported path.
+See `demo/QUANTS.md` for the full comparison table.

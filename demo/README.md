@@ -1,5 +1,8 @@
 # Engine comparison demos
 
+> 🔊 **Listen with inline players:** open [`index.html`](index.html) (via GitHub Pages or locally) for embedded `<audio>` controls — no downloads. GitHub's markdown view only offers download links for the `.wav` files below.
+
+
 Same source speech, same reference voices, every engine — listen and compare
 without running any code (GitHub renders the players inline).
 
@@ -16,18 +19,21 @@ without running any code (GitHub renders the players inline).
 One file per engine × reference: `outputs/<engine>__<reference>.wav` —
 the source utterance spoken in the reference voice, as that engine hears it.
 
-| engine | → aria | → sonia |
-|---|---|---|
-| bicodec | [`outputs/bicodec__aria.wav`](outputs/bicodec__aria.wav) | [`outputs/bicodec__sonia.wav`](outputs/bicodec__sonia.wav) |
-| chatterbox | [`outputs/chatterbox__aria.wav`](outputs/chatterbox__aria.wav) | [`outputs/chatterbox__sonia.wav`](outputs/chatterbox__sonia.wav) |
-| freevc | [`outputs/freevc__aria.wav`](outputs/freevc__aria.wav) | [`outputs/freevc__sonia.wav`](outputs/freevc__sonia.wav) |
-| knnvc | [`outputs/knnvc__aria.wav`](outputs/knnvc__aria.wav) | [`outputs/knnvc__sonia.wav`](outputs/knnvc__sonia.wav) |
-| facodec | [`outputs/facodec__aria.wav`](outputs/facodec__aria.wav) | [`outputs/facodec__sonia.wav`](outputs/facodec__sonia.wav) |
-| focalcodec | [`outputs/focalcodec__aria.wav`](outputs/focalcodec__aria.wav) | [`outputs/focalcodec__sonia.wav`](outputs/focalcodec__sonia.wav) |
-| speechtokenizer | [`outputs/speechtokenizer__aria.wav`](outputs/speechtokenizer__aria.wav) | [`outputs/speechtokenizer__sonia.wav`](outputs/speechtokenizer__sonia.wav) |
-| mimi | [`outputs/mimi__aria.wav`](outputs/mimi__aria.wav) | [`outputs/mimi__sonia.wav`](outputs/mimi__sonia.wav) |
-| openvoice | [`outputs/openvoice__aria.wav`](outputs/openvoice__aria.wav) | [`outputs/openvoice__sonia.wav`](outputs/openvoice__sonia.wav) |
-| triaan | [`outputs/triaan__aria.wav`](outputs/triaan__aria.wav) | [`outputs/triaan__sonia.wav`](outputs/triaan__sonia.wav) |
+| engine | WER | → aria | → sonia |
+|--------|-----|--------|---------|
+| facodec | 0% | [`outputs/facodec__aria.wav`](outputs/facodec__aria.wav) | [`outputs/facodec__sonia.wav`](outputs/facodec__sonia.wav) |
+| mimi | 0% | [`outputs/mimi__aria.wav`](outputs/mimi__aria.wav) | [`outputs/mimi__sonia.wav`](outputs/mimi__sonia.wav) |
+| openvoice | 0% | [`outputs/openvoice__aria.wav`](outputs/openvoice__aria.wav) | [`outputs/openvoice__sonia.wav`](outputs/openvoice__sonia.wav) |
+| quickvc | 0% | [`outputs/quickvc__reference_aria.wav`](outputs/quickvc__reference_aria.wav) | [`outputs/quickvc__reference_sonia.wav`](outputs/quickvc__reference_sonia.wav) |
+| chatterbox | 4–8% | [`outputs/chatterbox__aria.wav`](outputs/chatterbox__aria.wav) | [`outputs/chatterbox__sonia.wav`](outputs/chatterbox__sonia.wav) |
+| triaan | 4% | [`outputs/triaan__aria.wav`](outputs/triaan__aria.wav) | [`outputs/triaan__sonia.wav`](outputs/triaan__sonia.wav) |
+| speechtokenizer | 4–12% | [`outputs/speechtokenizer__aria.wav`](outputs/speechtokenizer__aria.wav) | [`outputs/speechtokenizer__sonia.wav`](outputs/speechtokenizer__sonia.wav) |
+| cosyvoice | 8% | [`outputs/cosyvoice__aria.wav`](outputs/cosyvoice__aria.wav) | [`outputs/cosyvoice__sonia.wav`](outputs/cosyvoice__sonia.wav) |
+| linacodec | 8–15% | [`outputs/linacodec__aria.wav`](outputs/linacodec__aria.wav) | [`outputs/linacodec__sonia.wav`](outputs/linacodec__sonia.wav) |
+| bicodec | 12% | [`outputs/bicodec__aria.wav`](outputs/bicodec__aria.wav) | [`outputs/bicodec__sonia.wav`](outputs/bicodec__sonia.wav) |
+| freevc | 12% | [`outputs/freevc__aria.wav`](outputs/freevc__aria.wav) | [`outputs/freevc__sonia.wav`](outputs/freevc__sonia.wav) |
+| knnvc | 12–15% | [`outputs/knnvc__aria.wav`](outputs/knnvc__aria.wav) | [`outputs/knnvc__sonia.wav`](outputs/knnvc__sonia.wav) |
+| focalcodec | 15–19% | [`outputs/focalcodec__aria.wav`](outputs/focalcodec__aria.wav) | [`outputs/focalcodec__sonia.wav`](outputs/focalcodec__sonia.wav) |
 
 Any-to-ONE engines convert to a fixed voice model instead of a reference wav
 (one column per demo model):

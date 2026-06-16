@@ -37,7 +37,6 @@ Usage::
 from __future__ import annotations
 
 import argparse
-import os
 import sys
 import urllib.request
 from pathlib import Path
@@ -406,7 +405,6 @@ def export_vec2wav(output_dir: str, cache_dir: Optional[str] = None) -> Path:
     """Export vec2wav 2.0 components to ONNX and return the engine output dir."""
     import torch
     import numpy as np
-    import yaml
     import sys
 
     from conversion.export_base import OutputLayout, export_model, write_manifest, write_provenance

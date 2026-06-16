@@ -2,7 +2,7 @@
 
 import os
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from voiceclonnx.__main__ import main
 from voiceclonnx.engines.base import ENGINE_REGISTRY, EngineEntry, VoiceClonerBase, register_engine
 
@@ -61,7 +61,6 @@ def test_cli_list(capsys):
 
 def test_cli_no_tts_subcommand():
     """The 'tts' subcommand must not exist."""
-    import argparse
     with patch("sys.argv", ["voiceclonnx", "tts", "--text", "hello", "--voice", "x.wav", "--out", "o.wav"]):
         with pytest.raises(SystemExit) as exc_info:
             main()

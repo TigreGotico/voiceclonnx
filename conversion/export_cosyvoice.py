@@ -566,7 +566,7 @@ def export(
     with torch.no_grad():
         src = f0_src_wrap(dummy_mel).squeeze(0).squeeze(0).numpy()  # (T_audio,)
     src_real, src_imag = _numpy_stft(src, n_fft=16, hop_len=4)
-    src_stft = np.concatenate([src_real, src_imag], axis=0)[np.newaxis].astype(np.float32)  # (1, 18, T)
+    np.concatenate([src_real, src_imag], axis=0)[np.newaxis].astype(np.float32)  # (1, 18, T)
 
     # Get torch reference
     with torch.no_grad():
