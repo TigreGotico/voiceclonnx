@@ -31,10 +31,7 @@ Usage::
 from __future__ import annotations
 
 import argparse
-import copy
-import math
 import sys
-import tempfile
 import urllib.request
 from pathlib import Path
 from typing import Optional
@@ -97,8 +94,8 @@ def _build_architecture():
     import torch
     import torch.nn as nn
     import torch.nn.functional as F
-    from torch.nn import Conv1d, ConvTranspose1d
-    from torch.nn.utils import weight_norm, remove_weight_norm, spectral_norm
+    from torch.nn import Conv1d
+    from torch.nn.utils import weight_norm, remove_weight_norm
 
     # --- commons helpers ---
     class _Commons:
@@ -150,10 +147,10 @@ def _build_architecture():
             return x
 
         def remove_weight_norm(self):
-            for l in self.convs1:
-                remove_weight_norm(l)
-            for l in self.convs2:
-                remove_weight_norm(l)
+            for layer in self.convs1:
+                remove_weight_norm(layer)
+            for layer in self.convs2:
+                remove_weight_norm(layer)
 
     class ResBlock2(nn.Module):
         def __init__(self, channels, kernel_size=3, dilation=(1, 3)):
@@ -174,8 +171,8 @@ def _build_architecture():
             return x
 
         def remove_weight_norm(self):
-            for l in self.convs:
-                remove_weight_norm(l)
+            for layer in self.convs:
+                remove_weight_norm(layer)
 
     class WN(nn.Module):
         def __init__(self, hidden_channels, kernel_size, dilation_rate, n_layers,
@@ -246,10 +243,10 @@ def _build_architecture():
         def remove_weight_norm(self):
             if self.gin_channels != 0:
                 remove_weight_norm(self.cond_layer)
-            for l in self.in_layers:
-                remove_weight_norm(l)
-            for l in self.res_skip_layers:
-                remove_weight_norm(l)
+            for layer in self.in_layers:
+                remove_weight_norm(layer)
+            for layer in self.res_skip_layers:
+                remove_weight_norm(layer)
 
     class Log(nn.Module):
         def forward(self, x, x_mask, reverse=False, **kwargs):
@@ -429,10 +426,10 @@ def _build_synthesizer_trn(commons_ns, modules_ns):
             return torch.tanh(x)
 
         def remove_weight_norm(self):
-            for l in self.ups:
-                remove_weight_norm(l)
-            for l in self.resblocks:
-                l.remove_weight_norm()
+            for layer in self.ups:
+                remove_weight_norm(layer)
+            for layer in self.resblocks:
+                layer.remove_weight_norm()
 
     class SynthesizerTrn(nn.Module):
         def __init__(self):

@@ -98,7 +98,7 @@ def test_prosody_mel_dtype():
 
 def test_prosody_mel_frame_count():
     """Number of frames should match T = floor(N/hop) for padded input."""
-    from voiceclonnx.engines.facodec import _compute_prosody_mel, _FA_HOP
+    from voiceclonnx.engines.facodec import _compute_prosody_mel
 
     sr = 16000
     audio = np.zeros(sr, dtype=np.float32)

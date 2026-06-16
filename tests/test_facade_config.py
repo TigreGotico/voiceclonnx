@@ -59,21 +59,21 @@ def spy_engine():
 
 def test_no_extra_kwargs_stored_in_cfg():
     """With no extra kwargs, _cfg is empty."""
-    cloner = VoiceCloner(engine="_spy")
+    VoiceCloner(engine="_spy")
     adapter = SpyAdapter._instances[-1]
     assert adapter.received_cfg == {}
 
 
 def test_single_kwarg_reaches_adapter():
     """A single engine kwarg is forwarded to the adapter constructor."""
-    cloner = VoiceCloner(engine="_spy", quantized=True)
+    VoiceCloner(engine="_spy", quantized=True)
     adapter = SpyAdapter._instances[-1]
     assert adapter.received_cfg.get("quantized") is True
 
 
 def test_multiple_kwargs_reach_adapter():
     """Multiple engine kwargs are all forwarded."""
-    cloner = VoiceCloner(engine="_spy", quantized=False, k=8, some_flag="hello")
+    VoiceCloner(engine="_spy", quantized=False, k=8, some_flag="hello")
     adapter = SpyAdapter._instances[-1]
     assert adapter.received_cfg["quantized"] is False
     assert adapter.received_cfg["k"] == 8
@@ -82,7 +82,7 @@ def test_multiple_kwargs_reach_adapter():
 
 def test_engine_kwarg_not_forwarded():
     """The 'engine' key itself is not forwarded as a cfg kwarg."""
-    cloner = VoiceCloner(engine="_spy", exaggeration=0.7)
+    VoiceCloner(engine="_spy", exaggeration=0.7)
     adapter = SpyAdapter._instances[-1]
     assert "engine" not in adapter.received_cfg
 
@@ -128,8 +128,8 @@ def test_clone_voice_default_out_suffix(tmp_path):
 
 def test_adapter_replaced_per_instance():
     """Each VoiceCloner instantiation creates a fresh adapter."""
-    c1 = VoiceCloner(engine="_spy", x=1)
-    c2 = VoiceCloner(engine="_spy", x=2)
+    VoiceCloner(engine="_spy", x=1)
+    VoiceCloner(engine="_spy", x=2)
     assert len(SpyAdapter._instances) == 2
     assert SpyAdapter._instances[0].received_cfg["x"] == 1
     assert SpyAdapter._instances[1].received_cfg["x"] == 2

@@ -13,7 +13,6 @@ from __future__ import annotations
 import os
 import wave
 from pathlib import Path
-from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
@@ -286,12 +285,12 @@ def test_adapter_spec_shape_to_converter():
     adapter._ref_enc_sess = _MockRefEncSession()
     adapter._converter_sess = _SpyConverterSession()
 
-    audio = np.zeros(22050, dtype=np.float32)
-    import wave as _wave, tempfile
+    np.zeros(22050, dtype=np.float32)
+    import tempfile
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
         path = f.name
     _make_wav(path, duration_s=0.5)
-    import tempfile, os
+    import tempfile
     out = path + "_out.wav"
     adapter.clone_voice(path, path, out)
 

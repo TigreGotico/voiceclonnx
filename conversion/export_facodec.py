@@ -170,10 +170,8 @@ def _patch_multihead_attention_for_onnx(root_module):
     ``F.scaled_dot_product_attention`` directly — it accepts dynamic shapes.
     Weights are preserved.
     """
-    import torch
     import torch.nn as nn
     import torch.nn.functional as F
-    import math
 
     class DynamicMHA(nn.Module):
         """Dynamic-T multi-head attention using F.scaled_dot_product_attention."""
@@ -290,7 +288,6 @@ def _warm_and_patch(root_module, warm_fn):
 
     *warm_fn* is a zero-argument callable that triggers a forward pass through *root_module*.
     """
-    import torch.nn.functional as F
 
     try:
         from models.codec.ns3_codec.alias_free_torch.resample import UpSample1d
@@ -499,7 +496,6 @@ def _run_ort(onnx_path: str, feed: dict):
 
 def export(output_dir: str, no_push: bool = False) -> None:
     """Full export pipeline: load → export → parity → quantize → (push)."""
-    import json
     import torch
 
     try:
@@ -522,7 +518,7 @@ def export(output_dir: str, no_push: bool = False) -> None:
 
     # ---- Dummy inputs ----
     T_samp = 16000  # 1 s at 16 kHz
-    T_frame = T_samp // 200  # hop=200 → 80 frames
+    T_samp // 200  # hop=200 → 80 frames
     dummy_wav = torch.zeros(1, 1, T_samp)
 
     # Patch alias_free_torch resample modules to use static filter sizes for ONNX export
@@ -540,7 +536,7 @@ def export(output_dir: str, no_push: bool = False) -> None:
     print("[facodec] Patching decoder alias_free_torch modules …", flush=True)
     with torch.no_grad():
         _, qs, _, qbufs, spk = decoder(dummy_enc_feats, dummy_mel_20, eval_vq=True, vq=True)
-        dummy_vq_emb = decoder.vq2emb(qs, use_residual=False)
+        decoder.vq2emb(qs, use_residual=False)
     dec_wrapper_tmp = _build_decoder_wrapper(decoder)
     _warm_and_patch(
         dec_wrapper_tmp,
@@ -652,7 +648,7 @@ def export(output_dir: str, no_push: bool = False) -> None:
         ("facodec_decoder", dec_path),
     ]:
         q_path = str(path).replace(".onnx", "_q8.onnx")
-        report = quantize_model(str(path), output_path=q_path)
+        quantize_model(str(path), output_path=q_path)
         fp32_mb = Path(path).stat().st_size / 1024**2
         q8_mb = Path(q_path).stat().st_size / 1024**2
         sizes[name] = {"fp32_mb": round(fp32_mb, 1), "q8_mb": round(q8_mb, 1)}

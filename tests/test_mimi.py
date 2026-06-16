@@ -317,9 +317,9 @@ def test_adapter_mock_stream_swap_applied(tmp_path):
             n_frames = inputs["audio_codes"].shape[2]
             return [np.zeros((1, 1, n_frames * 1920), dtype=np.float32)]
 
-    src_wav = _make_wav(str(tmp_path / "src.wav"))
-    ref_wav = _make_wav(str(tmp_path / "ref.wav"))
-    out_wav = str(tmp_path / "out.wav")
+    _make_wav(str(tmp_path / "src.wav"))
+    _make_wav(str(tmp_path / "ref.wav"))
+    str(tmp_path / "out.wav")
 
     adapter = MimiAdapter()
     adapter._enc_sess = _DetEncoderSession(offset=10)  # src codes = 10

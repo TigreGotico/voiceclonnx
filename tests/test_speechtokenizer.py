@@ -473,7 +473,6 @@ def test_e2e_speechtokenizer_clone_edge_tts_voices(tmp_path):
     import re
     import subprocess
 
-    import soundfile as sf
 
     try:
         import edge_tts

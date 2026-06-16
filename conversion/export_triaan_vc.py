@@ -48,11 +48,9 @@ from __future__ import annotations
 
 import argparse
 import math
-import os
 import sys
 import urllib.request
 from pathlib import Path
-from typing import Dict, Optional
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -196,7 +194,7 @@ def _load_cpc_model(clone_dir: Path, ckpt_path: Path):
 
     wrapper = CPCWrapper(cpc_model)
     wrapper.eval()
-    print(f"[export/cpc] loaded upstream CPCModel via load_cpc (strict)")
+    print("[export/cpc] loaded upstream CPCModel via load_cpc (strict)")
     return wrapper
 
 
@@ -228,7 +226,7 @@ def _load_triaan_model(clone_dir: Path, ckpt_path: Path):
     state = torch.load(str(ckpt_path), map_location="cpu")["state_dict"]
     model.load_state_dict(state, strict=True)
     model.eval()
-    print(f"[export/triaan] loaded (strict=True)")
+    print("[export/triaan] loaded (strict=True)")
     return model
 
 
@@ -303,7 +301,6 @@ def _build_pwg_wrapper(model):
     The upstream ``forward(z, c)`` has an ``assert`` on sizes which breaks
     tracing.  This wrapper handles upsampling + WaveNet forward manually.
     """
-    import torch
     import torch.nn as nn
 
     class PWGWrapper(nn.Module):
@@ -389,7 +386,6 @@ def export_triaan_vc(output_dir: str, no_push: bool = False,
     from conversion.quantize import quantize_model
 
     import torch
-    import numpy as np
 
     out_dir = Path(output_dir)
     layout = OutputLayout.for_engine(ENGINE_NAME, base_dir=out_dir)
@@ -558,7 +554,7 @@ def export_triaan_vc(output_dir: str, no_push: bool = False,
 
     print("\n=== Export complete ===")
     print(f"Output directory: {layout.engine_dir}")
-    print(f"\nParity summary:")
+    print("\nParity summary:")
     print(f"  CPC encoder:   max_abs={_cpc_c.max_abs_delta:.2e}  mean_abs={_cpc_c.mean_abs_delta:.2e}  PASS")
     print(f"  TriAAN-VC:     max_abs={_triaan_c.max_abs_delta:.2e}  mean_abs={_triaan_c.mean_abs_delta:.2e}  PASS")
     print(f"  PWG vocoder:   max_abs={_pwg_c.max_abs_delta:.2e}  mean_abs={_pwg_c.mean_abs_delta:.2e}  PASS")
