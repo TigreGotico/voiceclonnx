@@ -176,12 +176,14 @@ class ChatterboxAdapter(VoiceClonerBase):
         sess_opts.intra_op_num_threads = n
         providers = self._providers or ["CPUExecutionProvider"]
 
-        self._speech_enc_sess = ort.InferenceSession(
-            enc_path, sess_options=sess_opts, providers=providers
-        )
-        self._cond_dec_sess = ort.InferenceSession(
-            dec_path, sess_options=sess_opts, providers=providers
-        )
+        enc_sess = ort.InferenceSession(enc_path, sess_options=sess_opts, providers=providers)
+        dec_sess = ort.InferenceSession(dec_path, sess_options=sess_opts, providers=providers)
+        # Publish both or neither. Assigning the encoder before the decoder is built leaves the
+        # adapter half-initialised when the decoder raises (an out-of-memory session init on a
+        # busy GPU, say): the `is not None` guard above then short-circuits every retry while
+        # the decoder is still None, and each clone dies on `NoneType.run` instead of surfacing
+        # the original error.
+        self._speech_enc_sess, self._cond_dec_sess = enc_sess, dec_sess
 
     # ------------------------------------------------------------------
     # Speaker encoding
