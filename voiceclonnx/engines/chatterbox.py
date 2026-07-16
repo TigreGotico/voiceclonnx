@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+from typing import List, Optional
 
 import numpy as np
 
@@ -112,6 +113,11 @@ class ChatterboxAdapter(VoiceClonerBase):
         compatibility; the conditional decoder does not expose this as a
         direct ONNX input — it is encoded into the speaker embeddings at
         training time.
+    providers:
+        onnxruntime execution providers. Defaults to CPU. Pass
+        ``["CUDAExecutionProvider", "CPUExecutionProvider"]`` (with
+        ``onnxruntime-gpu`` installed) to run on a GPU, which is worth it for
+        batch conversion — cloning is otherwise CPU-bound.
     **cfg:
         Additional keyword arguments stored but not forwarded.
     """
@@ -122,11 +128,13 @@ class ChatterboxAdapter(VoiceClonerBase):
         self,
         quantized: bool = False,
         exaggeration: float = 0.6,
+        providers: Optional[List[str]] = None,
         **cfg,
     ):
         super().__init__(**cfg)
         self._quantized = quantized
         self._exaggeration = exaggeration
+        self._providers = providers
         self._speech_enc_sess = None
         self._cond_dec_sess = None
 
@@ -166,7 +174,7 @@ class ChatterboxAdapter(VoiceClonerBase):
         n = os.cpu_count() or 4
         sess_opts.inter_op_num_threads = n
         sess_opts.intra_op_num_threads = n
-        providers = ["CPUExecutionProvider"]
+        providers = self._providers or ["CPUExecutionProvider"]
 
         self._speech_enc_sess = ort.InferenceSession(
             enc_path, sess_options=sess_opts, providers=providers
