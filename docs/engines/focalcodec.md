@@ -2,8 +2,8 @@
 
 **Family:** kNN feature-swap
 **Sample rate:** 16 kHz
-**WER:** 15–19%
-**INT8:** ⚠ degrades (WER 31% in INT8 vs 15% fp32 — use fp32)
+**WER:** 15-19%
+**INT8:** degrades (WER 31% in INT8 vs 15% fp32, use fp32)
 **License:** Apache-2.0
 **Model:** [TigreGotico/voiceclonnx-focalcodec](https://huggingface.co/TigreGotico/voiceclonnx-focalcodec)
 
@@ -13,18 +13,20 @@
 
 FocalCodec (Della Libera et al., NeurIPS 2025) performs zero-shot any-to-any
 voice conversion using a kNN feature-space swap on continuous pre-quantization
-features from the WavLM encoder. No discrete tokenization during VC — all
-operations are in continuous feature space before the quantizer.
+features from the WavLM encoder. There is no discrete tokenization during
+VC: all operations happen in continuous feature space before the
+quantizer.
 
 ## How it works
 
-1. **WavLM encoder** (inside FocalCodec) — 16 kHz audio → 1024-dim feature
+1. **WavLM encoder** (inside FocalCodec): 16 kHz audio to 1024-dim feature
    frames at 50 Hz.
-2. **kNN cosine matching** (pure numpy) — replaces each source feature frame
-   with the weighted mean of its k nearest reference frames (cosine distance).
-3. **Vocos backbone + proj** — maps matched 1024-dim features to STFT
+2. **kNN cosine matching** (pure numpy): replaces each source feature frame
+   with the weighted mean of its k nearest reference frames (cosine
+   distance).
+3. **Vocos backbone + proj**: maps matched 1024-dim features to STFT
    coefficients (n_fft+2 dim).
-4. **numpy ISTFT** — Hann-window overlap-add vocoder; no ONNX needed.
+4. **numpy ISTFT**: a Hann-window overlap-add vocoder, needing no ONNX.
 
 No separate speaker encoder required.
 
@@ -58,7 +60,7 @@ See [QUANTS.md](../QUANTS.md).
 
 ## WER
 
-**15–19%** — measured with faster-whisper `base.en` on demo clips.
+**15-19%**: measured with faster-whisper `base.en` on demo clips.
 See [demo/VERIFICATION.md](../../demo/VERIFICATION.md).
 
 ## CLI example
@@ -79,18 +81,22 @@ cloner = VoiceCloner(engine="focalcodec")
 out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
 print(cloner.sample_rate)   # 16000
 
-# More neighbours — smoother conversion at slightly higher compute cost
+# More neighbours, smoother conversion at slightly higher compute cost
 cloner = VoiceCloner(engine="focalcodec", k=8)
 ```
 
 ## Troubleshooting
 
-**High WER on short clips** — the cosine kNN matching requires a dense reference
-feature set. Use reference clips of at least 5 s for best matching.
+**High WER on short clips.** The cosine kNN matching needs a dense
+reference feature set. Use reference clips of at least 5 s for best
+matching.
 
-**Slow on first run** — ~659 MB encoder downloads from HF Hub; cached in
-`~/.cache/huggingface/hub`.
+**Slow on first run.** About 659 MB of encoder downloads from HF Hub and is
+cached in `~/.cache/huggingface/hub`.
 
 ## References
 
 - Paper: [FocalCodec: Low-Bitrate Speech Coding via Focal Tokens](https://arxiv.org/abs/2410.23265)
+
+---
+[← knnvc](knnvc.md) · [Home](../index.md) · [lscodec →](lscodec.md)

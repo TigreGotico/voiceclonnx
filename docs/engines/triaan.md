@@ -12,29 +12,30 @@
 ## Overview
 
 TriAAN-VC (ICASSP 2023) performs any-to-any voice conversion using Triple
-Adaptive Attention Normalization — a fusion of time-wise, channel-wise, and
-global adaptive normalization — combined with a CPC encoder and ParallelWaveGAN
-vocoder. Three ONNX components per inference call.
+Adaptive Attention Normalization: a fusion of time-wise, channel-wise, and
+global adaptive normalization, combined with a CPC encoder and a
+ParallelWaveGAN vocoder. Each inference call uses three ONNX components.
 
 ## How it works
 
-1. **CPC encoder** (`cpc_encoder.onnx`) — 5-layer strided Conv1d (160×
-   downsample, 16 kHz → 100 Hz) + single LSTM layer → 256-dim content features.
+1. **CPC encoder** (`cpc_encoder.onnx`): a 5-layer strided Conv1d (160x
+   downsample, 16 kHz to 100 Hz) with a single LSTM layer, producing 256-dim
+   content features.
    Architecture from [facebookresearch/CPC_audio](https://github.com/facebookresearch/CPC_audio).
-2. **TriAAN-VC decoder** (`triaan_vc.onnx`) — ContentEncoder + SpeakerEncoder
-   (with skip connections) + bidirectional GRU fusion + TriAANBlock decoder +
-   PostNet. Combines:
+2. **TriAAN-VC decoder** (`triaan_vc.onnx`): a ContentEncoder and
+   SpeakerEncoder (with skip connections), a bidirectional GRU fusion, a
+   TriAANBlock decoder, and a PostNet. It combines:
    - **TAN** (Time-wise Adaptive Normalization): time-domain cross-attention on speaker features
    - **CAN** (Channel-wise Adaptive Normalization): channel-domain cross-attention
    - **GLAN** (Global Adaptive Normalization): global self-attention pooling
-3. **ParallelWaveGAN vocoder** (`pwg_vocoder.onnx`) — WaveNet-style vocoder
-   trained on VCTK; mel spectrogram → 16 kHz waveform.
+3. **ParallelWaveGAN vocoder** (`pwg_vocoder.onnx`): a WaveNet-style vocoder
+   trained on VCTK, converting a mel spectrogram to a 16 kHz waveform.
 
 ## Config / params
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `quantized` | `bool` | `False` | Load INT8 `*_q8.onnx` models. Reduces total footprint to ~84 MB; slight quality cost. |
+| `quantized` | `bool` | `False` | Load INT8 `*_q8.onnx` models. Reduces total footprint to ~84 MB, at a slight quality cost. |
 | `model_dir` | `str` | `None` | Local path to a directory with all ONNX files. Skips HF Hub download. |
 | `hf_repo_id` | `str` | `TigreGotico/voiceclonnx-triaan-vc` | HF repository to download from. |
 
@@ -59,12 +60,12 @@ Total: ~84 MB INT8.
 
 ## INT8 note
 
-`quantized=True` reduces footprint to ~84 MB. Slight quality degradation
+`quantized=True` reduces footprint to ~84 MB. Slight quality degradation is
 expected. See [QUANTS.md](../QUANTS.md).
 
 ## WER
 
-**4%** — measured with faster-whisper `base.en` on demo clips.
+**4%**: measured with faster-whisper `base.en` on demo clips.
 See [demo/VERIFICATION.md](../../demo/VERIFICATION.md).
 
 ## CLI example
@@ -85,7 +86,7 @@ vc = VoiceCloner(engine="triaan")
 out = vc.clone_voice("source.wav", "reference.wav", "out.wav")
 print(vc.sample_rate)   # 16000
 
-# INT8 — small footprint (~84 MB)
+# INT8, small footprint (~84 MB)
 vc = VoiceCloner(engine="triaan", quantized=True)
 
 # Local weights (skip HF download)
@@ -94,12 +95,16 @@ vc = VoiceCloner(engine="triaan", model_dir="/path/to/triaan-models")
 
 ## Troubleshooting
 
-**Output timbre not transferring** — the TriAANBlock decoder relies on speaker
-features from the reference; use a clean, at-least-3-second reference clip.
+**Output timbre not transferring.** The TriAANBlock decoder relies on
+speaker features from the reference. Use a clean reference clip that is at
+least 3 seconds long.
 
-**First run is slow** — models download from HF Hub on first use; cached in
-`~/.cache/huggingface/hub`.
+**First run is slow.** Models download from HF Hub on first use and are
+cached in `~/.cache/huggingface/hub`.
 
 ## References
 
 - Paper: [TriAAN-VC: Triple Adaptive Attention Normalization for Any-to-Any Voice Conversion](https://arxiv.org/abs/2303.09057)
+
+---
+[← chatterbox](chatterbox.md) · [Home](../index.md) · [cosyvoice →](cosyvoice.md)
