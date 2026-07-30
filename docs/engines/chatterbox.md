@@ -2,8 +2,8 @@
 
 **Family:** AR codec-LM
 **Sample rate:** 24 kHz
-**WER:** 4–8%
-**INT8:** ✅ available (8% WER, 57% smaller) — we host the quantized models
+**WER:** 4-8%
+**INT8:** available (8% WER, 57% smaller). This project hosts the quantized models
 **License:** Apache-2.0
 **Model:** [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx)
 
@@ -13,15 +13,16 @@
 
 Chatterbox (Resemble AI) is an autoregressive codec language model that transfers
 both voice timbre and speaking style (prosody, expressiveness) from a reference
-clip. The VC path uses only the speech encoder and conditional decoder — the TTS
+clip. The VC path uses only the speech encoder and conditional decoder. The TTS
 text conditioning path is bypassed entirely.
 
 ## How it works
 
-1. **Speech encoder** (`speech_encoder.onnx`) — encodes source and reference
+1. **Speech encoder** (`speech_encoder.onnx`): encodes source and reference
    waveforms to codec token embeddings at 24 kHz.
-2. **Conditional decoder** (`conditional_decoder.onnx`) — autoregressive
-   generation of target codec tokens conditioned on the reference speaker embedding.
+2. **Conditional decoder** (`conditional_decoder.onnx`): autoregressive
+   generation of target codec tokens conditioned on the reference speaker
+   embedding.
 3. Codec tokens → waveform via the HiFi-GAN decoder embedded in the graph.
 
 The `exaggeration` parameter scales the reference conditioning strength.
@@ -30,7 +31,7 @@ The `exaggeration` parameter scales the reference conditioning strength.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `quantized` | `bool` | `False` | When `True`, loads INT8 variants (`*_q8.onnx`) — 8% WER, ~57% smaller. |
+| `quantized` | `bool` | `False` | When `True`, loads INT8 variants (`*_q8.onnx`). 8% WER, ~57% smaller. |
 | `exaggeration` | `float` | `0.6` | Voice exaggeration factor. `0.5` = neutral; higher = more pronounced style transfer. |
 
 ## Model and license
@@ -49,13 +50,14 @@ Models download automatically on first use via `huggingface_hub`.
 ## INT8 note
 
 INT8 quantized variants are hosted at `TigreGotico/voiceclonnx-chatterbox`
-(we quantize them ourselves; upstream `onnx-community/chatterbox-onnx`
-ships fp32 only). `quantized=True` loads them — 8% WER, matching fp32, at
-~57% smaller (1080 MB → 467 MB).
+(this project quantizes them, since upstream
+`onnx-community/chatterbox-onnx` ships fp32 only). `quantized=True` loads
+them, reaching 8% WER, matching fp32, at about 57% smaller (1080 MB to 467
+MB).
 
 ## WER
 
-**4–8%** — measured with faster-whisper `base.en` on demo clips.
+**4-8%**: measured with faster-whisper `base.en` on demo clips.
 See [demo/VERIFICATION.md](../../demo/VERIFICATION.md).
 
 ## CLI example
@@ -83,9 +85,12 @@ cloner = VoiceCloner(engine="chatterbox", exaggeration=0.5)
 
 ## Troubleshooting
 
-**Output sounds robotic or has heavy artefacts** — try `exaggeration=0.5`
-(lower value reduces the conditioning strength).
+**Output sounds robotic or has heavy artefacts.** Try `exaggeration=0.5`. A
+lower value reduces the conditioning strength.
 
-**Slow on CPU** — the AR decoder generates tokens sequentially. On a typical
-laptop expect 5–30 s per utterance. The VC path is faster than TTS with the same
-models (no text conditioning path is exercised).
+**Slow on CPU.** The AR decoder generates tokens sequentially. On a typical
+laptop, expect 5-30 s per utterance. The VC path is faster than TTS with
+the same models, because it does not run the text conditioning path.
+
+---
+[← openvoice](openvoice.md) · [Home](../index.md) · [triaan →](triaan.md)

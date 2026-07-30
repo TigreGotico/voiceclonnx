@@ -14,19 +14,19 @@
 BiCodec (SparkAudio/Spark-TTS, 2025) performs zero-shot any-to-any voice
 conversion via explicit factorization of speech into semantic tokens (content)
 and global tokens (speaker identity). Voice conversion is a direct integer token
-swap — no autoregressive LM, single forward pass per segment.
+swap, with no autoregressive LM. Each segment needs a single forward pass.
 
 ## How it works
 
-1. **Wav2Vec2-XLSR-53** (`wav2vec2_encoder.onnx`) — encodes source waveform to
+1. **Wav2Vec2-XLSR-53** (`wav2vec2_encoder.onnx`): encodes source waveform to
    (1, T, 1024) hidden states (average of layers 11, 14, 16).
-2. **Semantic encoder** (`semantic_encoder.onnx`) — convolutional encoder +
+2. **Semantic encoder** (`semantic_encoder.onnx`): convolutional encoder +
    FactorizedVQ → (1, T2) int64 semantic tokens (content / phoneme sequence).
-3. **Mel filterbank** (`mel_filterbank.npy` + `mel_config.json`) — 128-bin
+3. **Mel filterbank** (`mel_filterbank.npy` + `mel_config.json`): 128-bin
    Slaney mel filterbank computed in pure numpy from 16 kHz reference audio.
-4. **Global encoder** (`global_encoder.onnx`) — ECAPA-TDNN + Perceiver
+4. **Global encoder** (`global_encoder.onnx`): ECAPA-TDNN + Perceiver
    resampler + FSQ → (1, 1, 32) int32 global tokens (fixed-length speaker identity).
-5. **Decoder** (`decoder.onnx`) — quantizer detokenize + WaveGenerator →
+5. **Decoder** (`decoder.onnx`): quantizer detokenize + WaveGenerator to
    (1, 1, N) float32 waveform.
 
 Conversion step: `source_semantic_tokens + reference_global_tokens → decoder → waveform`.
@@ -35,13 +35,13 @@ Conversion step: `source_semantic_tokens + reference_global_tokens → decoder �
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `quantized` | `bool` | `False` | Load INT8 `*_q8.onnx` models. Footprint drops from ~1.4 GB to ~419 MB; slight quality cost. |
+| `quantized` | `bool` | `False` | Load INT8 `*_q8.onnx` models. Footprint drops from ~1.4 GB to ~419 MB, at a slight quality cost. |
 | `chunk_samples` | `int` | `32000` | Wav2Vec2 chunking window (2 s at 16 kHz). Set `0` to disable (may degrade on long sequences). |
 
 ## Model and license
 
 ONNX artifacts derived from `SparkAudio/Spark-TTS-0.5B` weights.
-**License: CC BY-NC-SA 4.0 — non-commercial use only. Attribution required.**
+**License: CC BY-NC-SA 4.0, non-commercial use only. Attribution is required.**
 See the model card on Hugging Face for the full license text.
 
 | File | fp32 | INT8 |
@@ -50,7 +50,7 @@ See the model card on Hugging Face for the full license text.
 | `semantic_encoder.onnx` | ~116 MB | ~34 MB |
 | `global_encoder.onnx` | ~22 MB | ~6 MB |
 | `decoder.onnx` | varies | varies |
-| `mel_filterbank.npy` | ~256 KB | — |
+| `mel_filterbank.npy` | ~256 KB | ~256 KB |
 
 ## Sample rate
 
@@ -59,11 +59,11 @@ See the model card on Hugging Face for the full license text.
 ## INT8 note
 
 `quantized=True` loads the `*_q8.onnx` variants (~419 MB vs ~1.4 GB fp32).
-Slight quality degradation expected; see [QUANTS.md](../QUANTS.md).
+Slight quality degradation is expected. See [QUANTS.md](../QUANTS.md).
 
 ## WER
 
-**12%** — measured with faster-whisper `base.en` on demo clips.
+**12%**: measured with faster-whisper `base.en` on demo clips.
 See [demo/VERIFICATION.md](../../demo/VERIFICATION.md).
 
 ## CLI example
@@ -84,7 +84,7 @@ cloner = VoiceCloner(engine="bicodec")
 out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
 print(cloner.sample_rate)   # 16000
 
-# INT8 — smaller footprint
+# INT8, smaller footprint
 cloner = VoiceCloner(engine="bicodec", quantized=True)
 
 # Shorter chunk for memory-constrained hardware
@@ -93,17 +93,22 @@ cloner = VoiceCloner(engine="bicodec", chunk_samples=16000)
 
 ## Troubleshooting
 
-**Output sounds noisy or robotic** — ensure source and reference are clean mono
-audio at or near 16 kHz. Reference should be at least 3 s for a stable global
-token estimate.
+**Output sounds noisy or robotic.** Use clean mono audio at or near 16 kHz
+for source and reference. The reference should be at least 3 s long for a
+stable global token estimate.
 
-**Out-of-memory on large files** — use `quantized=True` or reduce `chunk_samples`.
+**Out-of-memory on large files.** Use `quantized=True` or reduce
+`chunk_samples`.
 
-**Wav2Vec2 is slow** — the encoder is ~300 MB of parameters; use `quantized=True`
-for faster throughput. Models are cached after first download (~1.5 GB).
+**Wav2Vec2 is slow.** The encoder has about 300 MB of parameters. Use
+`quantized=True` for faster throughput. Models are cached after the first
+download (~1.5 GB).
 
 ## References
 
 - Paper: [Spark-TTS: An Efficient LLM-Based Text-to-Speech Model](https://arxiv.org/abs/2503.01710)
 - Upstream: [SparkAudio/Spark-TTS](https://github.com/SparkAudio/Spark-TTS)
 - Upstream checkpoint: [SparkAudio/Spark-TTS-0.5B](https://huggingface.co/SparkAudio/Spark-TTS-0.5B)
+
+---
+[← cosyvoice](cosyvoice.md) · [Home](../index.md) · [knnvc →](knnvc.md)

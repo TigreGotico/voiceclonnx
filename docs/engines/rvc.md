@@ -1,7 +1,7 @@
 # Engine: rvc
 
 **Family:** Any-to-ONE (ContentVec + RMVPE + VITS)
-**Sample rate:** 40 kHz (v2-40k) or 48 kHz (v2-48k) — model-dependent
+**Sample rate:** 40 kHz (v2-40k) or 48 kHz (v2-48k). model-dependent
 **WER:** 38% (sample community model; varies by model quality)
 **INT8:** available for base models (ContentVec + RMVPE); per-voice model is user-supplied
 **License:** MIT (base models)
@@ -13,21 +13,22 @@
 
 RVC (Retrieval-based Voice Conversion) is an **any-to-ONE** engine: the target
 speaker identity is baked into a per-voice voice model trained or fine-tuned
-separately. `reference_voice` is **not** a reference audio file — it is the path
-to an `.onnx` RVC voice model (local file or HF repo ID). Thousands of
+separately. `reference_voice` is **not** a reference audio file. It is the
+path to an `.onnx` RVC voice model (local file or HF repo ID). Thousands of
 community-trained RVC voice models exist on Hugging Face.
 
-The base shared models (ContentVec encoder and RMVPE F0 predictor) are hosted at
-`TigreGotico/voiceclonnx-rvc`. Per-voice `net_g` synthesizers are supplied by
-the user.
+voiceclonnx hosts the base shared models (ContentVec encoder and RMVPE F0
+predictor) at `TigreGotico/voiceclonnx-rvc`. The user supplies per-voice
+`net_g` synthesizers.
 
 ## How it works
 
-1. **ContentVec encoder** (`contentvec_768l12.onnx`) — HuBERT-based content
-   encoder fine-tuned for content disentanglement → 768-dim content features.
-2. **RMVPE F0 predictor** (`rmvpe.onnx`) — DeepUnet-based fundamental frequency
-   estimator → per-frame F0 values.
-3. **net_g synthesizer** (per-voice `.onnx`) — VITS-based generator that
+1. **ContentVec encoder** (`contentvec_768l12.onnx`): a HuBERT-based content
+   encoder fine-tuned for content disentanglement, producing 768-dim content
+   features.
+2. **RMVPE F0 predictor** (`rmvpe.onnx`): a DeepUnet-based fundamental
+   frequency estimator, producing per-frame F0 values.
+3. **net_g synthesizer** (per-voice `.onnx`). VITS-based generator that
    synthesizes the waveform from content features and F0, conditioned on the
    speaker baked into the model weights.
 
@@ -50,8 +51,8 @@ The adapter lazy-loads and caches the `net_g` corresponding to each
 | `contentvec_768l12.onnx` | 360.3 MB | 90.8 MB (−74.8%) |
 | `rmvpe.onnx` | 344.9 MB | 94.1 MB (−72.7%) |
 
-Per-voice `.onnx` models are user-supplied (community `.pth` models converted
-to ONNX — see below).
+Per-voice `.onnx` models are user-supplied (community `.pth` models
+converted to ONNX, see below).
 
 ## Sample rate
 
@@ -66,8 +67,8 @@ voiceclonnx. See [QUANTS.md](../QUANTS.md).
 
 ## WER
 
-**38%** (sample community model `ozada/onnx_rvc::woman_1.onnx`). WER is
-strongly model-dependent; high-quality community models can achieve much lower
+**38%** (sample community model `ozada/onnx_rvc::woman_1.onnx`). WER depends
+strongly on the model. High-quality community models can reach much lower
 WER. See [demo/VERIFICATION.md](../../demo/VERIFICATION.md).
 
 ## CLI example
@@ -108,17 +109,21 @@ The helper embeds `sample_rate` in the ONNX model metadata for automatic
 
 ## Troubleshooting
 
-**`reference_voice` is a WAV file** — RVC is any-to-ONE; `reference_voice` must
-be a path to an `.onnx` voice model, not audio. Use a different engine
-(e.g. `facodec`, `knnvc`) for any-to-any conversion from a reference audio clip.
+**`reference_voice` is a WAV file.** RVC is any-to-ONE, so `reference_voice`
+must be a path to an `.onnx` voice model, not audio. Use a different engine
+(for example `facodec` or `knnvc`) for any-to-any conversion from a
+reference audio clip.
 
-**Output intelligibility varies widely** — WER depends on the quality of the
-per-voice model. Community models range from excellent to poor; test with
+**Output intelligibility varies widely.** WER depends on the quality of the
+per-voice model. Community models range from excellent to poor. Test with
 `demo/verify_demos.py` to measure WER on your specific model.
 
-**First run is slow** — base models (~705 MB fp32) download from HF Hub on
-first use; cached in `~/.cache/huggingface/hub`.
+**First run is slow.** Base models (about 705 MB fp32) download from HF Hub
+on first use and are cached in `~/.cache/huggingface/hub`.
 
 ## References
 
 - Upstream: [RVC-Project/Retrieval-based-Voice-Conversion-WebUI](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI)
+
+---
+[← lscodec](lscodec.md) · [Home](../index.md)

@@ -18,7 +18,7 @@ and acoustic detail. Voice conversion is zero-shot: encode source and reference,
 swap only the timbre component from the reference, decode the combination.
 No per-speaker fine-tuning required.
 
-WER 0% — **recommended as the default engine for highest quality**.
+**Recommended as the default engine for highest quality (0% WER).**
 
 ## How it works
 
@@ -34,20 +34,20 @@ VC recipe:
 ```
 enc_feats_src = encoder(wav_src)         # (1, 256, T_src)
 enc_feats_ref = encoder(wav_ref)         # (1, 256, T_ref)
-mel_src       = prosody_mel(wav_src)     # (1, 20, T_src) — pure numpy
+mel_src       = prosody_mel(wav_src)     # (1, 20, T_src), pure numpy
 vq_ids_src    = quantize(enc_feats_src, mel_src)   # (6, 1, T_src) int64
 spk_embs_ref  = timbre(enc_feats_ref)    # (1, 256)
 wav_out       = decode(vq_ids_src, spk_embs_ref)   # prosody+content from src, timbre from ref
 ```
 
-The prosody mel (step 3) is computed in pure numpy — standard STFT mel (n_fft=1024,
-hop=200, win=800, n_mels=80, sr=16000); first 20 bins used.
+The prosody mel (step 3) is computed in pure numpy: a standard STFT mel
+(n_fft=1024, hop=200, win=800, n_mels=80, sr=16000), using the first 20 bins.
 
 ## Config / params
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `quantized` | `bool` | `False` | Load INT8 `*_q8.onnx` models. Footprint drops from ~156 MB to ~69 MB; slight quality cost. |
+| `quantized` | `bool` | `False` | Load INT8 `*_q8.onnx` models. Footprint drops from ~156 MB to ~69 MB, at a slight quality cost. |
 
 ## Model and license
 
@@ -55,10 +55,10 @@ hop=200, win=800, n_mels=80, sr=16000); first 20 bins used.
 
 | File | fp32 | INT8 |
 |------|------|------|
-| `facodec_encoder.onnx` | — | — |
-| `facodec_timbre.onnx` | — | — |
-| `facodec_quantize.onnx` | — | — |
-| `facodec_decoder.onnx` | — | — |
+| `facodec_encoder.onnx` | included | included |
+| `facodec_timbre.onnx` | included | included |
+| `facodec_quantize.onnx` | included | included |
+| `facodec_decoder.onnx` | included | included |
 
 Total: ~156 MB fp32 / ~69 MB INT8.
 
@@ -73,7 +73,7 @@ degradation expected. See [QUANTS.md](../QUANTS.md) for the WER comparison.
 
 ## WER
 
-**0%** — perfectly intelligible on demo clips.
+**0%**: perfectly intelligible on demo clips.
 See [demo/VERIFICATION.md](../../demo/VERIFICATION.md).
 
 ## CLI example
@@ -94,19 +94,22 @@ cloner = VoiceCloner(engine="facodec")
 out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
 print(cloner.sample_rate)   # 16000
 
-# INT8 — smaller footprint
+# INT8, smaller footprint
 cloner = VoiceCloner(engine="facodec", quantized=True)
 ```
 
 ## Troubleshooting
 
-**Output timbre not changing** — ensure the reference clip is clean and at least
-2–3 s long. The timbre extractor mean-pools over the full utterance.
+**Output timbre not changing.** Use a reference clip that is clean and at
+least 2-3 s long. The timbre extractor mean-pools over the full utterance.
 
-**First run is slow** — models download from HF Hub on first use; cached in
-`~/.cache/huggingface/hub`.
+**First run is slow.** Models download from HF Hub on first use and are
+cached in `~/.cache/huggingface/hub`.
 
 ## References
 
 - Paper: [NaturalSpeech 3: Zero-Shot Polyglot Speech Synthesis](https://arxiv.org/abs/2403.03100)
 - Upstream: [amphion/Amphion](https://github.com/open-mmlab/Amphion)
+
+---
+[Home](../index.md) · [openvoice →](openvoice.md)

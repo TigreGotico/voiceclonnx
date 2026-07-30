@@ -2,7 +2,7 @@
 
 ## `voiceclonnx.VoiceCloner`
 
-The public facade. All engines are accessed through this class.
+This is the public facade. Access all engines through this class.
 
 ```python
 from voiceclonnx import VoiceCloner
@@ -22,7 +22,7 @@ VoiceCloner(engine: str = "chatterbox", **cfg)
 Raises `KeyError` if `engine` is not in the registry; the error message lists
 all known aliases.
 
-Engine-specific kwargs vary per engine — see [engines/](engines/) for the full
+Engine-specific kwargs vary per engine. See [engines/](engines/) for the full
 list per engine. Common examples:
 
 | kwarg | Engines | Description |
@@ -51,7 +51,7 @@ Convert the voice in `audio` to sound like `reference_voice`.
 | Parameter | Description |
 |-----------|-------------|
 | `audio` | Path to the source WAV file. Any sample rate; 16-bit PCM recommended. |
-| `reference_voice` | Path to a short (5–30 s) reference WAV providing the target speaker identity. For `rvc`: path to an `.onnx` voice model or HF repo ID — **not** an audio file. |
+| `reference_voice` | Path to a short (5-30 s) reference WAV providing the target speaker identity. For `rvc`: path to an `.onnx` voice model or HF repo ID, **not** an audio file. |
 | `out_path` | Destination path for the converted 16-bit WAV. Defaults to `audio` with `_converted` suffix in the same directory. |
 
 Returns the path to the written output file.
@@ -132,7 +132,7 @@ from voiceclonnx.engines.base import ENGINE_REGISTRY, register_engine, get_engin
 
 ### `ENGINE_REGISTRY`
 
-`Dict[str, EngineEntry]` — the live registry dict. Populated by importing engine
+`Dict[str, EngineEntry]`, the live registry dict. It is populated by importing engine
 adapter modules (done automatically in `voiceclonnx/__init__.py` for all 10
 built-in engines).
 
@@ -188,5 +188,8 @@ register_engine(EngineEntry(
 ```
 
 Then add the auto-import to `voiceclonnx/__init__.py`. For a full walkthrough
-of the export → parity → quantize → push → adapter pipeline, see
+of the export, parity check, quantize, push, and adapter pipeline, see
 [converting.md](converting.md).
+
+---
+[Home](index.md) · [QUANTS →](QUANTS.md)

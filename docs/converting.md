@@ -65,7 +65,7 @@ Each engine gets its own `conversion/export_<engine>.py` script.  The script
 must follow this contract:
 
 1. Accept `--output-dir` pointing to a local staging directory.
-2. Download upstream weights with `huggingface_hub.snapshot_download` — never
+2. Download upstream weights with `huggingface_hub.snapshot_download`: never
    bundle weights in the repo.
 3. Call `conversion.export_base.export_model(...)` with opset pinned to 14
    (or per-engine override), dynamic axes for batch and sequence length.
@@ -179,7 +179,7 @@ optional latency figures if you pass `benchmark_inputs`.
 Upload the finished engine directory to its public per-engine repo `TigreGotico/voiceclonnx-<engine>` (auto-created and added to the voiceclonnx HF collection):
 
 ```bash
-# Dry-run first — prints files without uploading
+# Dry-run first: prints files without uploading
 python -m conversion.push_models out/my-engine \
     --engine my-engine \
     --dry-run
@@ -208,7 +208,7 @@ Once the ONNX files are on HF, create `voiceclonnx/engines/<engine>.py`:
 4. Implement `clone_voice(audio, reference_voice, out_path)`.
 5. Register via `EngineEntry` + `register_engine`.
 
-The adapter must have **zero torch dependency** — onnxruntime and numpy only.
+The adapter must have **zero torch dependency**: onnxruntime and numpy only.
 
 ---
 
@@ -320,7 +320,7 @@ via `conversion/convert_rvc_model.py`.
 
 RVC is **any-to-ONE**: the target speaker is baked into the voice model at training
 time.  The voiceclonnx adapter's ``reference_voice`` parameter accepts the **path to an
-RVC ``.onnx`` model** or a Hugging Face repo ID — never a reference audio file.
+RVC ``.onnx`` model** or a Hugging Face repo ID: never a reference audio file.
 This is documented in the adapter docstring and README.  Config key: ``default_model``.
 
 ### Two-step export
@@ -375,7 +375,7 @@ can detect 40k vs 48k models automatically.
 | Component | max_abs | mean_abs | Pass |
 |---|---|---|---|
 | ContentVec hidden states (fp32 torch vs ORT) | 8.46e-06 | 1.07e-06 | ✓ |
-| RMVPE (community ONNX, smoke-check only — no torch reference) | n/a | n/a | ✓ |
+| RMVPE (community ONNX, smoke-check only: no torch reference) | n/a | n/a | ✓ |
 
 **Model sizes (from local export run):**
 
@@ -391,14 +391,14 @@ can detect 40k vs 48k models automatically.
 ## Weight-license policy: publish with the license stated
 
 voiceclonnx publishes every ONNX export to its public `TigreGotico/voiceclonnx-<engine>`
-HF repo. The upstream weight license travels with the artifacts — `license`
+HF repo. The upstream weight license travels with the artifacts: `license`
 tag and restrictions stated plainly on the model card, upstream LICENSE file
 and PROVENANCE.md alongside. Whether a given license (NC, research-only,
 Llama-style, …) fits a use case is the downstream user's decision, not a
 publishing gate.
 
 The one constraint that DOES bind voiceclonnx itself is code licensing: GPL or
-Llama-style upstream **code** is never vendored into this MIT repo — those
+Llama-style upstream **code** is never vendored into this MIT repo: those
 engines' conversion scripts drive the upstream repo as an external checkout.
 
 ---
@@ -417,7 +417,7 @@ All three weights are distributable.
 
 ### Deviations from standard export
 
-**CPC encoder — load via upstream code, not reconstruction** — the TriAAN-VC
+**CPC encoder: load via upstream code, not reconstruction**: the TriAAN-VC
 repository bundles `facebookresearch/CPC_audio` source under `src/cpc.py`.
 Use `load_cpc(ckpt_path)` from that module; it performs a strict state-dict
 load into the real `CPCModel` with `ChannelNorm` (per-channel layer-norm with
@@ -431,19 +431,19 @@ reconstruction passed (parity-vs-self trap), while end-to-end voice conversion
 produced noise (100 % WER in STT verification).  Always validate ONNX parity
 against the upstream torch forward, not against a reconstruction.
 
-**TriAAN-VC model key names** — the upstream `model.py` class attribute names
+**TriAAN-VC model key names**: the upstream `model.py` class attribute names
 (`cnt_encoder`, `spk_encoder`, `rnn_layer`, `linear`) differ from an initial
 reconstruction (`content_enc`, `speaker_enc`, `rnn`, `rnn_proj`).
 The model is loaded directly from a local clone of the upstream repo to guarantee
 exact architecture match.
 
-**`_AttrDict` parameter objects** — the `TriAANVC` constructor uses encoder/decoder
+**`_AttrDict` parameter objects**: the `TriAANVC` constructor uses encoder/decoder
 params as both dict-spread (`ContentEncoder(**encoder_params)`) and attribute
 access (`encoder_params.c_out`).  `SimpleNamespace` supports attributes but not
 `**`-spread; `easydict.EasyDict` is an optional dep.  A minimal `_AttrDict(dict)`
 subclass (pure stdlib) resolves both access patterns.
 
-**TriAAN output denormalization (`mel_stats.npy`)** — the TriAAN-VC model is
+**TriAAN output denormalization (`mel_stats.npy`)**: the TriAAN-VC model is
 trained to output mel spectrograms in a normalized space (zero-mean, unit-variance
 per mel bin, using `base_data/mel_stats.npy`).  The upstream `convert.py` denormalizes
 the output before writing it to disk: `output = output * std + mean`.  The
@@ -455,12 +455,12 @@ Omitting it passes doubly-normalized mel to the vocoder → the signal is in the
 wrong range → noise output even though parity tests pass.  `mel_stats.npy` is
 bundled in the HF repo (`TigreGotico/voiceclonnx-triaan-vc`) and loaded by the adapter.
 
-**dynamo=False** — PyTorch 2.9+ defaults to the new dynamo-based ONNX exporter,
+**dynamo=False**: PyTorch 2.9+ defaults to the new dynamo-based ONNX exporter,
 which raises `ValueError: Found conflicts between user-specified ranges and
 inferred ranges` on TriAAN-VC's dynamic attention maps.  Pass `dynamo=False`
 to force the legacy TorchScript-based export path.
 
-**scipy.signal.kaiser compatibility** — `parallel_wavegan` imports
+**scipy.signal.kaiser compatibility**: `parallel_wavegan` imports
 `from scipy.signal import kaiser`, removed in newer scipy.  Patch before
 importing the package:
 
@@ -470,17 +470,17 @@ from scipy.signal.windows import kaiser
 scipy.signal.kaiser = kaiser
 ```
 
-**PWG `assert c.size(-1) == z.size(-1)` bypass** — the standard PWG `forward(z, c)`
+**PWG `assert c.size(-1) == z.size(-1)` bypass**: the standard PWG `forward(z, c)`
 asserts that the upsampled conditioning length matches the noise length; this assert
 cannot be traced by TorchScript.  The wrapper calls `model.upsample_net(mel)` first,
 reads the resulting `T_audio`, then passes noise of that exact length and reimplements
 the WaveNet forward inline (bypassing the assert).
 
-**Actual upsample factor** — expected `4×4×5×2 = 160×` but actual `ConvInUpsampleNetwork`
+**Actual upsample factor**: expected `4×4×5×2 = 160×` but actual `ConvInUpsampleNetwork`
 with `aux_context_window=2` produces `~147.2×` at T=50 (7 360 audio samples for 50 mel
 frames).  The wrapper must read `T_audio = c_up.shape[-1]` dynamically.
 
-**Noise input** — the vocoder is exported with explicit `(mel, noise)` inputs (not
+**Noise input**: the vocoder is exported with explicit `(mel, noise)` inputs (not
 the upstream `model.inference()` which generates noise internally).  This makes the
 ONNX graph deterministic and allows the adapter to pass its own noise tensor.
 
@@ -510,7 +510,7 @@ ONNX graph deterministic and allows the adapter to pass its own noise tensor.
 ### ISTFT not in ONNX
 
 The Vocos ISTFT head uses `nn.functional.fold` with a dynamic `output_size = int((T-1)*hop+win)`
-which converts a tensor to a Python int inside the tracer — incompatible with both the legacy
+which converts a tensor to a Python int inside the tracer: incompatible with both the legacy
 TorchScript ONNX exporter and the dynamo-based exporter (the latter produces a `DFT` node that
 ORT 1.x rejects with a `is_onesided` conflict).
 
@@ -543,14 +543,14 @@ Parity of the numpy ISTFT vs torch decoder: max abs ≤1.3e-5 (verified on 50-fr
 
 FACodec (NaturalSpeech 3, Amphion / Microsoft Research, ICML 2024) disentangles
 speech into four subspaces: content, prosody, timbre, acoustic detail.  Voice
-conversion swaps the timbre embedding only — no per-speaker training required.
+conversion swaps the timbre embedding only: no per-speaker training required.
 
 ### License verification
 
 The HF repo `amphion/naturalspeech3_facodec` carries `license: apache-2.0` in
 its YAML front-matter (verified via HuggingFace Hub API).  The Amphion GitHub
 repository (`open-mmlab/Amphion`) is Apache-2.0 at repository level; per-module
-headers additionally carry MIT.  ONNX artifacts are published under Apache-2.0
+headers also carry MIT.  ONNX artifacts are published under Apache-2.0
 with provenance stated on the model card.
 
 ### Four-component split
@@ -569,7 +569,7 @@ The V2 VC path requires four ONNX components:
 `FACodecEncoderV2.get_prosody_feature(wav)` returns the first 20 mel bins
 of a standard log-mel spectrogram (n_fft=1024, hop=200, win=800, n_mels=80,
 sr=16000).  This is implemented in pure numpy in the adapter via
-`_compute_prosody_mel` — no ONNX component needed.
+`_compute_prosody_mel`: no ONNX component needed.
 
 ### Amphion clone
 
@@ -579,21 +579,21 @@ the V2 checkpoint from HF Hub.  The `einops` package is required.
 
 ### Export quirks
 
-1. **alias_free_torch UpSample1d/LowPassFilter1d** — both modules call
+1. **alias_free_torch UpSample1d/LowPassFilter1d**: both modules call
    `self.filter.expand(C, -1, -1)` where C is read from the runtime input shape.
    The TorchScript exporter cannot export convolutions whose kernel shape depends
    on a dynamic dimension.  Fix: instrument the modules with a capturing wrapper,
    run one dummy forward to record C, then pre-expand the filter as a static buffer
    and replace `forward` with a version using the buffer.
 
-2. **nn.MultiheadAttention dynamic T** — `nn.MultiheadAttention` with
+2. **nn.MultiheadAttention dynamic T**: `nn.MultiheadAttention` with
    `batch_first=True` internally reshapes `(B, T, H)` to `(B*n_heads, T, head_dim)`
    using the TorchScript tracer, which bakes T from the dummy input.  Fix: replace
    each `nn.MultiheadAttention` with a `DynamicMHA` that uses
-   `F.scaled_dot_product_attention` directly — accepting fully dynamic shapes.
+   `F.scaled_dot_product_attention` directly: accepting fully dynamic shapes.
    Both `timbre_encoder` and `melspec_encoder` in the decoder are affected.
 
-3. **Prosody mel T vs encoder T** — the STFT-based mel spectrogram (computed in
+3. **Prosody mel T vs encoder T**: the STFT-based mel spectrogram (computed in
    numpy in the adapter) and the convolutional encoder produce slightly different
    frame counts for the same audio length.  The adapter trims or pads `mel_20` to
    match the encoder output T before passing to the quantize component.
@@ -604,7 +604,7 @@ the V2 checkpoint from HF Hub.  The `einops` package is required.
 |---|---|---|---|
 | facodec_encoder | 1.62e-05 | 2.36e-06 | PASS |
 | facodec_timbre | 1.43e-06 | 6.40e-08 | PASS |
-| facodec_quantize | exact int64 match | — | PASS |
+| facodec_quantize | exact int64 match |: | PASS |
 | facodec_decoder | 7.50e-09 | 1.46e-09 | PASS |
 
 ### Model sizes
@@ -660,9 +660,9 @@ supported in ONNX opset 14.  Rather than bumping to opset 17 (which risks
 compatibility issues with other components), the mel spectrogram is computed in
 pure numpy at inference time:
 
-- `mel_filterbank.npy` (128×513 float32) — librosa Slaney mel filterbank, saved
+- `mel_filterbank.npy` (128×513 float32): librosa Slaney mel filterbank, saved
   at export time.
-- `mel_config.json` — STFT parameters (n_fft=1024, win_length=640,
+- `mel_config.json`: STFT parameters (n_fft=1024, win_length=640,
   hop_length=320, fmin=10 Hz, num_mels=128).
 
 The adapter implements reflect-padded STFT + filterbank matrix multiply in
@@ -747,7 +747,7 @@ The fp32 ONNX artifacts are re-hosted from
 [`onnx-community/chatterbox-onnx`](https://huggingface.co/onnx-community/chatterbox-onnx)
 (Apache-2.0).  No PyTorch export is needed; this is a pure quantization pass.
 
-### speech_encoder.onnx — Gemm(transB=1) preprocessing bug
+### speech_encoder.onnx: Gemm(transB=1) preprocessing bug
 
 `speech_encoder.onnx` (opset 20) contains two `Gemm(transB=1)` nodes in the
 S3 RVQ codebook (`s3.quantizer._codebook.project_down`).  When
@@ -767,17 +767,17 @@ The `nodes_to_exclude` parameter does not prevent this because the
 decomposition runs before the quantization pass, not during it.
 
 **Fix** (`conversion/export_chatterbox.py`): patch the fp32 model before
-calling `quantize_dynamic` — transpose the `project_down.weight` initializer
+calling `quantize_dynamic`: transpose the `project_down.weight` initializer
 from `(8, 1280)` to `(1280, 8)` and rewrite the two `Gemm` nodes as
 `MatMul(A, B_T) + bias`.  The resulting graph is numerically identical to the
 original; the shape is now correct for `MatMul((N,1280), (1280,8)) = (N,8)`.
 
-### conditional_decoder.onnx — If-subgraph hang
+### conditional_decoder.onnx: If-subgraph hang
 
 `conditional_decoder.onnx` (opset 17) has 23,934 nodes and 20 `If` nodes with
 subgraph `MatMul` ops.  When `quantize_dynamic` quantizes `MatMul` ops inside
 `If` subgraphs, ORT's session initializer hangs indefinitely during graph
-optimization (not a crash — no error is raised; the process simply never
+optimization (not a crash: no error is raised; the process simply never
 returns from `InferenceSession(...)`).
 
 **Fix**: enumerate all node names inside `If` subgraphs and pass them to
@@ -815,7 +815,7 @@ dec(speech_tokens, x_vector, prompt_feat) -> waveform
 ```
 
 The sole inter-session operation (`np.concatenate`) is a plain ONNX `Concat`
-node — no non-ONNX control flow, no dynamic dispatch, no Python-side
+node: no non-ONNX control flow, no dynamic dispatch, no Python-side
 computation.  A stitched graph taking `(src_audio, ref_audio)` as dual inputs
 is structurally sound.
 
@@ -895,7 +895,7 @@ time: `STFT max_abs ≤ 1.4e-6`, `ISTFT roundtrip max_abs ≤ 5e-7`.
 exported to ONNX, this noise is baked as a constant in the initializer.  At
 inference time the ONNX graph uses the baked constant; the torch reference uses
 freshly sampled noise.  The resulting parity gap (`max_abs ≈ 0.115`) is
-expected — the amplitude of the noise (~3% of signal) is well within
+expected: the amplitude of the noise (~3% of signal) is well within
 perceptually irrelevant territory.  Export tolerance is set to `0.15`; a value
 above `0.5` would indicate a structural error.
 
@@ -911,7 +911,7 @@ src_1d = f0_src_wrapper(dummy_mel).squeeze().numpy()   # (T_audio,)
 src_real, src_imag = _numpy_stft(src_1d, n_fft=16, hop_len=4)
 dummy_stft = torch.from_numpy(
     np.concatenate([src_real, src_imag], axis=0)[np.newaxis].astype(np.float32)
-)  # (1, 18, T_stft)  — correct T_stft
+)  # (1, 18, T_stft) : correct T_stft
 ```
 
 Using a formula-derived `T_stft` may be off by ±1 frame due to STFT padding,
@@ -949,7 +949,7 @@ filename) and calls `huggingface_hub.upload_folder` directly after export.
 Six bugs in the adapter caused 100% WER (pure noise output) despite all seven
 ONNX components passing per-component parity:
 
-1. **Baked mel length in flow\_encoder.onnx** — the original export used a
+1. **Baked mel length in flow\_encoder.onnx**: the original export used a
    single `F.interpolate(..., size=mel_len)` where `mel_len` was derived from
    `tokens.shape[1]` inside the traced model.  ONNX tracing bakes the Resize
    `sizes` input as a constant (e.g. `86`), so every input length would produce
@@ -957,27 +957,27 @@ ONNX components passing per-component parity:
    `flow_encoder_conformer.onnx` (conformer only, explicit `token_len` input)
    plus a numpy `InterpolateRegulator` applied post-ONNX with `lr_weights.npz`.
 
-2. **Baked attention mask in conformer** — a first re-export attempt derived
+2. **Baked attention mask in conformer**: a first re-export attempt derived
    `token_len` from `tokens.shape[1]` inside the model; ONNX tracing baked the
    padding mask as a constant.  Fix: pass `token_len` as a named ONNX input so
    it flows through the graph at runtime.
 
-3. **Wrong CFG wiring** — both slots of the batch-2 ODE input were set to the
+3. **Wrong CFG wiring**: both slots of the batch-2 ODE input were set to the
    conditioned signal.  The correct idiom is slot 0 = conditioned (`mu`, `spks`
    set), slot 1 = unconditioned (zeros for `mu`/`spks`/`cond`); velocity
    combined as `(1 + cfg_rate) * v_cond − cfg_rate * v_uncond`
    (`cfg_rate = 0.7`).
 
-4. **Linear vs cosine ODE time schedule** — the adapter used
+4. **Linear vs cosine ODE time schedule**: the adapter used
    `t_span = linspace(0, 1, n+1)` whereas upstream `ConditionalCFM.solve_euler`
    uses `t_span[i] = 1 − cos(i/n · π/2)`.
 
-5. **Phase `arcsin` error in HiFiGAN ISTFT** — the backbone outputs the phase
+5. **Phase `arcsin` error in HiFiGAN ISTFT**: the backbone outputs the phase
    directly as an angle (via `sin(raw)` inside the network); the adapter was
    applying `arcsin(clip(phi, −1, 1))` before `_istft`, introducing severe phase
    distortion.  Fix: use `phi` directly as the angle.
 
-6. **Kaldi fbank mismatch** — the numpy fbank approximation had different
+6. **Kaldi fbank mismatch**: the numpy fbank approximation had different
    frequency warping and length compared with `torchaudio.compliance.kaldi.fbank`
    (dither=0).  Fix: `_kaldi_fbank_compat` calls torchaudio when available,
    falling back to numpy only when torch is absent.
@@ -991,3 +991,6 @@ weight-only quantization without activation calibration.  Cosyvoice is listed
 in `docs/QUANTS.md` with INT8 flagged ⚠.  Activation-calibrated (static) INT8
 via ONNX Runtime calibration tools may recover quality but requires a
 representative dataset and is out of scope for this release.
+
+---
+[← QUANTS](QUANTS.md) · [Home](index.md)
