@@ -156,6 +156,7 @@ class ChatterboxAdapter(VoiceClonerBase):
 
         try:
             from huggingface_hub import hf_hub_download
+            from huggingface_hub.constants import HF_HUB_CACHE
         except ImportError as exc:
             raise ImportError("huggingface_hub is required.") from exc
 
@@ -164,11 +165,15 @@ class ChatterboxAdapter(VoiceClonerBase):
             enc_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_SPEECH_ENC_Q8_ONNX)
             dec_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_COND_DEC_Q8_ONNX)
         else:
-            # fp32 variants: main .onnx + external-data sidecar (must be co-located)
-            enc_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_SPEECH_ENC_ONNX)
-            hf_hub_download(repo_id=_HF_MODEL_ID, filename=_SPEECH_ENC_DATA)
-            dec_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_COND_DEC_ONNX)
-            hf_hub_download(repo_id=_HF_MODEL_ID, filename=_COND_DEC_DATA)
+            # fp32 variants: main .onnx + external-data sidecar (must be co-located).
+            # The default cache layout puts both as symlinks into blobs/, and
+            # onnxruntime refuses to resolve external data outside the model's own
+            # directory; local_dir downloads real files side by side instead.
+            local_dir = os.path.join(HF_HUB_CACHE, "real", _HF_MODEL_ID.replace("/", "--"))
+            enc_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_SPEECH_ENC_ONNX, local_dir=local_dir)
+            hf_hub_download(repo_id=_HF_MODEL_ID, filename=_SPEECH_ENC_DATA, local_dir=local_dir)
+            dec_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_COND_DEC_ONNX, local_dir=local_dir)
+            hf_hub_download(repo_id=_HF_MODEL_ID, filename=_COND_DEC_DATA, local_dir=local_dir)
 
         sess_opts = ort.SessionOptions()
         n = os.cpu_count() or 4
