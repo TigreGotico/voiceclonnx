@@ -55,6 +55,12 @@ version = {attr = "voiceclonnx.version.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["."]
+# Without an include, setuptools discovers EVERY top-level package in the
+# tree, and the wheel shipped conversion/, demo/, examples/ and tests/ into
+# the installer's site-packages. A top-level `tests` shadows any other
+# distribution's, and `conversion` is the dev-time export toolchain its own
+# __init__ says the runtime never imports.
+include = ["voiceclonnx*"]
 
 [tool.setuptools.package-data]
 "voiceclonnx" = ["**/*"]
