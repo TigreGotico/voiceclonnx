@@ -30,7 +30,12 @@ convert = [
     "onnxruntime",
     "onnxruntime-tools",
     "huggingface_hub",
-    "transformers",
+    # With no floor the resolver picks an ancient transformers: the convert extra
+    # compiles to transformers 4.12.2 (2021) on the declared Python 3.9 floor,
+    # because an old transformers declares no huggingface-hub dependency and so
+    # lets huggingface-hub stay newest. The floor gives transformers 4.57.6 with
+    # huggingface-hub 0.36.2 instead.
+    "transformers>=4.44",
     "librosa",
 ]
 bench = [
