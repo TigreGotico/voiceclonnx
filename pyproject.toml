@@ -36,11 +36,20 @@ convert = [
 bench = [
     "faster-whisper",
     "edge-tts",
+    # faster-whisper accepts any tokenizers, so without a floor the resolver
+    # is free to take one with no wheel for the interpreter. It took 0.13.3,
+    # which publishes no wheel for 3.12 or 3.13 and no longer compiles:
+    # "casting &T to &mut T is undefined behavior". 0.14.0 is the first
+    # release with a 3.12 wheel and 0.15.1 the first with a 3.13 one, but
+    # 0.19.0 through 0.20.1 ship neither; 0.20.2 is the first release from
+    # which every later version carries a 3.13-capable wheel.
+    "tokenizers>=0.20.2",
 ]
 test = [
     "pytest",
     "faster-whisper",
     "edge-tts",
+    "tokenizers>=0.20.2",  # see the note in [bench]
 ]
 
 [project.scripts]
