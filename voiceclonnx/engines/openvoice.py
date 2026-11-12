@@ -43,6 +43,7 @@ from pathlib import Path
 import numpy as np
 
 from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.audio import load_wav, save_wav
 
 # OpenVoice v2 operates at 22050 Hz
 _OV2_SR = 22050
@@ -108,38 +109,6 @@ def _compute_linear_spec(
     spec_cplx = np.fft.rfft(windowed, n=n_fft, axis=1)  # (n_frames, n_fft//2+1)
     mag = np.sqrt(spec_cplx.real ** 2 + spec_cplx.imag ** 2 + 1e-6)
     return mag.T.astype(np.float32)  # (513, n_frames)
-
-
-# ---------------------------------------------------------------------------
-# Audio I/O helpers
-# ---------------------------------------------------------------------------
-
-
-def _load_wav(path: str, target_sr: int = _OV2_SR) -> np.ndarray:
-    """Load a WAV file, resample to *target_sr*, return float32 mono array."""
-    import soundfile as sf
-
-    audio, sr = sf.read(str(path), dtype="float32", always_2d=False)
-    if audio.ndim > 1:
-        audio = audio.mean(axis=1)
-
-    if sr != target_sr:
-        n_out = int(len(audio) * target_sr / sr)
-        audio = np.interp(
-            np.linspace(0, len(audio) - 1, n_out),
-            np.arange(len(audio)),
-            audio,
-        ).astype(np.float32)
-
-    return audio
-
-
-def _save_wav(path: str, audio: np.ndarray, sr: int) -> None:
-    """Write *audio* (float32) as 16-bit PCM WAV."""
-    import soundfile as sf
-
-    audio_int16 = (np.clip(audio, -1.0, 1.0) * 32767).astype(np.int16)
-    sf.write(str(path), audio_int16, sr, subtype="PCM_16")
 
 
 # ---------------------------------------------------------------------------
@@ -264,8 +233,8 @@ class OpenVoiceV2Adapter(VoiceClonerBase):
         str
             Absolute path to the written output file.
         """
-        src_wav = _load_wav(str(audio), target_sr=_OV2_SR)
-        ref_wav = _load_wav(str(reference_voice), target_sr=_OV2_SR)
+        src_wav = load_wav(str(audio), target_sr=_OV2_SR)
+        ref_wav = load_wav(str(reference_voice), target_sr=_OV2_SR)
 
         # Extract tone-color embeddings
         src_tone = self._extract_tone_embedding(src_wav)   # (1, 256)
@@ -294,7 +263,7 @@ class OpenVoiceV2Adapter(VoiceClonerBase):
         waveform = ort_out[0][0, 0]  # (samples,) float32
 
         out_path = str(Path(out_path).resolve())
-        _save_wav(out_path, waveform, sr=_OV2_SR)
+        save_wav(out_path, waveform, sr=_OV2_SR)
         return out_path
 
 

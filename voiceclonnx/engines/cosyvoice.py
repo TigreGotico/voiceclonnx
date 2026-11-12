@@ -54,6 +54,7 @@ from pathlib import Path
 import numpy as np
 
 from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.audio import load_wav, save_wav
 
 # CosyVoice-300M operates at 22050 Hz output
 _CV_SR = 22050
@@ -94,42 +95,19 @@ _INFERENCE_CFG_RATE = 0.7
 
 
 # ---------------------------------------------------------------------------
-# Audio I/O helpers
-# ---------------------------------------------------------------------------
-
-
-def _load_wav(path: str, target_sr: int) -> np.ndarray:
-    """Load WAV as float32 mono and resample to *target_sr*."""
-    import soundfile as sf
-
-    audio, sr = sf.read(str(path), dtype="float32", always_2d=False)
-    if audio.ndim > 1:
-        audio = audio.mean(axis=1)
-    if sr != target_sr:
-        n_out = int(len(audio) * target_sr / sr)
-        audio = np.interp(
-            np.linspace(0, len(audio) - 1, n_out),
-            np.arange(len(audio)),
-            audio,
-        ).astype(np.float32)
-    return audio
-
-
-def _save_wav(path: str, audio: np.ndarray, sr: int) -> None:
-    """Write float32 audio as 16-bit PCM WAV."""
-    import soundfile as sf
-
-    clipped = np.clip(audio, -1.0, 1.0)
-    sf.write(str(path), (clipped * 32767).astype(np.int16), sr, subtype="PCM_16")
-
-
-# ---------------------------------------------------------------------------
 # Feature extraction helpers
 # ---------------------------------------------------------------------------
 
 
 def _kaldi_fbank(wav: np.ndarray, sr: int = 16000) -> np.ndarray:
-    """Compute Kaldi-style 80-bin log mel filterbank for CAM++ speaker encoder.
+    """Kaldi 80-bin log mel filterbank for the CAM++ speaker encoder, with mean normalisation.
+
+    A numpy port of ``torchaudio.compliance.kaldi.fbank(wav, num_mel_bins=80,
+    dither=0, sample_frequency=sr)``, the call CosyVoice makes for CAM++. The
+    Kaldi defaults apply: 25 ms frames every 10 ms with ``snip_edges``, DC offset
+    removal and pre-emphasis 0.97 per frame, the Povey window, a 512-point power
+    spectrum, triangular bins on the mel scale ``1127 ln(1 + f/700)`` from 20 Hz to
+    the Nyquist rate, and a log floored at float32 epsilon.
 
     Parameters
     ----------
@@ -140,30 +118,37 @@ def _kaldi_fbank(wav: np.ndarray, sr: int = 16000) -> np.ndarray:
     -------
     np.ndarray  (1, T_frames, 80) float32
     """
-    n_fft = 400
-    hop = 160
+    frame_len = int(sr * 0.025)
+    frame_shift = int(sr * 0.010)
+    n_fft = 1 << (frame_len - 1).bit_length()
     n_mels = 80
-    fmin = 20
-    fmax = 7600
+    if len(wav) < frame_len:
+        raise ValueError(f"audio of {len(wav)} samples is shorter than one {frame_len}-sample frame")
 
-    # Windowed STFT power spectrum
-    window = np.hanning(n_fft).astype(np.float32)
-    pad = n_fft // 2
-    wav_pad = np.pad(wav, (pad, pad), mode="reflect")
-    n_frames = 1 + (len(wav_pad) - n_fft) // hop
-    power = np.zeros((n_fft // 2 + 1, n_frames), dtype=np.float32)
-    for i in range(n_frames):
-        frame = wav_pad[i * hop: i * hop + n_fft] * window
-        power[:, i] = np.abs(np.fft.rfft(frame, n=n_fft)) ** 2
+    n_frames = 1 + (len(wav) - frame_len) // frame_shift
+    index = np.arange(frame_len)[np.newaxis, :] + frame_shift * np.arange(n_frames)[:, np.newaxis]
+    frames = wav.astype(np.float32)[index]
+    frames = frames - frames.mean(axis=1, keepdims=True)
+    previous = np.concatenate([frames[:, :1], frames[:, :-1]], axis=1)
+    frames = frames - 0.97 * previous
+    povey = (0.5 - 0.5 * np.cos(2 * np.pi * np.arange(frame_len) / (frame_len - 1))) ** 0.85
+    power = np.abs(np.fft.rfft(frames * povey.astype(np.float32), n=n_fft)) ** 2  # (T, n_fft/2+1)
 
-    # Mel filterbank
-    mel_fb = _mel_filterbank(sr, n_fft, n_mels, fmin, fmax)  # (n_mels, n_fft//2+1)
-    mel = mel_fb @ power                                       # (n_mels, T)
-    log_mel = np.log(np.maximum(mel, 1e-10)).T                 # (T, n_mels)
+    def mel(f):
+        return 1127.0 * np.log(1.0 + f / 700.0)
 
-    # Mean normalization (Kaldi CMVN)
+    mel_low, mel_high = mel(20.0), mel(sr / 2)
+    delta = (mel_high - mel_low) / (n_mels + 1)
+    left = mel_low + delta * np.arange(n_mels)[:, np.newaxis]
+    bin_mel = mel(sr / n_fft * np.arange(n_fft // 2))[np.newaxis, :]
+    up = (bin_mel - left) / delta
+    down = (left + 2 * delta - bin_mel) / delta
+    banks = np.maximum(0.0, np.minimum(up, down))
+    banks = np.pad(banks, ((0, 0), (0, 1)))  # the Nyquist bin carries no weight
+
+    log_mel = np.log(np.maximum(power @ banks.T.astype(np.float32), np.finfo(np.float32).eps))
     log_mel = log_mel - log_mel.mean(axis=0, keepdims=True)
-    return log_mel[np.newaxis].astype(np.float32)              # (1, T, 80)
+    return log_mel[np.newaxis].astype(np.float32)
 
 
 def _whisper_logmel(wav: np.ndarray, sr: int = 16000) -> tuple:
@@ -358,40 +343,6 @@ def _apply_lr_model(h: np.ndarray, lr_w: "np.lib.npyio.NpzFile") -> np.ndarray:
 
 
 # ---------------------------------------------------------------------------
-# Kaldi fbank — upstream-compatible helper
-# ---------------------------------------------------------------------------
-
-
-def _kaldi_fbank_compat(wav: np.ndarray, sr: int = 16000) -> np.ndarray:
-    """Compute Kaldi-style 80-bin log mel filterbank for CAM++ speaker encoder.
-
-    Delegates to ``torchaudio.compliance.kaldi.fbank`` (exact upstream match)
-    when torch/torchaudio are available.  Falls back to the numpy approximation
-    otherwise so that the library stays PyTorch-free at inference time when
-    torch is not installed.
-
-    Parameters
-    ----------
-    wav : (N,) float32 at *sr* Hz
-    sr  : sample rate (default 16000)
-
-    Returns
-    -------
-    np.ndarray  (1, T_frames, 80) float32 — mean-normalised log-mel
-    """
-    try:
-        import torch
-        import torchaudio.compliance.kaldi as kaldi_ta
-
-        wav_t = torch.from_numpy(wav).unsqueeze(0)  # (1, N)
-        fbank = kaldi_ta.fbank(wav_t, num_mel_bins=80, dither=0, sample_frequency=sr)
-        fbank = fbank - fbank.mean(dim=0, keepdim=True)
-        return fbank.unsqueeze(0).numpy().astype(np.float32)  # (1, T, 80)
-    except Exception:
-        return _kaldi_fbank(wav, sr=sr)
-
-
-# ---------------------------------------------------------------------------
 # Adapter
 # ---------------------------------------------------------------------------
 
@@ -490,12 +441,8 @@ class CosyVoiceAdapter(VoiceClonerBase):
         return tokens.reshape(1, -1).astype(np.int64)  # (1, T_tok)
 
     def _extract_speaker_embedding(self, wav_16k: np.ndarray) -> np.ndarray:
-        """Kaldi fbank → L2-normalized 192-d speaker embedding (1, 192).
-
-        Uses torchaudio.compliance.kaldi.fbank when torch is available (exact
-        upstream match).  Falls back to the numpy approximation otherwise.
-        """
-        fbank = _kaldi_fbank_compat(wav_16k, sr=_SPK_SR)  # (1, T, 80)
+        """Kaldi fbank → L2-normalized 192-d speaker embedding (1, 192)."""
+        fbank = _kaldi_fbank(wav_16k, sr=_SPK_SR)  # (1, T, 80)
         inp_name = self._spk_sess.get_inputs()[0].name
         emb = self._spk_sess.run(None, {inp_name: fbank})[0]  # (1, 192)
         emb = emb.reshape(1, -1).astype(np.float32)
@@ -680,8 +627,8 @@ class CosyVoiceAdapter(VoiceClonerBase):
         """
         self._ensure_models()
 
-        src_wav = _load_wav(str(audio), target_sr=_TOK_SR)
-        ref_wav = _load_wav(str(reference_voice), target_sr=_SPK_SR)
+        src_wav = load_wav(str(audio), target_sr=_TOK_SR)
+        ref_wav = load_wav(str(reference_voice), target_sr=_SPK_SR)
 
         # 1. Content tokens from source
         tokens = self._extract_content_tokens(src_wav)       # (1, T_tok)
@@ -703,7 +650,7 @@ class CosyVoiceAdapter(VoiceClonerBase):
         waveform = self._vocode(mel)                         # (T_audio,) @ 22050 Hz
 
         out_path = str(Path(out_path).resolve())
-        _save_wav(out_path, waveform, sr=_CV_SR)
+        save_wav(out_path, waveform, sr=_CV_SR)
         return out_path
 
     def _project_spk_emb(self, emb_192: np.ndarray) -> np.ndarray:
