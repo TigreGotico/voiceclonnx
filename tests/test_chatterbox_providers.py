@@ -3,8 +3,7 @@
 The adapter constructs lazily — sessions load on first use — so the provider plumbing can be
 checked without downloading the ONNX models.
 """
-import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from voiceclonnx.engines.chatterbox import ChatterboxAdapter
 
