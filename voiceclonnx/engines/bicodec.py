@@ -72,6 +72,7 @@ from pathlib import Path
 import numpy as np
 
 from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.audio import load_wav, save_wav
 
 # BiCodec operates at 16 kHz
 _BC_SR = 16000
@@ -90,36 +91,6 @@ _MEL_FB = "mel_filterbank.npy"
 _MEL_CFG = "mel_config.json"
 _DEC_FP32 = "decoder.onnx"
 _DEC_INT8 = "decoder_q8.onnx"
-
-
-# ---------------------------------------------------------------------------
-# Audio I/O helpers
-# ---------------------------------------------------------------------------
-
-
-def _load_wav(path: str, target_sr: int = _BC_SR) -> np.ndarray:
-    """Load *path* as float32 mono, linear-resample to *target_sr*."""
-    import soundfile as sf
-
-    audio, sr = sf.read(str(path), dtype="float32", always_2d=False)
-    if audio.ndim > 1:
-        audio = audio.mean(axis=1)
-    if sr != target_sr:
-        n_out = int(len(audio) * target_sr / sr)
-        audio = np.interp(
-            np.linspace(0, len(audio) - 1, n_out),
-            np.arange(len(audio)),
-            audio,
-        ).astype(np.float32)
-    return audio
-
-
-def _save_wav(path: str, audio: np.ndarray, sr: int) -> None:
-    """Write *audio* float32 as 16-bit PCM WAV to *path*."""
-    import soundfile as sf
-
-    audio_int16 = (np.clip(audio, -1.0, 1.0) * 32767).astype(np.int16)
-    sf.write(str(path), audio_int16, sr, subtype="PCM_16")
 
 
 # ---------------------------------------------------------------------------
@@ -464,8 +435,8 @@ class BiCodecAdapter(VoiceClonerBase):
         """
         self._ensure_models()
 
-        src_wav = _load_wav(str(audio), target_sr=_BC_SR)
-        ref_wav = _load_wav(str(reference_voice), target_sr=_BC_SR)
+        src_wav = load_wav(str(audio), target_sr=_BC_SR)
+        ref_wav = load_wav(str(reference_voice), target_sr=_BC_SR)
 
         # 1. Mel spectrograms (numpy filterbank)
         ref_mel = self._wav_to_mel(ref_wav)   # (1, 128, T_mel_ref)
@@ -480,7 +451,7 @@ class BiCodecAdapter(VoiceClonerBase):
         waveform = self._decode(src_semantic, ref_global)  # (samples,) float32
 
         out_path = str(Path(out_path).resolve())
-        _save_wav(out_path, waveform, sr=_BC_SR)
+        save_wav(out_path, waveform, sr=_BC_SR)
         return out_path
 
 

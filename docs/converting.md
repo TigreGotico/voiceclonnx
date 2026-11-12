@@ -979,8 +979,8 @@ ONNX components passing per-component parity:
 
 6. **Kaldi fbank mismatch**: the numpy fbank approximation had different
    frequency warping and length compared with `torchaudio.compliance.kaldi.fbank`
-   (dither=0).  Fix: `_kaldi_fbank_compat` calls torchaudio when available,
-   falling back to numpy only when torch is absent.
+   (dither=0).  Fix: `_kaldi_fbank` is a numpy port of that torchaudio call,
+   and `tests/test_cosyvoice.py` compares the two on a fixed signal.
 
 After all six fixes: cosyvoice fp32 WER = 8% on both reference clips (gate ≤ 40%).
 

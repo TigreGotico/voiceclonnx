@@ -29,6 +29,7 @@ from pathlib import Path
 import numpy as np
 
 from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.audio import load_wav, save_wav
 
 # kNN-VC outputs 16 kHz audio (same rate as WavLM input)
 _KNNVC_SR = 16000
@@ -42,40 +43,6 @@ _WAVLM_INT8 = "wavlm_layer6_q8.onnx"
 _HIFIGAN_FP32 = "hifigan_knnvc.onnx"
 _HIFIGAN_INT8 = "hifigan_knnvc_q8.onnx"
 _CONFIG = "knn-vc/config.json"
-
-
-# ---------------------------------------------------------------------------
-# Audio I/O helpers (soundfile)
-# ---------------------------------------------------------------------------
-
-
-def _load_wav(path: str, target_sr: int = 16000) -> np.ndarray:
-    """Load a WAV file, resample to *target_sr*, return float32 mono array."""
-    import soundfile as sf
-
-    audio, sr = sf.read(str(path), dtype="float32", always_2d=False)
-    # Mix down to mono if stereo
-    if audio.ndim > 1:
-        audio = audio.mean(axis=1)
-
-    if sr != target_sr:
-        # Simple linear resampling via numpy (low quality but dependency-free)
-        n_out = int(len(audio) * target_sr / sr)
-        audio = np.interp(
-            np.linspace(0, len(audio) - 1, n_out),
-            np.arange(len(audio)),
-            audio,
-        ).astype(np.float32)
-
-    return audio
-
-
-def _save_wav(path: str, audio: np.ndarray, sr: int) -> None:
-    """Write *audio* (float32) as 16-bit PCM WAV to *path*."""
-    import soundfile as sf
-
-    audio_int16 = (np.clip(audio, -1.0, 1.0) * 32767).astype(np.int16)
-    sf.write(str(path), audio_int16, sr, subtype="PCM_16")
 
 
 # ---------------------------------------------------------------------------
@@ -255,8 +222,8 @@ class KNNVCAdapter(VoiceClonerBase):
             Absolute path to the written output file.
         """
         # Load both audio files at 16 kHz
-        src_wav = _load_wav(str(audio), target_sr=_KNNVC_SR)
-        ref_wav = _load_wav(str(reference_voice), target_sr=_KNNVC_SR)
+        src_wav = load_wav(str(audio), target_sr=_KNNVC_SR)
+        ref_wav = load_wav(str(reference_voice), target_sr=_KNNVC_SR)
 
         # Extract WavLM features
         src_feats = self._extract_features(src_wav)    # (T_src, 1024)
@@ -270,7 +237,7 @@ class KNNVCAdapter(VoiceClonerBase):
 
         # Write output
         out_path = str(Path(out_path).resolve())
-        _save_wav(out_path, waveform, sr=_KNNVC_SR)
+        save_wav(out_path, waveform, sr=_KNNVC_SR)
         return out_path
 
 
