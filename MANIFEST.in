@@ -1,0 +1,7 @@
+# The sdist carries everything its own test suite needs. The wheel ships
+# only the voiceclonnx package: see [tool.setuptools.packages.find].
+graft conversion
+graft examples
+graft tests
+include demo/source.wav demo/reference_aria.wav
+global-exclude __pycache__ *.py[cod]

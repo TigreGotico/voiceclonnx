@@ -55,11 +55,14 @@ pip install voiceclonnx
 Core dependencies: `onnxruntime`, `numpy`, `soundfile`, `huggingface_hub`.
 voiceclonnx downloads ONNX models from Hugging Face Hub on first use.
 
-For model conversion and export tooling:
+The export toolchain (`conversion/`) and the test suite run from a checkout.
+The wheel does not ship them.
 
 ```bash
-pip install "voiceclonnx[convert]"   # torch, onnx, transformers, librosa (export only)
-pip install "voiceclonnx[test]"      # pytest, faster-whisper, edge-tts (test suite)
+git clone https://github.com/TigreGotico/voiceclonnx
+cd voiceclonnx
+uv pip install -e ".[convert]"   # torch, onnx, onnxruntime, transformers, librosa (export only)
+uv pip install -e ".[test]"      # pytest, onnx, setuptools, faster-whisper, edge-tts (test suite)
 ```
 
 ---
