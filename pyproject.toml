@@ -14,10 +14,10 @@ classifiers = [
 ]
 authors = [{name = "JarbasAI", email = "jarbasai@mailfence.com"}]
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 dependencies = [
     "numpy",
-    "onnxruntime",
+    "onnxruntime>=1.32.0",
     "scipy",
     "soundfile",
     "huggingface_hub",
@@ -27,7 +27,7 @@ dependencies = [
 convert = [
     "torch",
     "onnx",
-    "onnxruntime",
+    "onnxruntime>=1.32.0",
     "onnxruntime-tools",
     "huggingface_hub",
     "transformers",
@@ -39,6 +39,7 @@ bench = [
 ]
 test = [
     "pytest",
+    "onnx",
     "faster-whisper",
     "edge-tts",
 ]
@@ -56,11 +57,11 @@ version = {attr = "voiceclonnx.version.__version__"}
 [tool.setuptools.packages.find]
 where = ["."]
 
-[tool.setuptools.package-data]
-"voiceclonnx" = ["**/*"]
+[tool.setuptools.exclude-package-data]
+"*" = ["__pycache__/*", "*.pyc"]
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.11"
 ignore_missing_imports = true
 no_site_packages = true
 strict = false
@@ -69,4 +70,4 @@ warn_return_any = false
 
 [tool.ruff]
 line-length = 120
-target-version = "py39"
+target-version = "py311"

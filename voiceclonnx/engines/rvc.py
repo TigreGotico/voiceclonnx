@@ -54,6 +54,7 @@ from typing import Optional
 import numpy as np
 
 from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.audio import load_wav, save_wav
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -79,36 +80,6 @@ _RMVPE_HOP = 160          # 10 ms hop at 16 kHz
 _RMVPE_WIN = 1024
 _RMVPE_FMIN = 30.0
 _RMVPE_FMAX = 8000.0
-
-
-# ---------------------------------------------------------------------------
-# Audio I/O helpers
-# ---------------------------------------------------------------------------
-
-
-def _load_wav(path: str, target_sr: int = _RVC_INPUT_SR) -> np.ndarray:
-    """Load *path* as float32 mono at *target_sr* Hz."""
-    import soundfile as sf
-
-    audio, sr = sf.read(str(path), dtype="float32", always_2d=False)
-    if audio.ndim > 1:
-        audio = audio.mean(axis=1)
-    if sr != target_sr:
-        n_out = int(len(audio) * target_sr / sr)
-        audio = np.interp(
-            np.linspace(0, len(audio) - 1, n_out),
-            np.arange(len(audio)),
-            audio,
-        ).astype(np.float32)
-    return audio
-
-
-def _save_wav(path: str, audio: np.ndarray, sr: int) -> None:
-    """Write float32 *audio* as 16-bit PCM WAV at *sr* Hz."""
-    import soundfile as sf
-
-    audio_int16 = (np.clip(audio, -1.0, 1.0) * 32767).astype(np.int16)
-    sf.write(str(path), audio_int16, sr, subtype="PCM_16")
 
 
 # ---------------------------------------------------------------------------
@@ -614,7 +585,7 @@ class RVCAdapter(VoiceClonerBase):
         self._ensure_net_g(model_ref)
 
         # Load source audio at 16 kHz (ContentVec / RMVPE input rate)
-        src_wav = _load_wav(str(audio), target_sr=_RVC_INPUT_SR)
+        src_wav = load_wav(str(audio), target_sr=_RVC_INPUT_SR)
 
         # 1. Extract ContentVec features
         features = self._extract_features(src_wav)   # (T, 768)
@@ -631,7 +602,7 @@ class RVCAdapter(VoiceClonerBase):
 
         # 5. Write output
         out_path = str(Path(out_path).resolve())
-        _save_wav(out_path, waveform, sr=self._sample_rate)
+        save_wav(out_path, waveform, sr=self._sample_rate)
         return out_path
 
 
