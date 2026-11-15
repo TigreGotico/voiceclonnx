@@ -36,12 +36,20 @@ convert = [
 bench = [
     "faster-whisper",
     "edge-tts",
+    # faster-whisper accepts any tokenizers. When the newest tokenizers caps
+    # huggingface-hub below the major the environment holds, the resolver
+    # falls back to 0.13.3: it declares no huggingface-hub dependency, ships no
+    # 3.12 or 3.13 wheel, and no longer compiles. 0.19.0 to 0.20.1 ship cp312
+    # wheels but no cp313 wheels. From 0.20.2 on, every release installs on
+    # 3.11, 3.12 and 3.13 from a wheel.
+    "tokenizers>=0.20.2",
 ]
 test = [
     "pytest",
     "onnx",
     "faster-whisper",
     "edge-tts",
+    "tokenizers>=0.20.2",  # see the note in [bench]
 ]
 
 [project.scripts]
