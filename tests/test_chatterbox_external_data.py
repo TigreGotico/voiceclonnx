@@ -1,15 +1,12 @@
-"""Regression test: fp32 chatterbox models must load from real files, not
-cache symlinks whose external-data sidecar resolves into a different shard
-of a hash-sharded blob store.
+"""Regression test: fp32 chatterbox models load from a hash-sharded cache.
 
-Hugging Face Hub caches can shard their blob store by the first two hex
-characters of the blob hash (``blobs/<xx>/<hash>``). A model's main ``.onnx``
-and its ``.onnx_data`` sidecar hash independently, so they usually land in
-different shard directories even though both are symlinked from the same
-snapshot directory. onnxruntime's HF-cache symlink fallback only accepts a
-sidecar that resolves under the *same* real directory as the main file, so it
-rejects this layout as "External data path escapes model directory" even
-though both files belong to the same model.
+A cache can shard its blob store by the first two hex characters of the blob
+hash (``blobs/<xx>/<hash>``). A model's ``.onnx`` file and its ``.onnx_data``
+sidecar hash independently, so they land in different shard directories,
+although both are symlinked from the same snapshot directory. onnxruntime
+1.31.1 and older resolve the symlinks and reject the sidecar with "External
+data path escapes model directory". onnxruntime 1.32.0 loads it, and
+``pyproject.toml`` requires that version.
 """
 
 from __future__ import annotations
@@ -46,8 +43,8 @@ def _make_external_data_onnx(path: Path, data_filename: str) -> None:
 def _build_sharded_cache(tmp_path: Path):
     """Lay out a shared, hash-sharded blob store (``blobs/<xx>/<hash>``) with
     snapshot symlinks pointing into it, a model and its ``.onnx_data`` sidecar
-    landing in different shard directories -- the collision that trips
-    onnxruntime's symlink fallback.
+    landing in different shard directories: the layout that onnxruntime
+    1.31.1 and older reject.
     """
     real_dir = tmp_path / "generated" / "onnx"
     _make_external_data_onnx(real_dir / "speech_encoder.onnx", "speech_encoder.onnx_data")
@@ -74,34 +71,30 @@ def _build_sharded_cache(tmp_path: Path):
         link_path = snapshot / fname
         link_path.symlink_to(blob_path)
         cache_paths[f"onnx/{fname}"] = str(link_path)
-    return cache_paths, real_dir
+    return cache_paths
 
 
-def _fake_hf_hub_download(cache_paths, real_dir):
-    """Mirror huggingface_hub: without ``local_dir`` return the (symlinked)
-    cache path; with ``local_dir`` write a real file, as ``local_dir`` does.
-    """
+def _fake_hf_hub_download(cache_paths):
+    """Mirror huggingface_hub: return the symlinked snapshot path from the cache."""
 
-    def _download(repo_id, filename, local_dir=None, **kw):
-        if local_dir is not None:
-            dst = Path(local_dir) / filename
-            dst.parent.mkdir(parents=True, exist_ok=True)
-            dst.write_bytes((real_dir / Path(filename).name).read_bytes())
-            return str(dst)
+    def _download(repo_id, filename, **kw):
         return cache_paths[filename]
 
     return _download
 
 
 def test_ensure_models_loads_past_a_sharded_blob_store(tmp_path):
-    """clone_voice must load fp32 chatterbox models even when the HF cache
-    shards blobs by hash prefix, landing a model and its external-data
-    sidecar in different shard directories."""
-    cache_paths, real_dir = _build_sharded_cache(tmp_path)
+    """The fp32 models load, with their weights, when the model and its
+    external-data sidecar sit in different shard directories."""
+    cache_paths = _build_sharded_cache(tmp_path)
 
-    with patch("huggingface_hub.hf_hub_download", side_effect=_fake_hf_hub_download(cache_paths, real_dir)):
+    with patch("huggingface_hub.hf_hub_download", side_effect=_fake_hf_hub_download(cache_paths)):
         adapter = ChatterboxAdapter()
         adapter._ensure_models()
 
-    assert adapter._speech_enc_sess is not None
-    assert adapter._cond_dec_sess is not None
+    # Each model computes Y = X + W with W = 0, 1, ..., 2047 read from its sidecar.
+    x = np.ones(2048, dtype=np.float32)
+    expected = x + np.arange(2048, dtype=np.float32)
+    for session in (adapter._speech_enc_sess, adapter._cond_dec_sess):
+        (y,) = session.run(None, {"X": x})
+        np.testing.assert_array_equal(y, expected)
