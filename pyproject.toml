@@ -30,10 +30,11 @@ convert = [
     "onnxruntime>=1.32.0",
     "onnxruntime-tools",
     "huggingface_hub",
-    # Without a floor, an environment that needs huggingface-hub>=1.0 and
-    # excludes transformers 5 resolves to transformers 4.12.2: it declares no
-    # huggingface-hub dependency, and it has no WavLMModel for export_knnvc.
-    "transformers>=4.44",
+    # conversion/export_rvc.py passes attn_implementation to from_pretrained,
+    # which transformers accepts from 4.36.0. Without a floor, an environment
+    # that needs huggingface-hub>=1.0 and excludes transformers 5 resolves to
+    # transformers 4.12.2, which has no WavLMModel for export_knnvc.
+    "transformers>=4.36",
     "librosa",
 ]
 bench = [
