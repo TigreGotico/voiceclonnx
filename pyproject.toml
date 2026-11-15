@@ -30,11 +30,9 @@ convert = [
     "onnxruntime",
     "onnxruntime-tools",
     "huggingface_hub",
-    # With no floor the resolver picks an ancient transformers: the convert extra
-    # compiles to transformers 4.12.2 (2021) on the declared Python 3.9 floor,
-    # because an old transformers declares no huggingface-hub dependency and so
-    # lets huggingface-hub stay newest. The floor gives transformers 4.57.6 with
-    # huggingface-hub 0.36.2 instead.
+    # Without a floor, an environment that needs huggingface-hub>=1.0 and
+    # excludes transformers 5 resolves to transformers 4.12.2: it declares no
+    # huggingface-hub dependency, and it has no WavLMModel for export_knnvc.
     "transformers>=4.44",
     "librosa",
 ]
