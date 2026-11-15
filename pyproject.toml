@@ -14,7 +14,7 @@ classifiers = [
 ]
 authors = [{name = "JarbasAI", email = "jarbasai@mailfence.com"}]
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 dependencies = [
     "numpy",
     "onnxruntime",
@@ -56,11 +56,11 @@ version = {attr = "voiceclonnx.version.__version__"}
 [tool.setuptools.packages.find]
 where = ["."]
 
-[tool.setuptools.package-data]
-"voiceclonnx" = ["**/*"]
+[tool.setuptools.exclude-package-data]
+"*" = ["__pycache__/*", "*.pyc"]
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.11"
 ignore_missing_imports = true
 no_site_packages = true
 strict = false
@@ -69,4 +69,4 @@ warn_return_any = false
 
 [tool.ruff]
 line-length = 120
-target-version = "py39"
+target-version = "py311"

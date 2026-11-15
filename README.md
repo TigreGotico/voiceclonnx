@@ -69,11 +69,15 @@ pip install "voiceclonnx[test]"      # pytest, faster-whisper, edge-tts (test su
 ### Python
 
 ```python
+from urllib.request import urlretrieve
 from voiceclonnx import VoiceCloner
 
+clips = "https://raw.githubusercontent.com/TigreGotico/voiceclonnx/0078dec/demo/"
+source, _ = urlretrieve(clips + "source.wav")
+reference, _ = urlretrieve(clips + "reference_aria.wav")
 cloner = VoiceCloner(engine="facodec")
-out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
-print(cloner.sample_rate)   # 16000
+cloner.clone_voice(source, reference, "out.wav")  # out.wav: the words of source.wav in the voice of reference_aria.wav
+print(cloner.sample_rate)  # 16000
 ```
 
 ### CLI
