@@ -86,8 +86,8 @@ def test_cosyvoice_ode_steps_stored():
 
 
 def test_load_wav_resamples(tmp_path):
-    """_load_wav must resample from 44100 to 16000."""
-    from voiceclonnx.engines.cosyvoice import _load_wav
+    """load_wav must resample from 44100 to 16000."""
+    from voiceclonnx.audio import load_wav
 
     path = str(tmp_path / "hi.wav")
     n = 44100
@@ -98,21 +98,40 @@ def test_load_wav_resamples(tmp_path):
         wf.setframerate(44100)
         wf.writeframes(data.tobytes())
 
-    audio = _load_wav(path, target_sr=16000)
+    audio = load_wav(path, target_sr=16000)
     assert len(audio) == pytest.approx(16000, rel=0.05)
     assert audio.dtype == np.float32
 
 
 def test_save_wav_16bit(tmp_path):
-    from voiceclonnx.engines.cosyvoice import _save_wav
+    from voiceclonnx.audio import save_wav
 
     path = str(tmp_path / "out.wav")
     audio = np.sin(np.linspace(0, 2 * np.pi, 22050)).astype(np.float32)
-    _save_wav(path, audio, sr=22050)
+    save_wav(path, audio, sr=22050)
 
     with wave.open(path, "rb") as wf:
         assert wf.getsampwidth() == 2
         assert wf.getframerate() == 22050
+
+
+def test_kaldi_fbank_matches_torchaudio():
+    """The CAM++ features equal torchaudio's Kaldi fbank, which CosyVoice uses.
+
+    tests/fixtures/generate_kaldi_fbank.py wrote the reference with torchaudio, from
+    seconds 1 to 3 of demo/source.wav. The features span about 23 nats, so 1e-3 is
+    float32 rounding, not a different frontend.
+    """
+    import soundfile as sf
+
+    from voiceclonnx.engines.cosyvoice import _kaldi_fbank
+
+    root = Path(__file__).resolve().parent.parent
+    expected = np.load(root / "tests" / "fixtures" / "kaldi_fbank_source_1s_to_3s.npy")
+    wav, sr = sf.read(root / "demo" / "source.wav", dtype="float32")
+    got = _kaldi_fbank(wav[16000:48000], sr)
+    assert got.shape == (1, 198, 80)
+    np.testing.assert_allclose(got[0], expected, atol=1e-3)
 
 
 # ---------------------------------------------------------------------------
