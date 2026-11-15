@@ -10,10 +10,8 @@ permissions:
   id-token: write
 jobs:
   deploy:
-    # Set the repository variable ENABLE_DEMO_PAGES to 'true' after
-    # Settings -> Pages -> Source is set to GitHub Actions. The repository
-    # is public, but Pages is not configured yet, so this deploys nothing
-    # until that switch is thrown.
+    # The deploy runs only when the repository variable ENABLE_DEMO_PAGES is
+    # set to 'true'. Set it after Settings -> Pages -> Source is GitHub Actions.
     if: vars.ENABLE_DEMO_PAGES == 'true'
     runs-on: ubuntu-latest
     environment: { name: github-pages, url: "${{ steps.deploy.outputs.page_url }}" }
