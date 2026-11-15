@@ -17,7 +17,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "numpy",
-    "onnxruntime",
+    "onnxruntime>=1.32.0",
     "scipy",
     "soundfile",
     "huggingface_hub",
@@ -27,7 +27,7 @@ dependencies = [
 convert = [
     "torch",
     "onnx",
-    "onnxruntime",
+    "onnxruntime>=1.32.0",
     "onnxruntime-tools",
     "huggingface_hub",
     "transformers",
@@ -39,6 +39,7 @@ bench = [
 ]
 test = [
     "pytest",
+    "onnx",
     "setuptools>=68",
     "faster-whisper",
     "edge-tts",
