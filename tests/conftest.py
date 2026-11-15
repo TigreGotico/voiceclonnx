@@ -2,9 +2,8 @@
 
 ``conversion/`` is the dev-time export and validation toolchain. Its own
 ``__init__`` records that the runtime package never imports it, and the wheel
-does not ship it: ``packages.find`` includes only ``voiceclonnx*``. Seven test
-modules still test it, and they import it as ``from conversion.export_base
-import ...``.
+does not ship it: ``packages.find`` includes only ``voiceclonnx*``. The
+toolchain tests import it as ``from conversion.export_base import ...``.
 
 That name resolves under pytest's default ``prepend`` import mode only because
 the mode puts the repository root at ``sys.path[0]`` -- which also lets the
