@@ -39,6 +39,7 @@ bench = [
 ]
 test = [
     "pytest",
+    "onnx",
     "faster-whisper",
     "edge-tts",
 ]
