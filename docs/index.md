@@ -33,9 +33,9 @@ use.
 
 | Extra | Purpose |
 |-------|---------|
-| `pip install "voiceclonnx[convert]"` | Export toolchain (torch, onnx, transformers, librosa) |
+| `uv pip install -e ".[convert]"` | Export toolchain, from a checkout (torch, onnx, onnxruntime, transformers, librosa) |
 | `pip install "voiceclonnx[bench]"` | Benchmark and demo generation (faster-whisper, edge-tts) |
-| `pip install "voiceclonnx[test]"` | Test suite (pytest, faster-whisper, edge-tts) |
+| `uv pip install -e ".[test]"` | Test suite, from a checkout (pytest, onnx, setuptools, faster-whisper, edge-tts) |
 
 ---
 

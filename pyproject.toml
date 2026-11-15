@@ -51,6 +51,7 @@ bench = [
 test = [
     "pytest",
     "onnx",
+    "setuptools>=68",
     "faster-whisper",
     "edge-tts",
     "tokenizers>=0.20.2",  # see the note in [bench]
@@ -68,6 +69,11 @@ version = {attr = "voiceclonnx.version.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["."]
+# Without an include, setuptools discovers every top-level package in the
+# tree and the wheel installs conversion/, demo/, examples/ and tests/
+# into site-packages. A top-level `tests` shadows the `tests` of any other
+# distribution.
+include = ["voiceclonnx*"]
 
 [tool.setuptools.exclude-package-data]
 "*" = ["__pycache__/*", "*.pyc"]
