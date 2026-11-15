@@ -37,6 +37,7 @@ from pathlib import Path
 import numpy as np
 
 from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.audio import load_wav, save_wav
 
 _CONTENT_SR = 16000
 _PROMPT_SR = 16000
@@ -49,30 +50,6 @@ _ENC_FP32, _ENC_INT8 = "lscodec_encoder.onnx", "lscodec_encoder_q8.onnx"
 _WL_FP32, _WL_INT8 = "wavlm_l6.onnx", "wavlm_l6_q8.onnx"
 _VOC_FP32, _VOC_INT8 = "lscodec_vocoder.onnx", "lscodec_vocoder_q8.onnx"
 _CODEBOOK = "codebook.npy"
-
-
-def _load_wav(path: str, target_sr: int) -> np.ndarray:
-    """Load *path* as float32 mono resampled to *target_sr*."""
-    import soundfile as sf
-
-    audio, sr = sf.read(str(path), dtype="float32", always_2d=False)
-    if audio.ndim > 1:
-        audio = audio.mean(axis=1)
-    if sr != target_sr:
-        n_out = int(round(len(audio) * target_sr / sr))
-        audio = np.interp(
-            np.linspace(0, len(audio) - 1, n_out),
-            np.arange(len(audio)),
-            audio,
-        ).astype(np.float32)
-    return audio.astype(np.float32)
-
-
-def _save_wav(path: str, audio: np.ndarray, sr: int) -> None:
-    import soundfile as sf
-
-    audio16 = (np.clip(audio, -1.0, 1.0) * 32767.0).astype(np.int16)
-    sf.write(str(path), audio16, sr, subtype="PCM_16")
 
 
 def _vq(means: np.ndarray, codebook: np.ndarray) -> np.ndarray:
@@ -144,12 +121,12 @@ class LSCodecAdapter(VoiceClonerBase):
         self._ensure_models()
 
         # Content path: source -> means -> numpy VQ
-        src = _load_wav(str(audio), _CONTENT_SR)
+        src = load_wav(str(audio), _CONTENT_SR)
         means = self._enc_sess.run(None, {"audio": src[np.newaxis, np.newaxis, :]})[0][0]  # (L,64)
         vqvec = _vq(means, self._codebook)[np.newaxis].astype(np.float32)  # (1,L,64)
 
         # Prompt path: reference -> fixed 4 s window -> WavLM-Large layer 6
-        ref = _load_wav(str(reference_voice), _PROMPT_SR)
+        ref = load_wav(str(reference_voice), _PROMPT_SR)
         if len(ref) < _PROMPT_WIN:
             ref = np.pad(ref, (0, _PROMPT_WIN - len(ref)))
         else:
@@ -160,7 +137,7 @@ class LSCodecAdapter(VoiceClonerBase):
         wav = self._voc_sess.run(None, {"vqvec": vqvec, "prompt": prompt})[0][0]  # (T,)
 
         out_path = str(Path(out_path).resolve())
-        _save_wav(out_path, wav.astype(np.float32), sr=_OUT_SR)
+        save_wav(out_path, wav.astype(np.float32), sr=_OUT_SR)
         return out_path
 
 

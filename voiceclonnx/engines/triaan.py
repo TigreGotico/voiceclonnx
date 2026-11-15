@@ -35,6 +35,7 @@ from typing import Optional
 import numpy as np
 
 from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.audio import load_wav, save_wav
 
 # TriAAN-VC operates at 16 kHz throughout
 _TRIAAN_SR = 16000
@@ -57,39 +58,10 @@ _PWG_INT8 = "pwg_vocoder_q8.onnx"
 _MEL_STATS = "mel_stats.npy"
 
 
-# ---------------------------------------------------------------------------
-# Audio I/O helpers
-# ---------------------------------------------------------------------------
-
-
-def _load_wav(path: str, target_sr: int = _TRIAAN_SR) -> np.ndarray:
-    """Load a WAV file, resample to *target_sr*, return float32 mono array."""
-    import soundfile as sf
-
-    audio, sr = sf.read(str(path), dtype="float32", always_2d=False)
-    if audio.ndim > 1:
-        audio = audio.mean(axis=1)
-
-    if sr != target_sr:
-        n_out = int(len(audio) * target_sr / sr)
-        audio = np.interp(
-            np.linspace(0, len(audio) - 1, n_out),
-            np.arange(len(audio)),
-            audio,
-        ).astype(np.float32)
-
-    # Normalise peak amplitude
+def _peak_normalise(audio: np.ndarray) -> np.ndarray:
+    """Scale *audio* so that its peak is 0.99, as the TriAAN-VC models expect."""
     peak = np.abs(audio).max()
-    if peak > 0:
-        audio = audio / peak * 0.99
-    return audio.astype(np.float32)
-
-
-def _save_wav(path: str, audio: np.ndarray, sr: int) -> None:
-    import soundfile as sf
-
-    audio_int16 = (np.clip(audio, -1.0, 1.0) * 32767).astype(np.int16)
-    sf.write(str(path), audio_int16, sr, subtype="PCM_16")
+    return (audio / peak * 0.99).astype(np.float32) if peak > 0 else audio
 
 
 # ---------------------------------------------------------------------------
@@ -364,8 +336,8 @@ class TriAANVCAdapter(VoiceClonerBase):
             Absolute path to the written output file.
         """
         # Load both audio files at 16 kHz
-        src_wav = _load_wav(str(audio), target_sr=_TRIAAN_SR)
-        ref_wav = _load_wav(str(reference_voice), target_sr=_TRIAAN_SR)
+        src_wav = _peak_normalise(load_wav(str(audio), target_sr=_TRIAAN_SR))
+        ref_wav = _peak_normalise(load_wav(str(reference_voice), target_sr=_TRIAAN_SR))
 
         # Extract CPC features; CPC ONNX returns (1, T, 256), TriAAN expects (1, 256, T)
         # CPC ONNX returns (1, T, 256); TriAAN ONNX expects channels-first (1, 256, T)
@@ -391,7 +363,7 @@ class TriAANVCAdapter(VoiceClonerBase):
 
         # Write output
         out_path = str(Path(out_path).resolve())
-        _save_wav(out_path, waveform, sr=_TRIAAN_SR)
+        save_wav(out_path, waveform, sr=_TRIAAN_SR)
         return out_path
 
 

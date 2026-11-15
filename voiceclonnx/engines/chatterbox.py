@@ -31,6 +31,7 @@ from typing import List, Optional
 import numpy as np
 
 from voiceclonnx.engines.base import VoiceClonerBase, EngineEntry, register_engine
+from voiceclonnx.audio import load_wav, save_wav
 
 # Chatterbox outputs 24 kHz audio
 _CHATTERBOX_SR = 24000
@@ -47,40 +48,6 @@ _COND_DEC_DATA = "onnx/conditional_decoder.onnx_data"
 # INT8 quantized variants (single self-contained files, no external data)
 _SPEECH_ENC_Q8_ONNX = "onnx/speech_encoder_q8.onnx"
 _COND_DEC_Q8_ONNX = "onnx/conditional_decoder_q8.onnx"
-
-
-# ---------------------------------------------------------------------------
-# Audio I/O helpers (soundfile + numpy; no librosa)
-# ---------------------------------------------------------------------------
-
-
-def _load_wav(path: str, target_sr: int = _CHATTERBOX_SR) -> np.ndarray:
-    """Load *path* as float32 mono, resampling to *target_sr* if needed.
-
-    Uses linear interpolation for resampling — sufficient quality for the
-    speech-encoder input (band-limited speech signal).
-    """
-    import soundfile as sf
-
-    audio, sr = sf.read(str(path), dtype="float32", always_2d=False)
-    if audio.ndim > 1:
-        audio = audio.mean(axis=1)
-    if sr != target_sr:
-        n_out = int(round(len(audio) * target_sr / sr))
-        audio = np.interp(
-            np.linspace(0, len(audio) - 1, n_out),
-            np.arange(len(audio)),
-            audio,
-        ).astype(np.float32)
-    return audio
-
-
-def _save_wav(path: str, audio: np.ndarray, sr: int) -> None:
-    """Write *audio* (float32) as a 16-bit PCM WAV to *path*."""
-    import soundfile as sf
-
-    audio_clipped = np.clip(audio, -1.0, 1.0)
-    sf.write(str(path), audio_clipped, sr, subtype="PCM_16")
 
 
 # ---------------------------------------------------------------------------
@@ -240,8 +207,8 @@ class ChatterboxAdapter(VoiceClonerBase):
         self._ensure_models()
 
         # Load both audio clips at 24 kHz (speech encoder input rate)
-        src_wav = _load_wav(str(audio), target_sr=_CHATTERBOX_SR)
-        ref_wav = _load_wav(str(reference_voice), target_sr=_CHATTERBOX_SR)
+        src_wav = load_wav(str(audio), target_sr=_CHATTERBOX_SR)
+        ref_wav = load_wav(str(reference_voice), target_sr=_CHATTERBOX_SR)
 
         # Encode target (reference) speaker — speaker conditioning
         tgt_cond_emb, tgt_prompt_token, tgt_x_vector, tgt_prompt_feat = self._embed_speaker(ref_wav)
@@ -264,7 +231,7 @@ class ChatterboxAdapter(VoiceClonerBase):
         wav = np.squeeze(wav, axis=0)  # (1, T) -> (T,)
 
         out_path = str(Path(out_path).resolve())
-        _save_wav(out_path, wav, sr=_CHATTERBOX_SR)
+        save_wav(out_path, wav, sr=_CHATTERBOX_SR)
         return out_path
 
 

@@ -45,6 +45,7 @@ from pathlib import Path
 import numpy as np
 
 from voiceclonnx.engines.base import EngineEntry, VoiceClonerBase, register_engine
+from voiceclonnx.audio import load_wav, save_wav
 
 # FACodec operates at 16 kHz, hop=200 samples
 _FA_SR = 16000
@@ -66,36 +67,6 @@ _QUANT_FP32 = "facodec_quantize.onnx"
 _QUANT_INT8 = "facodec_quantize_q8.onnx"
 _DEC_FP32 = "facodec_decoder.onnx"
 _DEC_INT8 = "facodec_decoder_q8.onnx"
-
-
-# ---------------------------------------------------------------------------
-# Audio I/O helpers
-# ---------------------------------------------------------------------------
-
-
-def _load_wav(path: str, target_sr: int = _FA_SR) -> np.ndarray:
-    """Load WAV as float32 mono, linear-resample to target_sr."""
-    import soundfile as sf
-
-    audio, sr = sf.read(str(path), dtype="float32", always_2d=False)
-    if audio.ndim > 1:
-        audio = audio.mean(axis=1)
-    if sr != target_sr:
-        n_out = int(len(audio) * target_sr / sr)
-        audio = np.interp(
-            np.linspace(0, len(audio) - 1, n_out),
-            np.arange(len(audio)),
-            audio,
-        ).astype(np.float32)
-    return audio
-
-
-def _save_wav(path: str, audio: np.ndarray, sr: int) -> None:
-    """Write float32 as 16-bit PCM WAV."""
-    import soundfile as sf
-
-    audio_int16 = (np.clip(audio, -1.0, 1.0) * 32767).astype(np.int16)
-    sf.write(str(path), audio_int16, sr, subtype="PCM_16")
 
 
 # ---------------------------------------------------------------------------
@@ -334,8 +305,8 @@ class FACodecAdapter(VoiceClonerBase):
         """
         self._ensure_models()
 
-        src_wav = _load_wav(str(audio), target_sr=_FA_SR)
-        ref_wav = _load_wav(str(reference_voice), target_sr=_FA_SR)
+        src_wav = load_wav(str(audio), target_sr=_FA_SR)
+        ref_wav = load_wav(str(reference_voice), target_sr=_FA_SR)
 
         # 1. Encode
         src_feats = self._encode(src_wav)   # (1, 256, T_src)
@@ -362,7 +333,7 @@ class FACodecAdapter(VoiceClonerBase):
         waveform = self._decode(src_vq_ids, ref_spk_embs)  # (N,)
 
         out_path = str(Path(out_path).resolve())
-        _save_wav(out_path, waveform, sr=_FA_SR)
+        save_wav(out_path, waveform, sr=_FA_SR)
         return out_path
 
 
