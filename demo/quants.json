@@ -1,0 +1,97 @@
+{
+ "asr": "faster-whisper base.en",
+ "source_text": "The quick brown fox jumps over the lazy dog. Voice conversion changes who is speaking, but not what is said. Listen closely and compare the engines.",
+ "rows": [
+  {
+   "engine": "bicodec",
+   "fp32_wer": 0.11538461538461539,
+   "int8_wer": 0.07692307692307693,
+   "fp32_mb": 1390.7,
+   "int8_mb": 419.0,
+   "saving_pct": 69.8712878406558,
+   "verdict": "\u2705 int8 recommended"
+  },
+  {
+   "engine": "facodec",
+   "fp32_wer": 0.0,
+   "int8_wer": 0.0,
+   "fp32_mb": 156.3,
+   "int8_mb": 69.3,
+   "saving_pct": 55.66218809980808,
+   "verdict": "\u2705 int8 recommended"
+  },
+  {
+   "engine": "focalcodec",
+   "fp32_wer": 0.15384615384615385,
+   "int8_wer": 0.2692307692307692,
+   "fp32_mb": 690.9,
+   "int8_mb": 374.8,
+   "saving_pct": 45.75191778839195,
+   "verdict": "\u2705 int8 recommended"
+  },
+  {
+   "engine": "knnvc",
+   "fp32_wer": 0.11538461538461539,
+   "int8_wer": 0.11538461538461539,
+   "fp32_mb": 471.7,
+   "int8_mb": 128.5,
+   "saving_pct": 72.75810896756413,
+   "verdict": "\u2705 int8 recommended"
+  },
+  {
+   "engine": "openvoice",
+   "fp32_wer": 0.0,
+   "int8_wer": 0.0,
+   "fp32_mb": 131.3,
+   "int8_mb": 43.1,
+   "saving_pct": 67.17440974866717,
+   "verdict": "\u2705 int8 recommended"
+  },
+  {
+   "engine": "rvc",
+   "fp32_wer": 0.38461538461538464,
+   "int8_wer": 0.7307692307692307,
+   "fp32_mb": 739.4,
+   "int8_mb": 193.9,
+   "saving_pct": 73.77603462266703,
+   "verdict": "\u26a0 int8 degraded (73% vs fp32 38%)"
+  },
+  {
+   "engine": "triaan",
+   "fp32_wer": 0.038461538461538464,
+   "int8_wer": 0.11538461538461539,
+   "fp32_mb": 294.0,
+   "int8_mb": 84.1,
+   "saving_pct": 71.39455782312925,
+   "verdict": "\u2705 int8 recommended"
+  },
+  {
+   "engine": "chatterbox",
+   "fp32_wer": 0.0,
+   "int8_wer": 0.038461538461538464,
+   "fp32_mb": 0.0,
+   "int8_mb": 0.0,
+   "saving_pct": 0.0,
+   "verdict": "\u2705 int8 recommended"
+  },
+  {
+   "engine": "cosyvoice",
+   "fp32_wer": 0.07692307692307693,
+   "int8_wer": 1.0,
+   "fp32_mb": 0.0,
+   "int8_mb": 0.0,
+   "saving_pct": 0.0,
+   "verdict": "\u26a0 int8 degraded (100% vs fp32 8%)"
+  },
+  {
+   "engine": "lscodec",
+   "fp32_wer": 0.038461538461538464,
+   "int8_wer": 0.2692307692307692,
+   "fp32_mb": 0.0,
+   "int8_mb": 0.0,
+   "saving_pct": 0.0,
+   "verdict": "\u26a0 int8 degraded (27% vs fp32 4%)"
+  }
+ ],
+ "skipped": []
+}

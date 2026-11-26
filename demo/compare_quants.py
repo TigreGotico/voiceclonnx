@@ -96,7 +96,17 @@ def wer(ref: list, hyp: list) -> float:
 
 
 def _transcribe(model, wav_path: str) -> str:
-    segs, _ = model.transcribe(wav_path, beam_size=5)
+    # A path makes faster-whisper decode with PyAV, whose 15+ releases reject the
+    # metadata_errors argument it passes; a 16 kHz mono array skips PyAV.
+    import numpy as np
+    import soundfile as sf
+    from scipy.signal import resample_poly
+
+    audio, sr = sf.read(wav_path, dtype="float32", always_2d=True)
+    audio = audio.mean(axis=1)
+    if sr != 16000:
+        audio = resample_poly(audio, 16000, sr).astype(np.float32)
+    segs, _ = model.transcribe(audio, beam_size=5)
     return " ".join(s.text.strip() for s in segs)
 
 
@@ -223,6 +233,12 @@ def main() -> int:
                 "verdict": verdict,
             }
         )
+
+    import json
+    (DEMO_DIR / "quants.json").write_text(json.dumps(
+        {"asr": "faster-whisper base.en", "source_text": SOURCE_TEXT, "rows": rows,
+         "skipped": skipped}, indent=1) + "\n")
+    print(f"[compare] engines in {len(engines)}, rows out {len(rows)}, skipped {len(skipped)}")
 
     # --- write QUANTS.md ---
     lines = [
