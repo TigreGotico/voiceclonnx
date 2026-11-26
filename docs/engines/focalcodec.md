@@ -3,7 +3,7 @@
 **Family:** kNN feature-swap
 **Sample rate:** 16 kHz
 **WER:** 15-19%
-**INT8:** degrades (WER 31% in INT8 vs 15% fp32, use fp32)
+**INT8:** see [QUANTS.md](../QUANTS.md) for the WER of fp32 and INT8
 **License:** Apache-2.0
 **Model:** [TigreGotico/voiceclonnx-focalcodec](https://huggingface.co/TigreGotico/voiceclonnx-focalcodec)
 
@@ -34,7 +34,7 @@ No separate speaker encoder required.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `quantized` | `bool` | `False` | Load INT8 models. **Not recommended**: INT8 WER is 31% vs fp32 15%. Use fp32 for production. |
+| `quantized` | `bool` | `False` | Load INT8 models. WER in [QUANTS.md](../QUANTS.md). |
 | `k` | `int` | `4` | Number of nearest neighbours to average in the cosine matching step. |
 
 ## Model and license

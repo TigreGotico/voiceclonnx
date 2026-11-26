@@ -139,7 +139,7 @@ here unless you have a specific constraint.
 **Best target-voice fidelity (speaker similarity):** `focalcodec`, `lscodec`,
 `chatterbox`, `facodec`, `knnvc`, `openvoice`: see the ranked
 [speaker-similarity benchmark](demo/SPEAKER_SIMILARITY.md). `lscodec` gives the
-strongest timbre transfer in the codec family, at a cost of about 35% WER.
+strongest timbre transfer in the codec family.
 Pick it when voice identity matters more than exact transcription.
 
 **Highest output sample rate:** `rvc` at up to 48 kHz (any-to-ONE). `chatterbox` runs
@@ -179,7 +179,7 @@ out = cloner.clone_voice("source.wav", "reference.wav", "out.wav")
 Some engines degrade significantly in INT8: use `focalcodec` and `cosyvoice`
 in fp32 for production.
 
-`chatterbox` INT8 matches fp32 quality (8% WER, 57% smaller). This project
+`chatterbox` has INT8 models; [docs/QUANTS.md](docs/QUANTS.md) gives their WER. This project
 quantizes and hosts it at `TigreGotico/voiceclonnx-chatterbox` because
 upstream ships fp32 only.
 

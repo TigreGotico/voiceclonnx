@@ -3,7 +3,7 @@
 **Family:** Flow-matching
 **Sample rate:** 22050 Hz
 **WER:** 8%
-**INT8:** ⚠ degrades (WER 100% in INT8, use fp32)
+**INT8:** ⚠ degrades; see [QUANTS.md](../QUANTS.md)
 **License:** Apache-2.0
 **Model:** [TigreGotico/voiceclonnx-cosyvoice](https://huggingface.co/TigreGotico/voiceclonnx-cosyvoice)
 
@@ -45,7 +45,7 @@ the 80-d flow conditioning space without the full flow model.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `quantized` | `bool` | `False` | Load INT8 models. **Not recommended**: INT8 WER is 100% vs fp32 8%. Use fp32 for production. |
+| `quantized` | `bool` | `False` | Load INT8 models. **Not recommended**: see [QUANTS.md](../QUANTS.md). |
 | `ode_steps` | `int` | `10` | ODE Euler steps for the flow decoder. Fewer steps = faster but may add metallic artefacts. Range: 5-30. |
 
 ## Model and license
@@ -70,7 +70,7 @@ Training corpus Emilia is CC-BY-NC-4.0, which does not constrain the model weigh
 ## INT8 note
 
 **INT8 is not recommended for this engine.** The flow decoder and speech
-tokenizer do not quantize well to INT8; measured WER jumps to 100% from fp32's 8%. Use `quantized=False` (the
+tokenizer do not quantize well to INT8; in the measured sentence, every word of the INT8 output is wrong ([QUANTS.md](../QUANTS.md)). Use `quantized=False` (the
 default) for production.
 See [QUANTS.md](../QUANTS.md).
 
