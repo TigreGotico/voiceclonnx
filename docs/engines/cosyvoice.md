@@ -70,7 +70,7 @@ Training corpus Emilia is CC-BY-NC-4.0, which does not constrain the model weigh
 ## INT8 note
 
 **INT8 is not recommended for this engine.** The flow decoder and speech
-tokenizer do not quantize well to INT8; in the measured sentence, every word of the INT8 output is wrong ([QUANTS.md](../QUANTS.md)). Use `quantized=False` (the
+tokenizer do not quantize well to INT8; in the measured sentence, the ASR hears no words in the INT8 output ([QUANTS.md](../QUANTS.md)). Use `quantized=False` (the
 default) for production.
 See [QUANTS.md](../QUANTS.md).
 
