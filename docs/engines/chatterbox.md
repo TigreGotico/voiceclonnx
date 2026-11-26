@@ -3,7 +3,7 @@
 **Family:** AR codec-LM
 **Sample rate:** 24 kHz
 **WER:** 4-8%
-**INT8:** available (8% WER, 57% smaller). This project hosts the quantized models
+**INT8:** available; see [QUANTS.md](../QUANTS.md) for its WER. This project hosts the quantized models
 **License:** Apache-2.0
 **Model:** [onnx-community/chatterbox-onnx](https://huggingface.co/onnx-community/chatterbox-onnx)
 
@@ -31,7 +31,7 @@ The `exaggeration` parameter scales the reference conditioning strength.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `quantized` | `bool` | `False` | When `True`, loads INT8 variants (`*_q8.onnx`). 8% WER, ~57% smaller. |
+| `quantized` | `bool` | `False` | When `True`, loads INT8 variants (`*_q8.onnx`). WER in [QUANTS.md](../QUANTS.md). |
 | `exaggeration` | `float` | `0.6` | Voice exaggeration factor. `0.5` = neutral; higher = more pronounced style transfer. |
 
 ## Model and license
@@ -52,8 +52,7 @@ Models download automatically on first use via `huggingface_hub`.
 INT8 quantized variants are hosted at `TigreGotico/voiceclonnx-chatterbox`
 (this project quantizes them, since upstream
 `onnx-community/chatterbox-onnx` ships fp32 only). `quantized=True` loads
-them, reaching 8% WER, matching fp32, at about 57% smaller (1080 MB to 467
-MB).
+them. [QUANTS.md](../QUANTS.md) gives their WER.
 
 ## WER
 
