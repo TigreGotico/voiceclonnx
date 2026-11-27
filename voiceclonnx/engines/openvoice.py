@@ -50,6 +50,7 @@ _OV2_SR = 22050
 
 # HF repo housing the exported ONNX artifacts
 _HF_REPO_ID = "TigreGotico/voiceclonnx-openvoice-v2"
+_HF_REVISION = "34d010c192c97f763207f488f6057fd07fee42ad"
 
 # Paths within the HF repo
 _REF_ENC_FP32 = "tone_ref_encoder.onnx"
@@ -167,8 +168,8 @@ class OpenVoiceV2Adapter(VoiceClonerBase):
         ref_file = _REF_ENC_INT8 if self._quantized else _REF_ENC_FP32
         conv_file = _CONVERTER_INT8 if self._quantized else _CONVERTER_FP32
 
-        ref_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=ref_file)
-        conv_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=conv_file)
+        ref_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=ref_file, revision=_HF_REVISION)
+        conv_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=conv_file, revision=_HF_REVISION)
 
         sess_opts = ort.SessionOptions()
         n_threads = os.cpu_count() or 4

@@ -66,6 +66,7 @@ _RVC_HOP = 320         # 320-sample hop → 50 Hz feature rate at 16 kHz
 
 # HF repo holding shared base models (ContentVec + RMVPE)
 _HF_BASE_REPO = "TigreGotico/voiceclonnx-rvc"
+_HF_REVISION = "cbfbabdabe6a1414292bade8f857fb6074abf130"
 
 # Filenames within the base repo
 _CONTENTVEC_FP32 = "contentvec_768l12.onnx"
@@ -223,8 +224,8 @@ class RVCAdapter(VoiceClonerBase):
     (``net_g``).  The ``reference_voice`` parameter accepts:
 
     * A **local path** to a converted ``.onnx`` RVC voice model.
-    * A **Hugging Face repo ID** (``owner/repo-name``), from which the
-      ``model.onnx`` file is downloaded automatically.
+    * A **Hugging Face reference** ``owner/repo[@revision][::filename.onnx]``.
+      The filename defaults to ``model.onnx``.
     * ``None`` / empty string → falls back to ``default_model`` config key or
       the built-in demo voice.
 
@@ -302,8 +303,8 @@ class RVCAdapter(VoiceClonerBase):
         cv_file = _CONTENTVEC_INT8 if self._quantized else _CONTENTVEC_FP32
         rmvpe_file = _RMVPE_INT8 if self._quantized else _RMVPE_FP32
 
-        cv_path = hf_hub_download(repo_id=_HF_BASE_REPO, filename=cv_file)
-        rmvpe_path = hf_hub_download(repo_id=_HF_BASE_REPO, filename=rmvpe_file)
+        cv_path = hf_hub_download(repo_id=_HF_BASE_REPO, filename=cv_file, revision=_HF_REVISION)
+        rmvpe_path = hf_hub_download(repo_id=_HF_BASE_REPO, filename=rmvpe_file, revision=_HF_REVISION)
 
         opts = ort.SessionOptions()
         n = os.cpu_count() or 4
@@ -350,59 +351,31 @@ class RVCAdapter(VoiceClonerBase):
     def _resolve_model_path(self, model_ref: str) -> Path:
         """Resolve *model_ref* to a local .onnx path.
 
-        Accepts:
-        - Local file path (absolute or relative)
-        - HF repo ID ``owner/repo`` → downloads the first suitable .onnx
-        - ``owner/repo::filename.onnx`` → downloads a specific file from the repo
+        Accepts a local ``.onnx`` path, or a Hugging Face reference
+        ``owner/repo[@revision][::filename.onnx]``. The filename defaults to
+        ``model.onnx``; the revision defaults to the repo's main branch.
         """
-        # Handle explicit file syntax: "owner/repo::filename.onnx"
-        if "::" in str(model_ref):
-            repo_id, filename = str(model_ref).split("::", 1)
-            try:
-                from huggingface_hub import hf_hub_download
-                return Path(hf_hub_download(repo_id=repo_id, filename=filename))
-            except Exception as exc:
-                raise FileNotFoundError(
-                    f"Could not download {filename!r} from {repo_id!r}: {exc}"
-                ) from exc
-
         p = Path(model_ref)
         if p.exists() and p.suffix == ".onnx":
             return p
 
-        # Check if it looks like a HF repo ID (contains exactly one slash,
-        # no .onnx extension, does not start with / or .)
-        if (
-            "/" in str(model_ref)
-            and not p.exists()
-            and not str(model_ref).startswith(".")
-        ):
-            try:
-                from huggingface_hub import hf_hub_download, list_repo_files
-                # Try common filenames first
-                for candidate in ("model.onnx", "net_g.onnx", "voice.onnx"):
-                    try:
-                        return Path(hf_hub_download(repo_id=model_ref, filename=candidate))
-                    except Exception:
-                        pass
-                # Fall back to the first .onnx file in the repo
-                repo_files = list(list_repo_files(model_ref))
-                onnx_files = [f for f in repo_files if f.endswith(".onnx")
-                              and not any(skip in f for skip in ("rmvpe", "vec", "hubert", "contentvec"))]
-                if onnx_files:
-                    return Path(hf_hub_download(repo_id=model_ref, filename=onnx_files[0]))
-                raise FileNotFoundError(f"No .onnx voice model found in repo {model_ref!r}")
-            except FileNotFoundError:
-                raise
-            except Exception as exc:
-                raise FileNotFoundError(
-                    f"Could not find or download RVC model from {model_ref!r}: {exc}"
-                ) from exc
+        repo_part, _, filename = str(model_ref).partition("::")
+        repo_id, _, revision = repo_part.partition("@")
+        if "/" not in repo_id or repo_id.startswith((".", "/")):
+            raise FileNotFoundError(
+                f"RVC voice model not found: {model_ref!r}. Pass a local .onnx path "
+                "or a Hugging Face reference owner/repo[@revision][::filename.onnx]."
+            )
+        filename = filename or "model.onnx"
+        from huggingface_hub import hf_hub_download
 
-        raise FileNotFoundError(
-            f"RVC voice model not found: {model_ref!r}. "
-            "Pass a local .onnx path or a Hugging Face repo ID (owner/repo)."
-        )
+        try:
+            return Path(hf_hub_download(repo_id=repo_id, filename=filename, revision=revision or None))
+        except Exception as exc:
+            raise FileNotFoundError(
+                f"Could not download {filename!r} from {repo_id!r}: {exc}. "
+                "Name the voice file with owner/repo::filename.onnx."
+            ) from exc
 
     # ------------------------------------------------------------------
     # Feature extraction (ContentVec)

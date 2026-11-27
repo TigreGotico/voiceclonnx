@@ -360,21 +360,18 @@ def test_project_spk_emb_with_injected_weights():
     np.testing.assert_allclose(proj[0], emb[0, :80], atol=1e-5)
 
 
-def test_project_spk_emb_fallback_no_weights():
-    """Without weights, _project_spk_emb falls back to truncation."""
+def test_project_spk_emb_raises_when_download_fails():
+    """A failed spk_proj.npz download raises; it never falls back to truncation."""
     from voiceclonnx.engines.cosyvoice import CosyVoiceAdapter
 
     adapter = CosyVoiceAdapter()
-    # Ensure no weights set
     if hasattr(adapter, "_spk_proj_w"):
         del adapter._spk_proj_w
 
-    # Mock HF download to fail
     import unittest.mock as mock
-    with mock.patch("huggingface_hub.hf_hub_download", side_effect=Exception("offline")):
-        emb = np.random.randn(1, 192).astype(np.float32)
-        proj = adapter._project_spk_emb(emb)
-    assert proj.shape == (1, 80)
+    with mock.patch("huggingface_hub.hf_hub_download", side_effect=OSError("offline")):
+        with pytest.raises(OSError, match="offline"):
+            adapter._project_spk_emb(np.random.randn(1, 192).astype(np.float32))
 
 
 # ---------------------------------------------------------------------------
