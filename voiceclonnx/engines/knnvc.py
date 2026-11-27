@@ -36,6 +36,7 @@ _KNNVC_SR = 16000
 
 # HF repo housing the exported ONNX artifacts
 _HF_REPO_ID = "TigreGotico/voiceclonnx-knn-vc"
+_HF_REVISION = "c0e3406e7326cdb98c75b42ccf9ff207ff40003a"
 
 # Paths within the HF repo
 _WAVLM_FP32 = "wavlm_layer6.onnx"
@@ -153,8 +154,8 @@ class KNNVCAdapter(VoiceClonerBase):
         wavlm_file = _WAVLM_INT8 if self._quantized else _WAVLM_FP32
         hifigan_file = _HIFIGAN_INT8 if self._quantized else _HIFIGAN_FP32
 
-        wavlm_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=wavlm_file)
-        hifigan_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=hifigan_file)
+        wavlm_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=wavlm_file, revision=_HF_REVISION)
+        hifigan_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=hifigan_file, revision=_HF_REVISION)
 
         sess_opts = ort.SessionOptions()
         sess_opts.inter_op_num_threads = os.cpu_count() or 4

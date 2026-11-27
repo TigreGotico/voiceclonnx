@@ -45,6 +45,7 @@ _OUT_SR = 24000
 _PROMPT_WIN = 16000 * 4   # WavLM ONNX is exported at a fixed 4 s window
 
 _HF_REPO_ID = "TigreGotico/voiceclonnx-lscodec"
+_HF_REVISION = "32ce6d5f1fd4dbfabb79ca4d04d914241f2b6584"
 
 _ENC_FP32, _ENC_INT8 = "lscodec_encoder.onnx", "lscodec_encoder_q8.onnx"
 _WL_FP32, _WL_INT8 = "wavlm_l6.onnx", "wavlm_l6_q8.onnx"
@@ -100,10 +101,10 @@ class LSCodecAdapter(VoiceClonerBase):
         wl = _WL_INT8 if self._quantized else _WL_FP32
         voc = _VOC_INT8 if self._quantized else _VOC_FP32
 
-        enc_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=enc)
-        wl_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=wl)
-        voc_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=voc)
-        cb_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=_CODEBOOK)
+        enc_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=enc, revision=_HF_REVISION)
+        wl_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=wl, revision=_HF_REVISION)
+        voc_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=voc, revision=_HF_REVISION)
+        cb_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=_CODEBOOK, revision=_HF_REVISION)
 
         opts = ort.SessionOptions()
         n = os.cpu_count() or 4

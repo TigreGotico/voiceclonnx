@@ -58,6 +58,7 @@ _FA_FMAX = 8000.0
 
 # HF repo housing the exported ONNX artifacts
 _HF_REPO_ID = "TigreGotico/voiceclonnx-facodec"
+_HF_REVISION = "14d48bc77685c763692015f4518007d30eb4bcb1"
 
 _ENC_FP32 = "facodec_encoder.onnx"
 _ENC_INT8 = "facodec_encoder_q8.onnx"
@@ -220,10 +221,10 @@ class FACodecAdapter(VoiceClonerBase):
         qnt_f = _QUANT_INT8 if self._quantized else _QUANT_FP32
         dec_f = _DEC_INT8 if self._quantized else _DEC_FP32
 
-        enc_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=enc_f)
-        tim_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=tim_f)
-        qnt_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=qnt_f)
-        dec_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=dec_f)
+        enc_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=enc_f, revision=_HF_REVISION)
+        tim_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=tim_f, revision=_HF_REVISION)
+        qnt_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=qnt_f, revision=_HF_REVISION)
+        dec_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=dec_f, revision=_HF_REVISION)
 
         sess_opts = ort.SessionOptions()
         n_threads = os.cpu_count() or 4

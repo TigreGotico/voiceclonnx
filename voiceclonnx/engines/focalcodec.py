@@ -43,6 +43,7 @@ _FC_SR = 16000
 
 # HF repo housing the exported ONNX artifacts
 _HF_REPO_ID = "TigreGotico/voiceclonnx-focalcodec"
+_HF_REVISION = "cd6970c6d6aa15f1586493ae73961add44ef63e9"
 
 # Paths within the HF repo
 _ENC_FP32 = "focalcodec_encoder.onnx"
@@ -236,8 +237,8 @@ class FocalCodecAdapter(VoiceClonerBase):
         enc_file = _ENC_INT8 if self._quantized else _ENC_FP32
         voc_file = _VOC_INT8 if self._quantized else _VOC_FP32
 
-        enc_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=enc_file)
-        voc_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=voc_file)
+        enc_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=enc_file, revision=_HF_REVISION)
+        voc_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=voc_file, revision=_HF_REVISION)
 
         sess_opts = ort.SessionOptions()
         n_threads = os.cpu_count() or 4

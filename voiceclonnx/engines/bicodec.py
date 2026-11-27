@@ -79,6 +79,7 @@ _BC_SR = 16000
 
 # HF repo for the exported ONNX artifacts
 _HF_REPO_ID = "TigreGotico/voiceclonnx-bicodec"
+_HF_REVISION = "e123ff4fc981a83f3034f37f3aa8bd75ccae5f7a"
 
 # File names inside the HF repo (fp32 and INT8 variants)
 _W2V_FP32 = "wav2vec2_encoder.onnx"
@@ -289,12 +290,12 @@ class BiCodecAdapter(VoiceClonerBase):
         glob_file = _GLOB_INT8 if q else _GLOB_FP32
         dec_file = _DEC_INT8 if q else _DEC_FP32
 
-        w2v_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=w2v_file)
-        sem_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=sem_file)
-        glob_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=glob_file)
-        mel_fb_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=_MEL_FB)
-        mel_cfg_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=_MEL_CFG)
-        dec_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=dec_file)
+        w2v_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=w2v_file, revision=_HF_REVISION)
+        sem_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=sem_file, revision=_HF_REVISION)
+        glob_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=glob_file, revision=_HF_REVISION)
+        mel_fb_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=_MEL_FB, revision=_HF_REVISION)
+        mel_cfg_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=_MEL_CFG, revision=_HF_REVISION)
+        dec_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=dec_file, revision=_HF_REVISION)
 
         # Load mel filterbank (numpy, no ORT needed)
         self._mel_fb = np.load(mel_fb_path).astype(np.float32)  # (num_mels, n_fft//2+1)

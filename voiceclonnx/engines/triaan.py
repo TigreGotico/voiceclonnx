@@ -47,6 +47,7 @@ _CPC_HIDDEN = 256
 
 # HF repo housing the exported ONNX artifacts
 _HF_REPO_ID = "TigreGotico/voiceclonnx-triaan-vc"
+_HF_REVISION = "0ecc46e234700b0cb4637f85bbf6603dc297f0b4"
 
 # Component filenames
 _CPC_FP32 = "cpc_encoder.onnx"
@@ -180,10 +181,10 @@ class TriAANVCAdapter(VoiceClonerBase):
         triaan_file = _TRIAAN_INT8 if self._quantized else _TRIAAN_FP32
         pwg_file = _PWG_INT8 if self._quantized else _PWG_FP32
 
-        cpc_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=cpc_file)
-        triaan_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=triaan_file)
-        pwg_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=pwg_file)
-        mel_stats_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=_MEL_STATS)
+        cpc_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=cpc_file, revision=_HF_REVISION)
+        triaan_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=triaan_file, revision=_HF_REVISION)
+        pwg_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=pwg_file, revision=_HF_REVISION)
+        mel_stats_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=_MEL_STATS, revision=_HF_REVISION)
 
         sess_opts = ort.SessionOptions()
         n_threads = os.cpu_count() or 4

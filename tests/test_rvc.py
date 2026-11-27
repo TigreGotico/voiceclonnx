@@ -514,3 +514,26 @@ def test_e2e_rvc_clone_edge_tts(tmp_path):
         f"duration={duration_s:.2f}s  sr={sr_out}  "
         f"size={size_bytes // 1024} KiB"
     )
+
+
+def test_resolve_model_path_downloads_named_file_and_revision():
+    from unittest.mock import patch
+
+    from voiceclonnx.engines.rvc import RVCAdapter
+
+    with patch("huggingface_hub.hf_hub_download", return_value="/x/voice.onnx") as dl:
+        RVCAdapter()._resolve_model_path("owner/repo@abc123::voice.onnx")
+    dl.assert_called_once_with(repo_id="owner/repo", filename="voice.onnx", revision="abc123")
+
+
+def test_resolve_model_path_raises_when_model_onnx_missing():
+    """A repo without model.onnx raises; no other .onnx in the repo is guessed."""
+    from unittest.mock import patch
+
+    from voiceclonnx.engines.rvc import RVCAdapter
+
+    with patch("huggingface_hub.hf_hub_download", side_effect=OSError("404")) as dl, \
+         patch("huggingface_hub.list_repo_files", return_value=["woman_1.onnx"]):
+        with pytest.raises(FileNotFoundError, match="model.onnx"):
+            RVCAdapter()._resolve_model_path("owner/repo")
+    dl.assert_called_once_with(repo_id="owner/repo", filename="model.onnx", revision=None)

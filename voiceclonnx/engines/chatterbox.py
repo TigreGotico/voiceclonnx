@@ -38,6 +38,7 @@ _CHATTERBOX_SR = 24000
 
 # HF model repo hosting the ONNX files
 _HF_MODEL_ID = "TigreGotico/voiceclonnx-chatterbox"
+_HF_REVISION = "8db57b78a6fd3a2d0d66de8bb3b78eb31bb5cfc2"
 
 # ONNX filenames within the ``onnx/`` subdirectory of the repo — fp32 variants
 _SPEECH_ENC_ONNX = "onnx/speech_encoder.onnx"
@@ -128,14 +129,14 @@ class ChatterboxAdapter(VoiceClonerBase):
 
         if self._quantized:
             # INT8 variants: single self-contained files, no external-data sidecar
-            enc_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_SPEECH_ENC_Q8_ONNX)
-            dec_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_COND_DEC_Q8_ONNX)
+            enc_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_SPEECH_ENC_Q8_ONNX, revision=_HF_REVISION)
+            dec_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_COND_DEC_Q8_ONNX, revision=_HF_REVISION)
         else:
             # fp32 variants: main .onnx + external-data sidecar (must be co-located)
-            enc_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_SPEECH_ENC_ONNX)
-            hf_hub_download(repo_id=_HF_MODEL_ID, filename=_SPEECH_ENC_DATA)
-            dec_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_COND_DEC_ONNX)
-            hf_hub_download(repo_id=_HF_MODEL_ID, filename=_COND_DEC_DATA)
+            enc_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_SPEECH_ENC_ONNX, revision=_HF_REVISION)
+            hf_hub_download(repo_id=_HF_MODEL_ID, filename=_SPEECH_ENC_DATA, revision=_HF_REVISION)
+            dec_path = hf_hub_download(repo_id=_HF_MODEL_ID, filename=_COND_DEC_ONNX, revision=_HF_REVISION)
+            hf_hub_download(repo_id=_HF_MODEL_ID, filename=_COND_DEC_DATA, revision=_HF_REVISION)
 
         sess_opts = ort.SessionOptions()
         n = os.cpu_count() or 4

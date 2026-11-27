@@ -64,6 +64,7 @@ _TOK_SR = 16000
 _SPK_SR = 16000
 
 _HF_REPO_ID = "TigreGotico/voiceclonnx-cosyvoice"
+_HF_REVISION = "844685e55b19c83c918ff4b1902527926fc0f87f"
 
 # File names in the HF repo
 _F_TOKENIZER = "speech_tokenizer_v1.onnx"
@@ -412,8 +413,8 @@ class CosyVoiceAdapter(VoiceClonerBase):
             "hf_bb": _F_HIFIGAN_BB_Q8 if q else _F_HIFIGAN_BB,
         }
 
-        paths = {k: hf_hub_download(repo_id=_HF_REPO_ID, filename=v) for k, v in files.items()}
-        lr_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=_F_LR_WEIGHTS)
+        paths = {k: hf_hub_download(repo_id=_HF_REPO_ID, filename=v, revision=_HF_REVISION) for k, v in files.items()}
+        lr_path = hf_hub_download(repo_id=_HF_REPO_ID, filename=_F_LR_WEIGHTS, revision=_HF_REVISION)
         self._lr_weights = np.load(lr_path)
 
         n = os.cpu_count() or 4
@@ -667,25 +668,13 @@ class CosyVoiceAdapter(VoiceClonerBase):
         np.ndarray (1, 80) float32
         """
         if not hasattr(self, "_spk_proj_w"):
-            self._spk_proj_w = None
-            self._spk_proj_b = None
-            try:
-                from huggingface_hub import hf_hub_download
+            from huggingface_hub import hf_hub_download
 
-                path = hf_hub_download(repo_id=_HF_REPO_ID, filename="spk_proj.npz")
-                data = np.load(path)
-                self._spk_proj_w = data["weight"].astype(np.float32)  # (80, 192)
-                self._spk_proj_b = data["bias"].astype(np.float32)    # (80,)
-            except Exception:
-                pass
-
-        if self._spk_proj_w is not None:
-            return (emb_192 @ self._spk_proj_w.T + self._spk_proj_b[np.newaxis]).astype(np.float32)
-        # Fallback for unit tests / missing artifact: truncate/zero-pad
-        if emb_192.shape[1] >= 80:
-            return emb_192[:, :80].copy()
-        pad = 80 - emb_192.shape[1]
-        return np.concatenate([emb_192, np.zeros((1, pad), dtype=np.float32)], axis=1)
+            path = hf_hub_download(repo_id=_HF_REPO_ID, filename="spk_proj.npz", revision=_HF_REVISION)
+            data = np.load(path)
+            self._spk_proj_w = data["weight"].astype(np.float32)  # (80, 192)
+            self._spk_proj_b = data["bias"].astype(np.float32)    # (80,)
+        return (emb_192 @ self._spk_proj_w.T + self._spk_proj_b[np.newaxis]).astype(np.float32)
 
 
 # ---------------------------------------------------------------------------
