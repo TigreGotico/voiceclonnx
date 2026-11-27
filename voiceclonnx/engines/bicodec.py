@@ -34,7 +34,7 @@ The ``content_split`` constructor parameter controls an experimental path
 where partial global tokens from the source are retained; the default (all
 global tokens from reference) is the recommended recipe per the issue spec.
 
-ONNX components (TigreGotico/voiceclonnx-bicodec)
+ONNX components (voiceclonnx/bicodec)
 --------------------------------------------
 - ``wav2vec2_encoder.onnx``  : (1, N) float32 → (1, T, 1024) float32
 - ``semantic_encoder.onnx``  : (1, T, 1024) float32 → (1, T2) int64
@@ -61,7 +61,7 @@ References
 - https://github.com/SparkAudio/Spark-TTS
 - https://arxiv.org/abs/2503.01710
 - https://huggingface.co/SparkAudio/Spark-TTS-0.5B
-- https://huggingface.co/TigreGotico/voiceclonnx-bicodec
+- https://huggingface.co/voiceclonnx/bicodec
 """
 
 from __future__ import annotations
@@ -78,7 +78,7 @@ from voiceclonnx.audio import load_wav, save_wav
 _BC_SR = 16000
 
 # HF repo for the exported ONNX artifacts
-_HF_REPO_ID = "TigreGotico/voiceclonnx-bicodec"
+_HF_REPO_ID = "voiceclonnx/bicodec"
 _HF_REVISION = "e123ff4fc981a83f3034f37f3aa8bd75ccae5f7a"
 
 # File names inside the HF repo (fp32 and INT8 variants)
@@ -470,7 +470,7 @@ register_engine(
             "ECAPA-TDNN + Perceiver + FSQ → 32 global tokens (timbre). "
             "VC: swap global tokens from reference, decode. "
             "Zero-shot any-to-any VC at 16 kHz. "
-            "ONNX artifacts from TigreGotico/voiceclonnx-bicodec. "
+            "ONNX artifacts from voiceclonnx/bicodec. "
             "(SparkAudio 2025, CC BY-NC-SA 4.0 weights, Apache-2.0 code)"
         ),
         extras="",

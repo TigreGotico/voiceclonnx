@@ -46,7 +46,7 @@ _WIN_LENGTH = 400
 _CPC_HIDDEN = 256
 
 # HF repo housing the exported ONNX artifacts
-_HF_REPO_ID = "TigreGotico/voiceclonnx-triaan-vc"
+_HF_REPO_ID = "voiceclonnx/triaan-vc"
 _HF_REVISION = "0ecc46e234700b0cb4637f85bbf6603dc297f0b4"
 
 # Component filenames
@@ -379,7 +379,7 @@ register_engine(
         description=(
             "TriAAN-VC: CPC encoder + Triple Adaptive Attention Normalization decoder "
             "+ ParallelWaveGAN vocoder. Zero-shot any-to-any VC at 16 kHz. "
-            "ONNX artifacts from TigreGotico/voiceclonnx-triaan-vc. "
+            "ONNX artifacts from voiceclonnx/triaan-vc. "
             "(winddori2002 et al., ICASSP 2023, MIT license)"
         ),
         extras="",

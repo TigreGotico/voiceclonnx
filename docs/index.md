@@ -149,7 +149,7 @@ voiceclonnx never redistributes model weights without redistribution rights.
 
 - **Distributable weights** use an MIT, Apache, BSD, or CC-BY upstream
   license. voiceclonnx publishes the ONNX weights to
-  `TigreGotico/voiceclonnx-<engine>` on HF Hub, and downloads them
+  `voiceclonnx/<engine>` on HF Hub, and downloads them
   automatically on first use.
 
 - **Local-only weights** carry an NC, ND, or unlicensed upstream license.

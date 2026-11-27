@@ -5,7 +5,7 @@
 **WER:** 38% (sample community model; varies by model quality)
 **INT8:** available for base models (ContentVec + RMVPE); per-voice model is user-supplied
 **License:** MIT (base models)
-**Model:** [TigreGotico/voiceclonnx-rvc](https://huggingface.co/TigreGotico/voiceclonnx-rvc)
+**Model:** [voiceclonnx/rvc](https://huggingface.co/voiceclonnx/rvc)
 
 ---
 
@@ -18,7 +18,7 @@ path to an `.onnx` RVC voice model (local file or HF repo ID). Thousands of
 community-trained RVC voice models exist on Hugging Face.
 
 voiceclonnx hosts the base shared models (ContentVec encoder and RMVPE F0
-predictor) at `TigreGotico/voiceclonnx-rvc`. The user supplies per-voice
+predictor) at `voiceclonnx/rvc`. The user supplies per-voice
 `net_g` synthesizers.
 
 ## How it works

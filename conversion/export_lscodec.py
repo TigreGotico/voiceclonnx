@@ -25,7 +25,7 @@ Usage::
 
     python -m conversion.export_lscodec --lscodec-dir /path/to/LSCodec-Inference \
         --pretrained-dir /path/to/LSCodec-Inference/pretrained --output-dir /tmp/lscodec-out
-    # add --push to upload to TigreGotico/voiceclonnx-lscodec
+    # add --push to upload to voiceclonnx/lscodec
 
 Parity (fixed-length where noted) measured at export time:
   encoder max_abs ~6e-3 | wavlm (4 s) ~5e-4 | vocoder ~6e-6
@@ -41,7 +41,7 @@ import sys
 
 import numpy as np
 
-HF_REPO = "TigreGotico/voiceclonnx-lscodec"
+HF_REPO = "voiceclonnx/lscodec"
 UPSTREAM = "https://github.com/X-LANCE/LSCodec-Inference"
 WAVLM_WINDOW = 16000 * 4  # fixed 4 s prompt window
 

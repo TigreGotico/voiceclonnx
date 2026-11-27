@@ -17,7 +17,7 @@ The short version:
    INT8 variants.
 
 4. **Push to HF** — run `python -m conversion.push_models` after dry-run
-   verification. Models go to `TigreGotico/voiceclonnx-<engine>`.
+   verification. Models go to `voiceclonnx/<engine>`.
 
 5. **Write the adapter** — subclass `VoiceClonerBase`, implement `clone_voice`,
    call `register_engine`. See [docs/api.md](docs/api.md#adding-a-custom-engine).

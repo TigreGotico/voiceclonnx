@@ -11,7 +11,7 @@ Usage::
 
 Notes
 -----
-- Chatterbox INT8 from TigreGotico/voiceclonnx-chatterbox (we host the quantized models).
+- Chatterbox INT8 from voiceclonnx/chatterbox (we host the quantized models).
 - RVC base models (ContentVec + RMVPE) have INT8 variants; the voice model is
   user-supplied.  RVC's int8 flag quantizes only the shared base models; the
   demo uses the bundled ``woman_1.onnx`` voice model.

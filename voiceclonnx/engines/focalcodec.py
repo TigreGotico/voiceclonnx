@@ -25,7 +25,7 @@ References
 ----------
 - https://github.com/lucadellalib/focalcodec
 - https://arxiv.org/abs/2502.04465
-- https://huggingface.co/TigreGotico/voiceclonnx-focalcodec
+- https://huggingface.co/voiceclonnx/focalcodec
 """
 
 from __future__ import annotations
@@ -42,7 +42,7 @@ from voiceclonnx.audio import load_wav, save_wav
 _FC_SR = 16000
 
 # HF repo housing the exported ONNX artifacts
-_HF_REPO_ID = "TigreGotico/voiceclonnx-focalcodec"
+_HF_REPO_ID = "voiceclonnx/focalcodec"
 _HF_REVISION = "cd6970c6d6aa15f1586493ae73961add44ef63e9"
 
 # Paths within the HF repo
@@ -328,7 +328,7 @@ register_engine(
         description=(
             "FocalCodec: WavLM encoder + kNN cosine matching (pure numpy) + "
             "Vocos ISTFT decoder.  Zero-shot any-to-any VC at 16 kHz. "
-            "ONNX artifacts from TigreGotico/voiceclonnx-focalcodec. "
+            "ONNX artifacts from voiceclonnx/focalcodec. "
             "(Della Libera et al., NeurIPS 2025, Apache-2.0)"
         ),
         extras="",

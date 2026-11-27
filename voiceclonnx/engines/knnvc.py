@@ -35,7 +35,7 @@ from voiceclonnx.audio import load_wav, save_wav
 _KNNVC_SR = 16000
 
 # HF repo housing the exported ONNX artifacts
-_HF_REPO_ID = "TigreGotico/voiceclonnx-knn-vc"
+_HF_REPO_ID = "voiceclonnx/knn-vc"
 _HF_REVISION = "c0e3406e7326cdb98c75b42ccf9ff207ff40003a"
 
 # Paths within the HF repo
@@ -253,7 +253,7 @@ register_engine(
         description=(
             "kNN-VC: WavLM-Large layer-6 encoder + k-nearest-neighbour matching "
             "(pure numpy) + HiFi-GAN vocoder. Zero-shot any-to-any VC at 16 kHz. "
-            "ONNX artifacts from TigreGotico/voiceclonnx-knn-vc. "
+            "ONNX artifacts from voiceclonnx/knn-vc. "
             "(Baas et al., Interspeech 2023, MIT license)"
         ),
         extras="",

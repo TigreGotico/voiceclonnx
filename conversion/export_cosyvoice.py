@@ -726,7 +726,7 @@ def _push_to_hf(engine_dir: str) -> None:
     from huggingface_hub import HfApi
 
     api = HfApi()
-    repo_id = "TigreGotico/voiceclonnx-cosyvoice"
+    repo_id = "voiceclonnx/cosyvoice"
     api.create_repo(repo_id, repo_type="model", exist_ok=True, private=False)
     api.upload_folder(
         folder_path=engine_dir, repo_id=repo_id, repo_type="model",

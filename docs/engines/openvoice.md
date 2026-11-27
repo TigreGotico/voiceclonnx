@@ -5,7 +5,7 @@
 **WER:** 0%
 **INT8:** available (slight quality cost)
 **License:** MIT
-**Model:** [TigreGotico/voiceclonnx-openvoice-v2](https://huggingface.co/TigreGotico/voiceclonnx-openvoice-v2)
+**Model:** [voiceclonnx/openvoice-v2](https://huggingface.co/voiceclonnx/openvoice-v2)
 
 ---
 

@@ -667,10 +667,10 @@ def export_bicodec(output_dir: str, no_push: bool = False) -> None:
         push_engine(
             engine_dir=str(layout.engine_dir),
             engine_name="bicodec",
-            hf_repo_id="TigreGotico/voiceclonnx-bicodec",
+            hf_repo_id="voiceclonnx/bicodec",
             commit_message="export: add bicodec ONNX artifacts (CC BY-NC-SA 4.0 weights)",
         )
-        print("[export] pushed to TigreGotico/voiceclonnx-bicodec")
+        print("[export] pushed to voiceclonnx/bicodec")
     else:
         print("[export] --no-push: skipping HF upload")
 

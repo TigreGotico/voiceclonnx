@@ -49,7 +49,7 @@ from voiceclonnx.audio import load_wav, save_wav
 _OV2_SR = 22050
 
 # HF repo housing the exported ONNX artifacts
-_HF_REPO_ID = "TigreGotico/voiceclonnx-openvoice-v2"
+_HF_REPO_ID = "voiceclonnx/openvoice-v2"
 _HF_REVISION = "34d010c192c97f763207f488f6057fd07fee42ad"
 
 # Paths within the HF repo
@@ -280,7 +280,7 @@ register_engine(
             "OpenVoice v2 tone-color converter: reference encoder (linear spec -> "
             "256-dim tone-color embedding) + VITS-style flow with HiFi-GAN vocoder. "
             "Zero-shot any-to-any VC at 22050 Hz. "
-            "ONNX artifacts from TigreGotico/voiceclonnx-openvoice-v2. "
+            "ONNX artifacts from voiceclonnx/openvoice-v2. "
             "(myshell-ai/OpenVoice, MIT license)"
         ),
         extras="",

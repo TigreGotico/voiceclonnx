@@ -232,7 +232,7 @@ class TestTriaanFilenames:
 
 
 # ---------------------------------------------------------------------------
-# Tests: chatterbox — quantized=True loads _q8 files from TigreGotico/voiceclonnx-chatterbox
+# Tests: chatterbox — quantized=True loads _q8 files from voiceclonnx/chatterbox
 # ---------------------------------------------------------------------------
 
 
