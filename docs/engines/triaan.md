@@ -5,7 +5,7 @@
 **WER:** 4%
 **INT8:** available (slight quality cost)
 **License:** MIT
-**Model:** [TigreGotico/voiceclonnx-triaan-vc](https://huggingface.co/TigreGotico/voiceclonnx-triaan-vc)
+**Model:** [voiceclonnx/triaan-vc](https://huggingface.co/voiceclonnx/triaan-vc)
 
 ---
 
@@ -37,7 +37,7 @@ ParallelWaveGAN vocoder. Each inference call uses three ONNX components.
 |-----|------|---------|-------------|
 | `quantized` | `bool` | `False` | Load INT8 `*_q8.onnx` models. Reduces total footprint to ~84 MB, at a slight quality cost. |
 | `model_dir` | `str` | `None` | Local path to a directory with all ONNX files. Skips HF Hub download. |
-| `hf_repo_id` | `str` | `TigreGotico/voiceclonnx-triaan-vc` | HF repository to download from. |
+| `hf_repo_id` | `str` | `voiceclonnx/triaan-vc` | HF repository to download from. |
 
 ## Model and license
 

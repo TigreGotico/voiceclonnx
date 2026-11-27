@@ -5,7 +5,7 @@
 **WER:** 15-19%
 **INT8:** see [QUANTS.md](../QUANTS.md) for the WER of fp32 and INT8
 **License:** Apache-2.0
-**Model:** [TigreGotico/voiceclonnx-focalcodec](https://huggingface.co/TigreGotico/voiceclonnx-focalcodec)
+**Model:** [voiceclonnx/focalcodec](https://huggingface.co/voiceclonnx/focalcodec)
 
 ---
 

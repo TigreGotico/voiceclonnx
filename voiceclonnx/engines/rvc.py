@@ -29,7 +29,7 @@ numpy — no torch at inference.
   is ``None`` or empty.
 
 Base models (shared ContentVec encoder + RMVPE F0 predictor):
-  ``TigreGotico/voiceclonnx-rvc`` (public, MIT)
+  ``voiceclonnx/rvc`` (public, MIT)
 
 Voice models are user-supplied (community .pth files converted to ONNX via
 ``convert_rvc_model.py``, or pulled from HF repos that redistribute ONNX
@@ -65,7 +65,7 @@ _RVC_INPUT_SR = 16000  # ContentVec/RMVPE input: 16 kHz
 _RVC_HOP = 320         # 320-sample hop → 50 Hz feature rate at 16 kHz
 
 # HF repo holding shared base models (ContentVec + RMVPE)
-_HF_BASE_REPO = "TigreGotico/voiceclonnx-rvc"
+_HF_BASE_REPO = "voiceclonnx/rvc"
 _HF_REVISION = "cbfbabdabe6a1414292bade8f857fb6074abf130"
 
 # Filenames within the base repo
@@ -385,7 +385,7 @@ class RVCAdapter(VoiceClonerBase):
         """Run ContentVec encoder; return (T, 768) features.
 
         Supports two community ONNX formats:
-        - TigreGotico/voiceclonnx-rvc export: input ``input_values`` (1, T),
+        - voiceclonnx/rvc export: input ``input_values`` (1, T),
           optional ``attention_mask`` (1, T); output ``hidden_states`` (1, T, 768)
         - ozada/onnx_rvc vec-768-layer-12 format: input ``source`` (1, 1, T);
           output ``embed`` (1, T, 768)
@@ -591,7 +591,7 @@ register_engine(
             "RVC (Retrieval-based Voice Conversion): ContentVec encoder + RMVPE F0 predictor "
             "+ VITS-based synthesizer.  Any-to-ONE: the target speaker is baked into the model. "
             "reference_voice = path to an RVC .onnx voice model or HF repo ID.  "
-            "Base models from TigreGotico/voiceclonnx-rvc (MIT).  "
+            "Base models from voiceclonnx/rvc (MIT).  "
             "(RVC-Project, MIT license)"
         ),
         extras="",

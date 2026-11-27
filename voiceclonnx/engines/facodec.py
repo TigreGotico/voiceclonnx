@@ -34,7 +34,7 @@ References
 - https://huggingface.co/amphion/naturalspeech3_facodec
 - https://github.com/open-mmlab/Amphion
 - https://arxiv.org/abs/2403.03100
-- https://huggingface.co/TigreGotico/voiceclonnx-facodec
+- https://huggingface.co/voiceclonnx/facodec
 """
 
 from __future__ import annotations
@@ -57,7 +57,7 @@ _FA_FMIN = 0.0
 _FA_FMAX = 8000.0
 
 # HF repo housing the exported ONNX artifacts
-_HF_REPO_ID = "TigreGotico/voiceclonnx-facodec"
+_HF_REPO_ID = "voiceclonnx/facodec"
 _HF_REVISION = "14d48bc77685c763692015f4518007d30eb4bcb1"
 
 _ENC_FP32 = "facodec_encoder.onnx"
@@ -350,7 +350,7 @@ register_engine(
             "FACodec (NaturalSpeech 3): factorised codec VC — convolutional encoder, "
             "disentangled VQ (prosody/content/timbre/acoustic), "
             "zero-shot timbre-swap via TransformerEncoder timbre extractor + AdaIN decoder. "
-            "16 kHz. ONNX artifacts from TigreGotico/voiceclonnx-facodec. "
+            "16 kHz. ONNX artifacts from voiceclonnx/facodec. "
             "(Ju et al., ICML 2024, Apache-2.0 weights)"
         ),
         extras="",

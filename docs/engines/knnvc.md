@@ -5,7 +5,7 @@
 **WER:** 12-15%
 **INT8:** available (slight quality cost; recommended for memory-constrained use)
 **License:** MIT
-**Model:** [TigreGotico/voiceclonnx-knn-vc](https://huggingface.co/TigreGotico/voiceclonnx-knn-vc)
+**Model:** [voiceclonnx/knn-vc](https://huggingface.co/voiceclonnx/knn-vc)
 
 ---
 

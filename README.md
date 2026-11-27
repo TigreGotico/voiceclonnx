@@ -109,16 +109,16 @@ WER is measured with faster-whisper `base.en` against the source transcript
 
 | Engine | Family | Sample rate | WER | INT8 | Model | Best for |
 |--------|--------|-------------|-----|------|-------|----------|
-| `facodec` | Factorized codec | 16 kHz | **0%** | ✅ | [TigreGotico/voiceclonnx-facodec](https://huggingface.co/TigreGotico/voiceclonnx-facodec) | Best overall quality (0% WER + strong timbre) |
-| `openvoice` | Tone-color transfer | 22 kHz | **0%** | ✅ | [TigreGotico/voiceclonnx-openvoice-v2](https://huggingface.co/TigreGotico/voiceclonnx-openvoice-v2) | Broadest style range, 0% WER |
-| `chatterbox` | AR codec-LM | 24 kHz | 4-8% | ✅ (8% WER) | [TigreGotico/voiceclonnx-chatterbox](https://huggingface.co/TigreGotico/voiceclonnx-chatterbox) | Natural prosody, strongest source-to-target shift |
-| `triaan` | Triple-AAN | 16 kHz | 4% | ✅ | [TigreGotico/voiceclonnx-triaan-vc](https://huggingface.co/TigreGotico/voiceclonnx-triaan-vc) | Good quality, small footprint |
-| `cosyvoice` | Flow-matching | 22 kHz | 8% | ⚠ int8 degrades | [TigreGotico/voiceclonnx-cosyvoice](https://huggingface.co/TigreGotico/voiceclonnx-cosyvoice) | Cross-lingual conversion |
-| `bicodec` | Semantic + global tokens | 16 kHz | 12% | ✅ | [TigreGotico/voiceclonnx-bicodec](https://huggingface.co/TigreGotico/voiceclonnx-bicodec) | SparkTTS zero-shot VC |
-| `knnvc` | kNN feature-swap | 16 kHz | 12-15% | ✅ | [TigreGotico/voiceclonnx-knn-vc](https://huggingface.co/TigreGotico/voiceclonnx-knn-vc) | Lightweight (123 MB int8), strong timbre |
-| `focalcodec` | kNN feature-swap | 16 kHz | 15-19% | ⚠ int8 degrades | [TigreGotico/voiceclonnx-focalcodec](https://huggingface.co/TigreGotico/voiceclonnx-focalcodec) | Best timbre similarity (NeurIPS 2025) |
-| `lscodec` | Speaker-decoupled codec | 24 kHz | ~35% | ✅ | [TigreGotico/voiceclonnx-lscodec](https://huggingface.co/TigreGotico/voiceclonnx-lscodec) | **Best timbre transfer**, trades some WER (Interspeech 2025) |
-| `rvc` | ContentVec + VITS | 40/48 kHz | 38%† | ✅ (base only) | [TigreGotico/voiceclonnx-rvc](https://huggingface.co/TigreGotico/voiceclonnx-rvc) | Any-to-ONE, community voices |
+| `facodec` | Factorized codec | 16 kHz | **0%** | ✅ | [voiceclonnx/facodec](https://huggingface.co/voiceclonnx/facodec) | Best overall quality (0% WER + strong timbre) |
+| `openvoice` | Tone-color transfer | 22 kHz | **0%** | ✅ | [voiceclonnx/openvoice-v2](https://huggingface.co/voiceclonnx/openvoice-v2) | Broadest style range, 0% WER |
+| `chatterbox` | AR codec-LM | 24 kHz | 4-8% | ✅ (8% WER) | [voiceclonnx/chatterbox](https://huggingface.co/voiceclonnx/chatterbox) | Natural prosody, strongest source-to-target shift |
+| `triaan` | Triple-AAN | 16 kHz | 4% | ✅ | [voiceclonnx/triaan-vc](https://huggingface.co/voiceclonnx/triaan-vc) | Good quality, small footprint |
+| `cosyvoice` | Flow-matching | 22 kHz | 8% | ⚠ int8 degrades | [voiceclonnx/cosyvoice](https://huggingface.co/voiceclonnx/cosyvoice) | Cross-lingual conversion |
+| `bicodec` | Semantic + global tokens | 16 kHz | 12% | ✅ | [voiceclonnx/bicodec](https://huggingface.co/voiceclonnx/bicodec) | SparkTTS zero-shot VC |
+| `knnvc` | kNN feature-swap | 16 kHz | 12-15% | ✅ | [voiceclonnx/knn-vc](https://huggingface.co/voiceclonnx/knn-vc) | Lightweight (123 MB int8), strong timbre |
+| `focalcodec` | kNN feature-swap | 16 kHz | 15-19% | ⚠ int8 degrades | [voiceclonnx/focalcodec](https://huggingface.co/voiceclonnx/focalcodec) | Best timbre similarity (NeurIPS 2025) |
+| `lscodec` | Speaker-decoupled codec | 24 kHz | ~35% | ✅ | [voiceclonnx/lscodec](https://huggingface.co/voiceclonnx/lscodec) | **Best timbre transfer**, trades some WER (Interspeech 2025) |
+| `rvc` | ContentVec + VITS | 40/48 kHz | 38%† | ✅ (base only) | [voiceclonnx/rvc](https://huggingface.co/voiceclonnx/rvc) | Any-to-ONE, community voices |
 
 
 
@@ -180,7 +180,7 @@ Some engines degrade significantly in INT8: use `focalcodec` and `cosyvoice`
 in fp32 for production.
 
 `chatterbox` has INT8 models; [docs/QUANTS.md](docs/QUANTS.md) gives their WER. This project
-quantizes and hosts it at `TigreGotico/voiceclonnx-chatterbox` because
+quantizes and hosts it at `voiceclonnx/chatterbox` because
 upstream ships fp32 only.
 
 See [docs/QUANTS.md](docs/QUANTS.md) for the full WER and size comparison.

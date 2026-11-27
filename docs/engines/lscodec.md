@@ -8,7 +8,7 @@ bitrate degrades some words)
 [demo/SPEAKER_SIMILARITY.md](../../demo/SPEAKER_SIMILARITY.md))
 **INT8:** available (`quantized=True`)
 **License:** MIT (LSCodec code; WavLM-Large MIT)
-**Model:** [TigreGotico/voiceclonnx-lscodec](https://huggingface.co/TigreGotico/voiceclonnx-lscodec)
+**Model:** [voiceclonnx/lscodec](https://huggingface.co/voiceclonnx/lscodec)
 
 ---
 

@@ -29,7 +29,7 @@ Then write the adapter (subclass `VoiceClonerBase`), add the auto-import, add
 | [1. Export](#1-export) | `conversion/export_<engine>.py` contract |
 | [2. Parity check](#2-parity-check) | Tolerance verification vs torch |
 | [3. Quantize](#3-quantize) | Produce `*_q8.onnx` INT8 variants |
-| [4. Push to HF](#4-push-to-hf) | Upload to `TigreGotico/voiceclonnx-<engine>` |
+| [4. Push to HF](#4-push-to-hf) | Upload to `voiceclonnx/<engine>` |
 | [5. Write the adapter](#5-write-the-voiceclonnx-adapter) | Subclass + register |
 | [Output directory layout](#output-directory-layout) | File naming conventions |
 | [Weight-license policy](#weight-license-policy-publish-with-the-license-stated) | Distributable vs local-only |
@@ -176,7 +176,7 @@ optional latency figures if you pass `benchmark_inputs`.
 
 ## 4. Push to HF
 
-Upload the finished engine directory to its public per-engine repo `TigreGotico/voiceclonnx-<engine>` (auto-created and added to the voiceclonnx HF collection):
+Upload the finished engine directory to its public per-engine repo `voiceclonnx/<engine>` (auto-created and added to the voiceclonnx HF collection):
 
 ```bash
 # Dry-run first: prints files without uploading
@@ -202,7 +202,7 @@ Once the ONNX files are on HF, create `voiceclonnx/engines/<engine>.py`:
 
 1. Subclass `VoiceClonerBase` from `voiceclonnx.engines.base`.
 2. In `__init__`, download the models via `huggingface_hub.hf_hub_download`
-   (or `snapshot_download`) using the per-engine repo `TigreGotico/voiceclonnx-<engine>` and the
+   (or `snapshot_download`) using the per-engine repo `voiceclonnx/<engine>` and the
    subdirectory.
 3. Load ONNX sessions with `onnxruntime.InferenceSession`.
 4. Implement `clone_voice(audio, reference_voice, out_path)`.
@@ -224,7 +224,7 @@ The adapter must have **zero torch dependency**: onnxruntime and numpy only.
     parity_report.json   ← parity check results
 ```
 
-This mirrors the layout of the public per-engine repo `TigreGotico/voiceclonnx-<engine>` on HF Hub.
+This mirrors the layout of the public per-engine repo `voiceclonnx/<engine>` on HF Hub.
 
 ---
 
@@ -390,7 +390,7 @@ can detect 40k vs 48k models automatically.
 
 ## Weight-license policy: publish with the license stated
 
-voiceclonnx publishes every ONNX export to its public `TigreGotico/voiceclonnx-<engine>`
+voiceclonnx publishes every ONNX export to its public `voiceclonnx/<engine>`
 HF repo. The upstream weight license travels with the artifacts: `license`
 tag and restrictions stated plainly on the model card, upstream LICENSE file
 and PROVENANCE.md alongside. Whether a given license (NC, research-only,
@@ -453,7 +453,7 @@ ParallelWaveGAN vocoder then re-normalizes with its own VCTK training stats
 The adapter must apply this denormalization between the TriAAN and PWG steps.
 Omitting it passes doubly-normalized mel to the vocoder → the signal is in the
 wrong range → noise output even though parity tests pass.  `mel_stats.npy` is
-bundled in the HF repo (`TigreGotico/voiceclonnx-triaan-vc`) and loaded by the adapter.
+bundled in the HF repo (`voiceclonnx/triaan-vc`) and loaded by the adapter.
 
 **dynamo=False**: PyTorch 2.9+ defaults to the new dynamo-based ONNX exporter,
 which raises `ValueError: Found conflicts between user-specified ranges and
@@ -705,7 +705,7 @@ python -u bicodec_export_run.py
 The script downloads `SparkAudio/Spark-TTS-0.5B` via HF Hub (LLM weights
 skipped with `ignore_patterns=["LLM/*"]`), exports five components, runs
 parity checks, quantizes to INT8, writes `config.json`/`provenance.json`, and
-optionally pushes to `TigreGotico/voiceclonnx-bicodec`.
+optionally pushes to `voiceclonnx/bicodec`.
 
 ### Parity results
 
@@ -734,7 +734,7 @@ optionally pushes to `TigreGotico/voiceclonnx-bicodec`.
 
 Upstream weights: **CC BY-NC-SA 4.0** (SparkAudio/Spark-TTS-0.5B).
 Upstream code: Apache-2.0.
-The `TigreGotico/voiceclonnx-bicodec` HF repo states the license plainly on the
+The `voiceclonnx/bicodec` HF repo states the license plainly on the
 model card.  Non-commercial use only.
 
 ---
@@ -937,8 +937,8 @@ pip install /tmp/CosyVoice/third_party/AcademiCodec \
 PYTHONPATH=/tmp/CosyVoice python3 conversion/export_cosyvoice.py \
     --out /tmp/vc-cosy-out --push
 
-# Push to HF Hub (requires HF_TOKEN with write access to TigreGotico org)
-huggingface-cli upload TigreGotico/voiceclonnx-cosyvoice /tmp/vc-cosy-out/cosyvoice
+# Push to HF Hub (requires HF_TOKEN with write access to the voiceclonnx org)
+huggingface-cli upload voiceclonnx/cosyvoice /tmp/vc-cosy-out/cosyvoice
 ```
 
 The `--push` flag skips re-exporting already-present ONNX files (checks by

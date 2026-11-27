@@ -49,7 +49,7 @@ Models download automatically on first use via `huggingface_hub`.
 
 ## INT8 note
 
-INT8 quantized variants are hosted at `TigreGotico/voiceclonnx-chatterbox`
+INT8 quantized variants are hosted at `voiceclonnx/chatterbox`
 (this project quantizes them, since upstream
 `onnx-community/chatterbox-onnx` ships fp32 only). `quantized=True` loads
 them. [QUANTS.md](../QUANTS.md) gives their WER.

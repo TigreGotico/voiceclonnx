@@ -290,7 +290,7 @@ _E2E_REASON = (
 def test_e2e_triaan_clone_edge_tts_voices(tmp_path):
     """Real end-to-end: CPC encoder + TriAAN decoder + PWG vocoder.
 
-    Downloads models from TigreGotico/voiceclonnx-triaan-vc (public HF repo).
+    Downloads models from voiceclonnx/triaan-vc (public HF repo).
     Validates:
     - Output is a valid 16-bit 16 kHz WAV.
     - Duration is in a reasonable range (0.5 s – 10 s).

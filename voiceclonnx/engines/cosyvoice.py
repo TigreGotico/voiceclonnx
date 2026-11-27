@@ -31,7 +31,7 @@ No GPU required; no PyTorch at inference time.
 
 ONNX artifacts
 --------------
-Hosted at ``TigreGotico/voiceclonnx-cosyvoice`` on Hugging Face Hub.
+Hosted at ``voiceclonnx/cosyvoice`` on Hugging Face Hub.
 
 License
 -------
@@ -43,7 +43,7 @@ References
 - https://github.com/FunAudioLLM/CosyVoice
 - https://huggingface.co/FunAudioLLM/CosyVoice-300M
 - https://arxiv.org/abs/2407.05407
-- https://huggingface.co/TigreGotico/voiceclonnx-cosyvoice
+- https://huggingface.co/voiceclonnx/cosyvoice
 """
 
 from __future__ import annotations
@@ -63,7 +63,7 @@ _TOK_SR = 16000
 # CAM++ speaker encoder expects 16 kHz input
 _SPK_SR = 16000
 
-_HF_REPO_ID = "TigreGotico/voiceclonnx-cosyvoice"
+_HF_REPO_ID = "voiceclonnx/cosyvoice"
 _HF_REVISION = "844685e55b19c83c918ff4b1902527926fc0f87f"
 
 # File names in the HF repo
@@ -692,7 +692,7 @@ register_engine(
             "flow-matching ODE decoder (10 Euler steps) → 80-bin mel; "
             "HiFiGAN NSF vocoder → 22050 Hz waveform. "
             "No autoregressive LLM. CPU RTF ~0.71×. "
-            "ONNX artifacts from TigreGotico/voiceclonnx-cosyvoice. "
+            "ONNX artifacts from voiceclonnx/cosyvoice. "
             "(FunAudioLLM/CosyVoice-300M, Apache-2.0)"
         ),
         extras="",

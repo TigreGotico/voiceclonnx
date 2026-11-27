@@ -17,7 +17,7 @@ audio's prompt tokens are concatenated directly with the target prompt tokens
 and fed straight to the decoder — bypassing the generation loop entirely.
 No tokenizer.json is downloaded or parsed.
 
-Models: ``TigreGotico/voiceclonnx-chatterbox`` (HF, Apache-2.0).
+Models: ``voiceclonnx/chatterbox`` (HF, Apache-2.0).
 Output sample rate: 24 kHz.
 Core deps: onnxruntime, numpy, soundfile, huggingface_hub.
 """
@@ -37,7 +37,7 @@ from voiceclonnx.audio import load_wav, save_wav
 _CHATTERBOX_SR = 24000
 
 # HF model repo hosting the ONNX files
-_HF_MODEL_ID = "TigreGotico/voiceclonnx-chatterbox"
+_HF_MODEL_ID = "voiceclonnx/chatterbox"
 _HF_REVISION = "8db57b78a6fd3a2d0d66de8bb3b78eb31bb5cfc2"
 
 # ONNX filenames within the ``onnx/`` subdirectory of the repo — fp32 variants
@@ -74,7 +74,7 @@ class ChatterboxAdapter(VoiceClonerBase):
     quantized:
         When ``True``, load the INT8-quantized variants
         (``speech_encoder_q8.onnx`` + ``conditional_decoder_q8.onnx``) from
-        ``TigreGotico/voiceclonnx-chatterbox``.  INT8 reduces total model size from
+        ``voiceclonnx/chatterbox``.  INT8 reduces total model size from
         ~1 081 MB to ~468 MB (57% saving) with identical WER on reference clips.
     exaggeration:
         Voice-exaggeration scalar (default ``0.6``).  Stored for API
@@ -246,7 +246,7 @@ register_engine(
         adapter_class=ChatterboxAdapter,
         description=(
             "Chatterbox AR codec-LM (Resemble AI). ONNX export via "
-            "TigreGotico/voiceclonnx-chatterbox (HF). Voice conversion at 24 kHz. "
+            "voiceclonnx/chatterbox (HF). Voice conversion at 24 kHz. "
             "VC path only — no tokenizer, no LLM generation loop. "
             "INT8 quantized variant available via quantized=True (57% smaller, same WER)."
         ),

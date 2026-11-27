@@ -5,7 +5,7 @@
 **WER:** 12%
 **INT8:** available (slight quality cost)
 **License:** CC BY-NC-SA 4.0 weights (non-commercial only); code Apache-2.0
-**Model:** [TigreGotico/voiceclonnx-bicodec](https://huggingface.co/TigreGotico/voiceclonnx-bicodec)
+**Model:** [voiceclonnx/bicodec](https://huggingface.co/voiceclonnx/bicodec)
 
 ---
 

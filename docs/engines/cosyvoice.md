@@ -5,7 +5,7 @@
 **WER:** 8%
 **INT8:** ⚠ degrades; see [QUANTS.md](../QUANTS.md)
 **License:** Apache-2.0
-**Model:** [TigreGotico/voiceclonnx-cosyvoice](https://huggingface.co/TigreGotico/voiceclonnx-cosyvoice)
+**Model:** [voiceclonnx/cosyvoice](https://huggingface.co/voiceclonnx/cosyvoice)
 
 ---
 

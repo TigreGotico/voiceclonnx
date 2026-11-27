@@ -1,11 +1,11 @@
 """Upload exported ONNX artifacts to Hugging Face — one PUBLIC repo per engine.
 
 Each engine lives in its own subdirectory on the Hub:
-``TigreGotico/voiceclonnx-<engine>`` (public), grouped in the voiceclonnx collection.
+``voiceclonnx/<engine>`` (public), grouped in the voiceclonnx collection.
 
 Requirements
 ------------
-- ``HF_TOKEN`` env var (write access to the TigreGotico org).
+- ``HF_TOKEN`` env var (write access to the voiceclonnx org).
 - ``huggingface_hub`` package (already a runtime dep of voiceclonnx).
 
 Usage
@@ -33,12 +33,12 @@ import sys
 from pathlib import Path
 from typing import Optional, Union
 
-HF_NAMESPACE = "TigreGotico"
+HF_NAMESPACE = "voiceclonnx"
 COLLECTION_SLUG = "TigreGotico/voiceclonnx-pure-onnx-voice-conversion-6a2ac089852d9b90a66c4509"
 
 
 def engine_repo_id(engine_name: str) -> str:
-    return f"{HF_NAMESPACE}/voiceclonnx-{engine_name}"
+    return f"{HF_NAMESPACE}/{engine_name}"
 
 
 # ---------------------------------------------------------------------------
@@ -89,14 +89,14 @@ def push_engine(
     dry_run: bool = False,
     commit_message: Optional[str] = None,
 ) -> None:
-    """Upload *engine_dir* to the public ``TigreGotico/voiceclonnx-<engine_name>`` repo.
+    """Upload *engine_dir* to the public ``voiceclonnx/<engine_name>`` repo.
 
     Parameters
     ----------
     engine_dir:
         Local directory containing ONNX files + PROVENANCE.md + config.json.
     engine_name:
-        Engine name; the target repo becomes ``TigreGotico/voiceclonnx-<name>``.
+        Engine name; the target repo becomes ``voiceclonnx/<name>``.
     token:
         HF write token.  Falls back to the ``HF_TOKEN`` environment variable.
     dry_run:

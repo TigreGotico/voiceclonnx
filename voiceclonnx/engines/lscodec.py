@@ -26,7 +26,7 @@ References
 ----------
 - https://github.com/X-LANCE/LSCodec-Inference  (MIT)
 - https://arxiv.org/abs/2410.15764
-- https://huggingface.co/TigreGotico/voiceclonnx-lscodec
+- https://huggingface.co/voiceclonnx/lscodec
 """
 
 from __future__ import annotations
@@ -44,7 +44,7 @@ _PROMPT_SR = 16000
 _OUT_SR = 24000
 _PROMPT_WIN = 16000 * 4   # WavLM ONNX is exported at a fixed 4 s window
 
-_HF_REPO_ID = "TigreGotico/voiceclonnx-lscodec"
+_HF_REPO_ID = "voiceclonnx/lscodec"
 _HF_REVISION = "32ce6d5f1fd4dbfabb79ca4d04d914241f2b6584"
 
 _ENC_FP32, _ENC_INT8 = "lscodec_encoder.onnx", "lscodec_encoder_q8.onnx"
@@ -149,7 +149,7 @@ register_engine(
         description=(
             "LSCodec: speaker-decoupled discrete speech codec (Interspeech 2025). "
             "Encoder + numpy VQ + WavLM-prompt CTXVEC2WAV vocoder. Zero-shot "
-            "any-to-any VC at 24 kHz. ONNX from TigreGotico/voiceclonnx-lscodec. (MIT)"
+            "any-to-any VC at 24 kHz. ONNX from voiceclonnx/lscodec. (MIT)"
         ),
         extras="",
         onnx_native=True,

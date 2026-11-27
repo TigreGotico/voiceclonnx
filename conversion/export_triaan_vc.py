@@ -59,7 +59,7 @@ from pathlib import Path
 UPSTREAM_REPO_URL = "https://github.com/winddori2002/TriAAN-VC"
 UPSTREAM_REF = "v1.0"
 ENGINE_NAME = "triaan-vc"
-HF_REPO_ID = "TigreGotico/voiceclonnx-triaan-vc"
+HF_REPO_ID = "voiceclonnx/triaan-vc"
 SAMPLE_RATE = 16000
 N_MELS = 80
 N_FFT = 400

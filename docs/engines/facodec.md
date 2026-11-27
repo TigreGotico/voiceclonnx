@@ -5,7 +5,7 @@
 **WER:** 0%
 **INT8:** available (slight quality cost)
 **License:** Apache-2.0
-**Model:** [TigreGotico/voiceclonnx-facodec](https://huggingface.co/TigreGotico/voiceclonnx-facodec)
+**Model:** [voiceclonnx/facodec](https://huggingface.co/voiceclonnx/facodec)
 
 ---
 

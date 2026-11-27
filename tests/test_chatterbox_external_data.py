@@ -51,7 +51,7 @@ def _build_sharded_cache(tmp_path: Path):
     _make_external_data_onnx(real_dir / "conditional_decoder.onnx", "conditional_decoder.onnx_data")
 
     blobs = tmp_path / "cache" / "blobs"
-    snapshot = tmp_path / "cache" / "models--TigreGotico--voiceclonnx-chatterbox" / "snapshots" / "abc123" / "onnx"
+    snapshot = tmp_path / "cache" / "models--voiceclonnx--chatterbox" / "snapshots" / "abc123" / "onnx"
     snapshot.mkdir(parents=True)
 
     # Fabricated hashes landing in different two-hex shards for a model and its
